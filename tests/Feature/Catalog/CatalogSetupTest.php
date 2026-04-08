@@ -22,10 +22,26 @@ class CatalogSetupTest extends TestCase
         $this->assertTrue(Schema::hasTable('sport_mode_category'));
         $this->assertTrue(Schema::hasTable('sport_mode_formation'));
         $this->assertTrue(Schema::hasTable('sport_mode_position'));
+        $this->assertTrue(Schema::hasColumn('sport_modes', 'label_key'));
+        $this->assertTrue(Schema::hasColumn('sport_modes', 'description_key'));
+        $this->assertTrue(Schema::hasColumn('sport_modes', 'icon'));
+        $this->assertFalse(Schema::hasColumn('sport_modes', 'name'));
+        $this->assertTrue(Schema::hasColumn('positions', 'label_key'));
+        $this->assertTrue(Schema::hasColumn('positions', 'description_key'));
+        $this->assertTrue(Schema::hasColumn('positions', 'icon'));
+        $this->assertFalse(Schema::hasColumn('positions', 'name'));
+        $this->assertTrue(Schema::hasColumn('staff_roles', 'label_key'));
+        $this->assertTrue(Schema::hasColumn('staff_roles', 'description_key'));
+        $this->assertTrue(Schema::hasColumn('staff_roles', 'icon'));
+        $this->assertTrue(Schema::hasColumn('badge_types', 'label_key'));
+        $this->assertTrue(Schema::hasColumn('badge_types', 'description_key'));
+        $this->assertFalse(Schema::hasColumn('badge_types', 'label'));
+        $this->assertFalse(Schema::hasColumn('badge_types', 'description'));
     }
 
     public function test_catalog_seeders_populate_reference_data(): void
     {
+        $this->seed();
         $this->seed();
 
         $this->assertSame(4, DB::table('sport_modes')->count());
@@ -40,16 +56,31 @@ class CatalogSetupTest extends TestCase
 
         $this->assertDatabaseHas('sport_modes', [
             'key' => 'society',
-            'name' => 'Society',
+            'label_key' => 'sport_modes.society.label',
+            'description_key' => 'sport_modes.society.description',
+            'icon' => 'shield',
         ]);
 
         $this->assertDatabaseHas('positions', [
             'key' => 'goleiro',
+            'label_key' => 'positions.goleiro.label',
+            'description_key' => 'positions.goleiro.description',
+            'icon' => 'shield',
             'abbreviation' => 'GOL',
+        ]);
+
+        $this->assertDatabaseHas('staff_roles', [
+            'name' => 'head_coach',
+            'label_key' => 'staff_roles.head_coach.label',
+            'description_key' => 'staff_roles.head_coach.description',
+            'icon' => 'whistle',
         ]);
 
         $this->assertDatabaseHas('badge_types', [
             'name' => 'golden_ball',
+            'label_key' => 'badges.golden_ball.label',
+            'description_key' => 'badges.golden_ball.description',
+            'icon' => 'award',
             'scope' => 'championship',
         ]);
     }

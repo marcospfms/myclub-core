@@ -15,8 +15,8 @@
 | Migrations — 6 tabelas de catálogo                         | ✅ Concluído   |
 | Migrations — 3 tabelas pivô de catálogo                    | ✅ Concluído   |
 | Seeders com dados de referência                            | ✅ Concluído   |
-| Models                                                     | ⬜ Pendente    |
-| Services                                                   | ⬜ Pendente    |
+| Models                                                     | ✅ Concluído   |
+| Services                                                   | ✅ Concluído   |
 | Form Requests                                              | ⬜ Pendente    |
 | API Resources                                              | ⬜ Pendente    |
 | API Controllers (selects autenticados — leitura de catálogo) | ⬜ Pendente    |
@@ -66,105 +66,48 @@ Ordem de criação — principais primeiro, pivôs depois.
 
 ### 4.1 `create_sport_modes_table`
 
-```php
-Schema::create('sport_modes', function (Blueprint $table) {
-    $table->id();
-    $table->string('key', 60)->unique();
-    $table->string('name', 45);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184535_create_sport_modes_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184535_create_sport_modes_table.php)
 
 ### 4.2 `create_categories_table`
 
-```php
-Schema::create('categories', function (Blueprint $table) {
-    $table->id();
-    $table->string('key', 60)->unique();
-    $table->string('name', 45);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184536_create_categories_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184536_create_categories_table.php)
 
 ### 4.3 `create_positions_table`
 
-```php
-Schema::create('positions', function (Blueprint $table) {
-    $table->id();
-    $table->string('key', 60)->unique();
-    $table->string('name', 45);
-    $table->char('abbreviation', 3);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184537_create_positions_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184537_create_positions_table.php)
 
 ### 4.4 `create_formations_table`
 
-```php
-Schema::create('formations', function (Blueprint $table) {
-    $table->id();
-    $table->string('key', 30)->unique();
-    $table->string('name', 15);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184537_create_formations_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184537_create_formations_table.php)
 
 ### 4.5 `create_staff_roles_table`
 
-```php
-Schema::create('staff_roles', function (Blueprint $table) {
-    $table->id();
-    $table->string('name', 60)->unique(); // name já é o slug-chave (ex: head_coach)
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184538_create_staff_roles_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184538_create_staff_roles_table.php)
 
 ### 4.6 `create_badge_types_table`
 
-```php
-Schema::create('badge_types', function (Blueprint $table) {
-    $table->id();
-    $table->string('name', 60)->unique(); // name já é o slug-chave (ex: golden_ball)
-    $table->string('label', 100);         // label é o nome exibido (ex: Bola de Ouro)
-    $table->text('description')->nullable();
-    $table->string('icon', 100)->nullable();
-    $table->enum('scope', ['championship', 'friendly', 'career', 'seasonal']);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184539_create_badge_types_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184539_create_badge_types_table.php)
 
 ### 4.7 `create_sport_mode_category_table` (pivô)
 
-```php
-Schema::create('sport_mode_category', function (Blueprint $table) {
-    $table->foreignId('sport_mode_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-    $table->primary(['sport_mode_id', 'category_id']);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184540_create_sport_mode_category_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184540_create_sport_mode_category_table.php)
 
 ### 4.8 `create_sport_mode_formation_table` (pivô)
 
-```php
-Schema::create('sport_mode_formation', function (Blueprint $table) {
-    $table->foreignId('sport_mode_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('formation_id')->constrained()->cascadeOnDelete();
-    $table->primary(['sport_mode_id', 'formation_id']);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184541_create_sport_mode_formation_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184541_create_sport_mode_formation_table.php)
 
 ### 4.9 `create_sport_mode_position_table` (pivô)
 
-```php
-Schema::create('sport_mode_position', function (Blueprint $table) {
-    $table->foreignId('sport_mode_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('position_id')->constrained()->cascadeOnDelete();
-    $table->primary(['sport_mode_id', 'position_id']);
-    $table->timestamps();
-});
-```
+Implementado em:
+[`2026_04_08_184542_create_sport_mode_position_table.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/migrations/2026_04_08_184542_create_sport_mode_position_table.php)
 
 ---
 
@@ -172,170 +115,61 @@ Schema::create('sport_mode_position', function (Blueprint $table) {
 
 ### 5.1 `SportModeSeeder`
 
-```php
-SportMode::insert([
-    ['key' => 'campo',   'name' => 'Campo',   'created_at' => now(), 'updated_at' => now()],
-    ['key' => 'quadra',  'name' => 'Quadra',  'created_at' => now(), 'updated_at' => now()],
-    ['key' => 'society', 'name' => 'Society', 'created_at' => now(), 'updated_at' => now()],
-    ['key' => 'areia',   'name' => 'Areia',   'created_at' => now(), 'updated_at' => now()],
-]);
-```
+Implementado em:
+[`SportModeSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/SportModeSeeder.php)
 
 ### 5.2 `CategorySeeder`
 
-```php
-Category::insert([
-    ['key' => 'livre',  'name' => 'Livre',  'created_at' => now(), 'updated_at' => now()],
-    ['key' => 'sub_15', 'name' => 'Sub-15', 'created_at' => now(), 'updated_at' => now()],
-    ['key' => 'sub_17', 'name' => 'Sub-17', 'created_at' => now(), 'updated_at' => now()],
-    ['key' => 'sub_20', 'name' => 'Sub-20', 'created_at' => now(), 'updated_at' => now()],
-]);
-```
+Implementado em:
+[`CategorySeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/CategorySeeder.php)
 
 ### 5.3 `PositionSeeder`
 
-```php
-Position::insert([
-    ['key' => 'goleiro',              'name' => 'Goleiro',              'abbreviation' => 'GOL'],
-    ['key' => 'zagueiro',             'name' => 'Zagueiro',             'abbreviation' => 'ZC'],
-    ['key' => 'lateral_direito',      'name' => 'Lateral Direito',      'abbreviation' => 'LD'],
-    ['key' => 'lateral_esquerdo',     'name' => 'Lateral Esquerdo',     'abbreviation' => 'LE'],
-    ['key' => 'volante',              'name' => 'Volante',              'abbreviation' => 'VOL'],
-    ['key' => 'meia_ligacao',         'name' => 'Meia de Ligação',      'abbreviation' => 'ML'],
-    ['key' => 'meia_lateral_direito', 'name' => 'Meia Lateral Direito', 'abbreviation' => 'MLD'],
-    ['key' => 'meia_lateral_esquerdo','name' => 'Meia Lateral Esquerdo','abbreviation' => 'MLE'],
-    ['key' => 'meia_atacante',        'name' => 'Meia Atacante',        'abbreviation' => 'MAT'],
-    ['key' => 'segundo_atacante',     'name' => 'Segundo Atacante',     'abbreviation' => 'SA'],
-    ['key' => 'ponta_direita',        'name' => 'Ponta Direita',        'abbreviation' => 'PD'],
-    ['key' => 'ponta_esquerda',       'name' => 'Ponta Esquerda',       'abbreviation' => 'PE'],
-    ['key' => 'atacante',             'name' => 'Atacante',             'abbreviation' => 'ATA'],
-    ['key' => 'fixo',                 'name' => 'Fixo',                 'abbreviation' => 'FIX'],
-    ['key' => 'ala_direito',          'name' => 'Ala Direito',          'abbreviation' => 'ALD'],
-    ['key' => 'ala_esquerdo',         'name' => 'Ala Esquerdo',         'abbreviation' => 'ALE'],
-    ['key' => 'pivo',                 'name' => 'Pivô',                 'abbreviation' => 'PIV'],
-]);
-// timestamps implícitos via created_at/updated_at = now() em cada linha
-```
+Implementado em:
+[`PositionSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/PositionSeeder.php)
 
 > Posições de campo (GOL→ATA) são associadas a Campo e Society.
 > Posições de futsal (GOL, FIX, ALD, ALE, PIV) são associadas a Quadra e Areia.
 
 ### 5.4 `FormationSeeder`
 
-```php
-Formation::insert([
-    ['key' => '4-4-2', 'name' => '4-4-2'],
-    ['key' => '4-3-3', 'name' => '4-3-3'],
-    ['key' => '4-5-1', 'name' => '4-5-1'],
-    ['key' => '3-5-2', 'name' => '3-5-2'],
-    ['key' => '3-4-3', 'name' => '3-4-3'],
-    ['key' => '3-6-1', 'name' => '3-6-1'],
-    ['key' => '1-2-1', 'name' => '1-2-1'],
-    ['key' => '2-2-1', 'name' => '2-2-1'],
-]);
-```
+Implementado em:
+[`FormationSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/FormationSeeder.php)
 
 > Formações de campo (4-4-2 a 3-6-1) → Campo e Society.
 > Formações de futsal (1-2-1, 2-2-1) → Quadra e Areia.
 
 ### 5.5 `StaffRoleSeeder`
 
-```php
-StaffRole::insert([
-    ['name' => 'head_coach'],
-    ['name' => 'assistant_coach'],
-    ['name' => 'physical_trainer'],
-    ['name' => 'goalkeeping_coach'],
-    ['name' => 'scout'],
-    ['name' => 'analyst'],
-    ['name' => 'physiotherapist'],
-    ['name' => 'doctor'],
-    ['name' => 'other'],
-]);
-```
+Implementado em:
+[`StaffRoleSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/StaffRoleSeeder.php)
 
 ### 5.6 `BadgeTypeSeeder`
 
-```php
-$badges = [
-    ['name' => 'golden_ball',        'label' => 'Bola de Ouro',            'scope' => 'championship', 'description' => 'Mais votos de MVP num campeonato'],
-    ['name' => 'top_scorer',         'label' => 'Artilheiro',              'scope' => 'championship', 'description' => 'Maior número de gols num campeonato'],
-    ['name' => 'best_assist',        'label' => 'Garçom',                  'scope' => 'championship', 'description' => 'Maior número de assistências num campeonato'],
-    ['name' => 'best_goalkeeper',    'label' => 'Melhor Goleiro',          'scope' => 'championship', 'description' => 'Goleiro com menor média de gols sofridos'],
-    ['name' => 'fair_play',          'label' => 'Fair Play',               'scope' => 'championship', 'description' => 'Zero cartões durante todo o campeonato'],
-    ['name' => 'hat_trick',          'label' => 'Hat-trick',               'scope' => 'career',       'description' => 'Marcou 3+ gols em uma única partida'],
-    ['name' => 'iron_man',           'label' => 'Homem de Ferro',          'scope' => 'championship', 'description' => 'Participou de 100% das partidas do campeonato'],
-    ['name' => 'unbeaten_champion',  'label' => 'Campeão Invicto',         'scope' => 'championship', 'description' => 'Conquistou o título sem perder nenhuma partida'],
-    ['name' => 'top_scorer_season',  'label' => 'Artilheiro da Temporada', 'scope' => 'seasonal',     'description' => 'Maior total de gols na temporada'],
-    ['name' => 'best_assist_season', 'label' => 'Garçom da Temporada',     'scope' => 'seasonal',     'description' => 'Maior total de assistências na temporada'],
-    ['name' => 'mvp_streak',         'label' => 'MVP em Série',            'scope' => 'career',       'description' => 'Ganhou MVP em 3 ou mais partidas consecutivas'],
-    ['name' => 'loyal_player',       'label' => 'Jogador Fiel',            'scope' => 'career',       'description' => 'Participou de 5+ campeonatos pelo mesmo time'],
-    ['name' => 'rising_star',        'label' => 'Estrela em Ascensão',     'scope' => 'seasonal',     'description' => 'Destaque de desempenho na primeira temporada completa'],
-    ['name' => 'clean_sweep',        'label' => 'Varredura',               'scope' => 'championship', 'description' => 'Venceu todas as partidas da fase de grupos'],
-];
-BadgeType::insert(array_map(fn ($b) => array_merge($b, ['created_at' => now(), 'updated_at' => now()]), $badges));
-```
+Implementado em:
+[`BadgeTypeSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/BadgeTypeSeeder.php)
 
 ### 5.7 `SportModeCategorySeeder`
 
 Todas as categorias estão disponíveis em todas as modalidades.
 
-```php
-$sportModeIds = SportMode::pluck('id');
-$categoryIds  = Category::pluck('id');
-
-$rows = [];
-foreach ($sportModeIds as $sm) {
-    foreach ($categoryIds as $cat) {
-        $rows[] = ['sport_mode_id' => $sm, 'category_id' => $cat, 'created_at' => now(), 'updated_at' => now()];
-    }
-}
-DB::table('sport_mode_category')->insert($rows);
-```
+Implementado em:
+[`SportModeCategorySeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/SportModeCategorySeeder.php)
 
 ### 5.8 `SportModeFormationSeeder`
 
-```php
-$campo   = SportMode::where('key', 'campo')->value('id');
-$society = SportMode::where('key', 'society')->value('id');
-$quadra  = SportMode::where('key', 'quadra')->value('id');
-$areia   = SportMode::where('key', 'areia')->value('id');
-
-$field   = Formation::whereIn('key', ['4-4-2','4-3-3','4-5-1','3-5-2','3-4-3','3-6-1'])->pluck('id');
-$futsal  = Formation::whereIn('key', ['1-2-1','2-2-1'])->pluck('id');
-
-// campo + society → formações de campo
-// quadra + areia → formações de futsal
-```
+Implementado em:
+[`SportModeFormationSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/SportModeFormationSeeder.php)
 
 ### 5.9 `SportModePositionSeeder`
 
-```php
-$fieldAbbr  = ['GOL','ZC','LD','LE','VOL','ML','MLD','MLE','MAT','SA','PD','PE','ATA'];
-$futsalAbbr = ['GOL','FIX','ALD','ALE','PIV'];
-
-$fieldPositions  = Position::whereIn('abbreviation', $fieldAbbr)->pluck('id');
-$futsalPositions = Position::whereIn('abbreviation', $futsalAbbr)->pluck('id');
-
-// campo + society → posições de campo
-// quadra + areia → posições de futsal
-```
+Implementado em:
+[`SportModePositionSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/SportModePositionSeeder.php)
 
 ### 5.10 `DatabaseSeeder` — ordem de chamada
 
-```php
-$this->call([
-    SportModeSeeder::class,
-    CategorySeeder::class,
-    PositionSeeder::class,
-    FormationSeeder::class,
-    StaffRoleSeeder::class,
-    BadgeTypeSeeder::class,
-    SportModeCategorySeeder::class,
-    SportModeFormationSeeder::class,
-    SportModePositionSeeder::class,
-]);
-```
+Implementado em:
+[`DatabaseSeeder.php`](/mnt/c/wamp64/www/MyClub/myclub-core/database/seeders/DatabaseSeeder.php)
 
 ---
 
@@ -345,124 +179,43 @@ Localização: `app/Models/`
 
 ### 6.1 `SportMode`
 
-```php
-class SportMode extends Model
-{
-    protected $table = 'sport_modes';
-
-    protected $fillable = ['key', 'name'];
-
-    public function categories(): BelongsToMany
-    {
-        return $this->belongsToMany(Category::class, 'sport_mode_category')->withTimestamps();
-    }
-
-    public function formations(): BelongsToMany
-    {
-        return $this->belongsToMany(Formation::class, 'sport_mode_formation')->withTimestamps();
-    }
-
-    public function positions(): BelongsToMany
-    {
-        return $this->belongsToMany(Position::class, 'sport_mode_position')->withTimestamps();
-    }
-}
-```
+Implementado em:
+[`SportMode.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Models/SportMode.php)
 
 ### 6.2 `Category`
 
-```php
-class Category extends Model
-{
-    protected $table = 'categories';
-
-    protected $fillable = ['key', 'name'];
-
-    public function sportModes(): BelongsToMany
-    {
-        return $this->belongsToMany(SportMode::class, 'sport_mode_category')->withTimestamps();
-    }
-}
-```
+Implementado em:
+[`Category.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Models/Category.php)
 
 ### 6.3 `Position`
 
-```php
-class Position extends Model
-{
-    protected $table = 'positions';
-
-    protected $fillable = ['key', 'name', 'abbreviation'];
-
-    public function sportModes(): BelongsToMany
-    {
-        return $this->belongsToMany(SportMode::class, 'sport_mode_position')->withTimestamps();
-    }
-}
-```
+Implementado em:
+[`Position.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Models/Position.php)
 
 ### 6.4 `Formation`
 
-```php
-class Formation extends Model
-{
-    protected $table = 'formations';
-
-    protected $fillable = ['key', 'name'];
-
-    public function sportModes(): BelongsToMany
-    {
-        return $this->belongsToMany(SportMode::class, 'sport_mode_formation')->withTimestamps();
-    }
-}
-```
+Implementado em:
+[`Formation.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Models/Formation.php)
 
 ### 6.5 `StaffRole`
 
-```php
-class StaffRole extends Model
-{
-    protected $table = 'staff_roles';
-
-    protected $fillable = ['name'];
-}
-```
+Implementado em:
+[`StaffRole.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Models/StaffRole.php)
 
 ### 6.6 `BadgeType`
 
-```php
-class BadgeType extends Model
-{
-    protected $table = 'badge_types';
+Implementado em:
+[`BadgeType.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Models/BadgeType.php)
 
-    protected $fillable = ['name', 'label', 'description', 'icon', 'scope'];
-
-    protected function casts(): array
-    {
-        return [
-            'scope' => BadgeScope::class, // enum backed
-        ];
-    }
-}
-```
-
-> Criar enum `app/Enums/BadgeScope.php` com cases: `Championship`, `Friendly`, `Career`, `Seasonal`.
+Enum implementado em:
+[`BadgeScope.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Enums/BadgeScope.php)
 
 ---
 
 ## 7. Enums
 
-`app/Enums/BadgeScope.php`:
-
-```php
-enum BadgeScope: string
-{
-    case Championship = 'championship';
-    case Friendly     = 'friendly';
-    case Career       = 'career';
-    case Seasonal     = 'seasonal';
-}
-```
+Implementado em:
+[`BadgeScope.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Enums/BadgeScope.php)
 
 ---
 
@@ -474,56 +227,16 @@ Um service por entidade. Cada service expõe os métodos usados pelos controller
 
 ### Estrutura padrão (exemplo: `SportModeService`)
 
-```php
-namespace App\Services\Catalog;
-
-class SportModeService
-{
-    public function listAll(): Collection
-    {
-        return SportMode::with(['categories', 'formations', 'positions'])->orderBy('name')->get();
-    }
-
-    public function create(array $data): SportMode
-    {
-        return SportMode::create($data);
-    }
-
-    public function update(SportMode $sportMode, array $data): SportMode
-    {
-        $sportMode->update($data);
-        return $sportMode->fresh();
-    }
-
-    public function delete(SportMode $sportMode): void
-    {
-        $sportMode->delete();
-    }
-
-    public function syncCategories(SportMode $sportMode, array $categoryIds): void
-    {
-        $sportMode->categories()->sync($categoryIds);
-    }
-
-    public function syncFormations(SportMode $sportMode, array $formationIds): void
-    {
-        $sportMode->formations()->sync($formationIds);
-    }
-
-    public function syncPositions(SportMode $sportMode, array $positionIds): void
-    {
-        $sportMode->positions()->sync($positionIds);
-    }
-}
-```
+Implementado em:
+[`SportModeService.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Services/Catalog/SportModeService.php)
 
 Services a criar:
-- `SportModeService`
-- `CategoryService`
-- `PositionService`
-- `FormationService`
-- `StaffRoleService`
-- `BadgeTypeService`
+- [`SportModeService.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Services/Catalog/SportModeService.php)
+- [`CategoryService.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Services/Catalog/CategoryService.php)
+- [`PositionService.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Services/Catalog/PositionService.php)
+- [`FormationService.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Services/Catalog/FormationService.php)
+- [`StaffRoleService.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Services/Catalog/StaffRoleService.php)
+- [`BadgeTypeService.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Services/Catalog/BadgeTypeService.php)
 
 Todos os demais services (`CategoryService`, `PositionService`, `FormationService`, `StaffRoleService`, `BadgeTypeService`) têm apenas `listAll`, `create`, `update`, `delete`. Nenhuma lógica de sync de pivô — só SportMode tem pivôs gerenciados.
 
@@ -542,7 +255,7 @@ Localização: `app/Http/Requests/Catalog/`
 | `StorePositionRequest`    | `key`: required, alpha_dash, max:60, unique:positions \| `name`: required, string, max:45 \| `abbreviation`: required, string, size:3 |
 | `StoreFormationRequest`   | `key`: required, max:30, unique:formations \| `name`: required, string, max:15              |
 | `StoreStaffRoleRequest`   | `name`: required, alpha_dash, max:60, unique:staff_roles _(name é o slug)_                  |
-| `StoreBadgeTypeRequest`   | `name`: required, alpha_dash, max:60, unique:badge_types _(name é o slug)_ \| `label`: required, string, max:100 \| `scope`: required, in:championship,friendly,career,seasonal |
+| `StoreBadgeTypeRequest`   | `name`: required, alpha_dash, max:60, unique:badge_types _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: required, string, max:150 \| `icon`: required, string, max:100 \| `scope`: required, in:championship,friendly,career,seasonal |
 
 ### Update requests
 
@@ -624,9 +337,9 @@ class SportModeResource extends JsonResource
 // StaffRoleResource  (name é o slug-chave)
 ['id' => $this->id, 'name' => $this->name]
 
-// BadgeTypeResource  (name é o slug-chave, label é o nome exibido)
-['id' => $this->id, 'name' => $this->name, 'label' => $this->label,
- 'description' => $this->description, 'icon' => $this->icon, 'scope' => $this->scope]
+// BadgeTypeResource  (retorna translation keys + icon key)
+['id' => $this->id, 'name' => $this->name, 'label_key' => $this->label_key,
+ 'description_key' => $this->description_key, 'icon' => $this->icon, 'scope' => $this->scope]
 ```
 
 ---
@@ -1065,7 +778,7 @@ Dois campos: `name` + `abbreviation`.
 
 #### BadgeType — Form Partial
 
-Campos: `name`, `label`, `description`, `icon`, `scope` (select com 4 opções).
+Campos: `name`, `label_key`, `description_key`, `icon`, `scope` (select com 4 opções).
 
 ---
 
@@ -1316,9 +1029,9 @@ Marcar ao concluir cada item. A fase só está concluída quando todos estiverem
 
 ### Backend
 
-- [ ] Enum `BadgeScope` criado
-- [ ] Models criados (6)
-- [ ] Services criados (6) em `app/Services/Catalog/`
+- [x] Enum `BadgeScope` criado
+- [x] Models criados (6)
+- [x] Services criados (6) em `app/Services/Catalog/`
 - [ ] Form Requests criados (Store + Update por entidade = 12)
 - [ ] API Resources criados (6)
 - [ ] API Controllers criados (6) em `App\Http\Controllers\Api\Catalog\`
@@ -1337,6 +1050,7 @@ Marcar ao concluir cada item. A fase só está concluída quando todos estiverem
 ### Testes
 
 - [x] Teste de fundação de catálogo criado (`CatalogSetupTest`)
+- [x] Teste de models e services de catálogo criado (`CatalogModelAndServiceTest`)
 - [ ] Factories criadas (6)
 - [ ] Feature tests admin: SportMode, Category, Position, Formation, StaffRole, BadgeType
 - [ ] Feature tests API: `CatalogApiTest`

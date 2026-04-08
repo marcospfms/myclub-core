@@ -14,6 +14,8 @@ class SportModeCategorySeeder extends Seeder
     {
         $now = now();
 
+        DB::table('sport_mode_category')->delete();
+
         $sportModeIds = DB::table('sport_modes')->pluck('id');
         $categoryIds = DB::table('categories')->pluck('id');
         $rows = [];

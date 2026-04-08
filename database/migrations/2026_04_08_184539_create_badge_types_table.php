@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('badge_types', function (Blueprint $table) {
             $table->id();
             $table->string('name', 60)->unique();
-            $table->string('label', 100);
-            $table->text('description')->nullable();
+            $table->string('label_key', 150);
+            $table->string('description_key', 150)->nullable();
             $table->string('icon', 100)->nullable();
             $table->enum('scope', ['championship', 'friendly', 'career', 'seasonal']);
             $table->timestamps();

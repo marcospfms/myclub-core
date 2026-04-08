@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
             $table->string('key', 60)->unique();
-            $table->string('name', 45);
+            $table->string('label_key', 150);
+            $table->string('description_key', 150)->nullable();
+            $table->string('icon', 100)->nullable();
             $table->char('abbreviation', 3);
             $table->timestamps();
         });

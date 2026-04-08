@@ -14,11 +14,11 @@ class CategorySeeder extends Seeder
     {
         $now = now();
 
-        DB::table('categories')->insert([
+        DB::table('categories')->upsert([
             ['key' => 'livre', 'name' => 'Livre', 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'sub_15', 'name' => 'Sub-15', 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'sub_17', 'name' => 'Sub-17', 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'sub_20', 'name' => 'Sub-20', 'created_at' => $now, 'updated_at' => $now],
-        ]);
+        ], ['key'], ['name', 'updated_at']);
     }
 }

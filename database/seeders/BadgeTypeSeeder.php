@@ -15,28 +15,28 @@ class BadgeTypeSeeder extends Seeder
         $now = now();
 
         $badges = [
-            ['name' => 'golden_ball', 'label' => 'Bola de Ouro', 'scope' => 'championship', 'description' => 'Mais votos de MVP num campeonato', 'icon' => null],
-            ['name' => 'top_scorer', 'label' => 'Artilheiro', 'scope' => 'championship', 'description' => 'Maior número de gols num campeonato', 'icon' => null],
-            ['name' => 'best_assist', 'label' => 'Garçom', 'scope' => 'championship', 'description' => 'Maior número de assistências num campeonato', 'icon' => null],
-            ['name' => 'best_goalkeeper', 'label' => 'Melhor Goleiro', 'scope' => 'championship', 'description' => 'Goleiro com menor média de gols sofridos', 'icon' => null],
-            ['name' => 'fair_play', 'label' => 'Fair Play', 'scope' => 'championship', 'description' => 'Zero cartões durante todo o campeonato', 'icon' => null],
-            ['name' => 'hat_trick', 'label' => 'Hat-trick', 'scope' => 'career', 'description' => 'Marcou 3+ gols em uma única partida', 'icon' => null],
-            ['name' => 'iron_man', 'label' => 'Homem de Ferro', 'scope' => 'championship', 'description' => 'Participou de 100% das partidas do campeonato', 'icon' => null],
-            ['name' => 'unbeaten_champion', 'label' => 'Campeão Invicto', 'scope' => 'championship', 'description' => 'Conquistou o título sem perder nenhuma partida', 'icon' => null],
-            ['name' => 'top_scorer_season', 'label' => 'Artilheiro da Temporada', 'scope' => 'seasonal', 'description' => 'Maior total de gols na temporada', 'icon' => null],
-            ['name' => 'best_assist_season', 'label' => 'Garçom da Temporada', 'scope' => 'seasonal', 'description' => 'Maior total de assistências na temporada', 'icon' => null],
-            ['name' => 'mvp_streak', 'label' => 'MVP em Série', 'scope' => 'career', 'description' => 'Ganhou MVP em 3 ou mais partidas consecutivas', 'icon' => null],
-            ['name' => 'loyal_player', 'label' => 'Jogador Fiel', 'scope' => 'career', 'description' => 'Participou de 5+ campeonatos pelo mesmo time', 'icon' => null],
-            ['name' => 'rising_star', 'label' => 'Estrela em Ascensão', 'scope' => 'seasonal', 'description' => 'Destaque de desempenho na primeira temporada completa', 'icon' => null],
-            ['name' => 'clean_sweep', 'label' => 'Varredura', 'scope' => 'championship', 'description' => 'Venceu todas as partidas da fase de grupos', 'icon' => null],
+            ['name' => 'golden_ball', 'label_key' => 'badges.golden_ball.label', 'description_key' => 'badges.golden_ball.description', 'scope' => 'championship', 'icon' => 'award'],
+            ['name' => 'top_scorer', 'label_key' => 'badges.top_scorer.label', 'description_key' => 'badges.top_scorer.description', 'scope' => 'championship', 'icon' => 'goal'],
+            ['name' => 'best_assist', 'label_key' => 'badges.best_assist.label', 'description_key' => 'badges.best_assist.description', 'scope' => 'championship', 'icon' => 'handshake'],
+            ['name' => 'best_goalkeeper', 'label_key' => 'badges.best_goalkeeper.label', 'description_key' => 'badges.best_goalkeeper.description', 'scope' => 'championship', 'icon' => 'shield'],
+            ['name' => 'fair_play', 'label_key' => 'badges.fair_play.label', 'description_key' => 'badges.fair_play.description', 'scope' => 'championship', 'icon' => 'heart_handshake'],
+            ['name' => 'hat_trick', 'label_key' => 'badges.hat_trick.label', 'description_key' => 'badges.hat_trick.description', 'scope' => 'career', 'icon' => 'flame'],
+            ['name' => 'iron_man', 'label_key' => 'badges.iron_man.label', 'description_key' => 'badges.iron_man.description', 'scope' => 'championship', 'icon' => 'medal'],
+            ['name' => 'unbeaten_champion', 'label_key' => 'badges.unbeaten_champion.label', 'description_key' => 'badges.unbeaten_champion.description', 'scope' => 'championship', 'icon' => 'trophy'],
+            ['name' => 'top_scorer_season', 'label_key' => 'badges.top_scorer_season.label', 'description_key' => 'badges.top_scorer_season.description', 'scope' => 'seasonal', 'icon' => 'target'],
+            ['name' => 'best_assist_season', 'label_key' => 'badges.best_assist_season.label', 'description_key' => 'badges.best_assist_season.description', 'scope' => 'seasonal', 'icon' => 'sparkles'],
+            ['name' => 'mvp_streak', 'label_key' => 'badges.mvp_streak.label', 'description_key' => 'badges.mvp_streak.description', 'scope' => 'career', 'icon' => 'zap'],
+            ['name' => 'loyal_player', 'label_key' => 'badges.loyal_player.label', 'description_key' => 'badges.loyal_player.description', 'scope' => 'career', 'icon' => 'flag'],
+            ['name' => 'rising_star', 'label_key' => 'badges.rising_star.label', 'description_key' => 'badges.rising_star.description', 'scope' => 'seasonal', 'icon' => 'star'],
+            ['name' => 'clean_sweep', 'label_key' => 'badges.clean_sweep.label', 'description_key' => 'badges.clean_sweep.description', 'scope' => 'championship', 'icon' => 'shield_check'],
         ];
 
-        DB::table('badge_types')->insert(array_map(
+        DB::table('badge_types')->upsert(array_map(
             fn (array $badge): array => array_merge($badge, [
                 'created_at' => $now,
                 'updated_at' => $now,
             ]),
             $badges,
-        ));
+        ), ['name'], ['label_key', 'description_key', 'icon', 'scope', 'updated_at']);
     }
 }

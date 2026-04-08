@@ -9,11 +9,11 @@ Este arquivo registra cada teste criado, seu objetivo e cenarios cobertos.
 | Modulo | Arquivos | Metodos | Cobertura | Status |
 |--------|----------|---------|-----------|--------|
 | Auth | 7 | 25 | 100% | ✅ Completo |
-| Catalog Foundation | 1 | 2 | 100% | ✅ Completo |
+| Catalog Foundation | 2 | 7 | 100% | ✅ Completo |
 | Navigation/Core | 2 | 3 | 100% | ✅ Completo |
 | Settings | 2 | 11 | 100% | ✅ Completo |
 | Unit | 1 | 1 | 100% | ✅ Completo |
-| **Total** | **13** | **42** | **100%** | ✅ |
+| **Total** | **14** | **47** | **100%** | ✅ |
 
 ---
 
@@ -97,6 +97,17 @@ Valida a fundacao da Fase 0 para catalogos e dados de referencia.
 |--------|---------|
 | `test_catalog_tables_are_created` | Todas as 6 tabelas de catalogo e 3 pivots existem apos as migrations |
 | `test_catalog_seeders_populate_reference_data` | Seeders populam quantidades corretas e exemplos criticos de modalidades, posicoes e badges |
+
+### `tests/Feature/Catalog/CatalogModelAndServiceTest.php`
+Valida enum, relacionamentos Eloquent e comportamento inicial dos services de catalogo.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_sport_mode_model_loads_catalog_relationships` | `SportMode` carrega corretamente categorias, formacoes e posicoes vinculadas |
+| `test_badge_type_scope_is_cast_to_enum` | `BadgeType.scope` e convertido para `BadgeScope` via cast |
+| `test_badge_type_resource_returns_translation_keys_and_icon_key` | `BadgeTypeResource` retorna `label_key`, `description_key` e `icon` como contrato da API |
+| `test_catalog_services_can_create_update_list_and_delete_basic_entities` | Services basicos executam CRUD de `Category`, `Position`, `Formation`, `StaffRole` e `BadgeType` |
+| `test_sport_mode_service_can_create_update_and_sync_catalog_links` | `SportModeService` cria modalidade, sincroniza pivots e atualiza/remover corretamente |
 
 ---
 

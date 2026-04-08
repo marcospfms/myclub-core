@@ -14,7 +14,7 @@ class FormationSeeder extends Seeder
     {
         $now = now();
 
-        DB::table('formations')->insert([
+        DB::table('formations')->upsert([
             ['key' => '4-4-2', 'name' => '4-4-2', 'created_at' => $now, 'updated_at' => $now],
             ['key' => '4-3-3', 'name' => '4-3-3', 'created_at' => $now, 'updated_at' => $now],
             ['key' => '4-5-1', 'name' => '4-5-1', 'created_at' => $now, 'updated_at' => $now],
@@ -23,6 +23,6 @@ class FormationSeeder extends Seeder
             ['key' => '3-6-1', 'name' => '3-6-1', 'created_at' => $now, 'updated_at' => $now],
             ['key' => '1-2-1', 'name' => '1-2-1', 'created_at' => $now, 'updated_at' => $now],
             ['key' => '2-2-1', 'name' => '2-2-1', 'created_at' => $now, 'updated_at' => $now],
-        ]);
+        ], ['key'], ['name', 'updated_at']);
     }
 }

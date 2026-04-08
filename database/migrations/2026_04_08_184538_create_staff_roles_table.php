@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('staff_roles', function (Blueprint $table) {
             $table->id();
             $table->string('name', 60)->unique();
+            $table->string('label_key', 150);
+            $table->string('description_key', 150)->nullable();
+            $table->string('icon', 100)->nullable();
             $table->timestamps();
         });
     }
