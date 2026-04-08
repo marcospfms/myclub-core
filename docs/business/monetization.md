@@ -56,12 +56,13 @@ O modelo se encaixa bem porque o MyClub já possui uma separação natural entre
 
 **Estrutura sugerida de planos:**
 
-| Plano         | Preço estimado (BR) | Limites / Features                                                                                 |
-| ------------- | ------------------- | -------------------------------------------------------------------------------------------------- |
-| **Free**      | R$ 0                | 1 time, até 20 jogadores, campeonatos simples (league), amistosos ilimitados, sem badges           |
-| **Club**      | R$ 29–49 / mês      | Times ilimitados, todos os formatos de campeonato, rankings, badges, histórico completo            |
-| **Liga**      | R$ 89–149 / mês     | Multi-time, gestão de campeonatos públicos, painel de árbitros, API de leitura, logo personalizado |
-| **Federação** | Sob consulta        | White-label, SLA, integração com sistemas externos, suporte dedicado                               |
+| Plano           | Preço estimado (BR) | Limites / Features                                                                                          |
+| --------------- | ------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Free**        | R$ 0                | 1 time, até 20 jogadores, campeonatos simples (league), amistosos ilimitados                                |
+| **Player Pro**  | A definir           | Destaque em rankings públicos, cartão exportável, URL amigável, gráficos de evolução, badge "Player Pro"    |
+| **Club**        | R$ 29–49 / mês      | Times ilimitados, todos os formatos de campeonato, rankings, histórico completo, sem anúncios               |
+| **Liga**        | R$ 89–149 / mês     | Multi-time, gestão de campeonatos públicos, painel de árbitros, API de leitura, logo personalizado          |
+| **Federação**   | Sob consulta        | White-label, SLA, integração com sistemas externos, suporte dedicado                                        |
 
 > Preços calibrados para a realidade do mercado de futebol amador brasileiro; revisáveis com tração.
 
@@ -138,26 +139,47 @@ Este é potencialmente o modelo com **maior fit cultural** para o Brasil. O vín
 
 ---
 
-### 2.4 Perfil Premium do Jogador
+### 2.4 Player Pro (Plano do Jogador)
 
-**Como funciona:** o próprio jogador paga para "turbinar" seu perfil — mais estatísticas exibidas, histórico completo, link público compartilhável, cartão digital de atleta, destaque em rankings.
+**Como funciona:** o próprio jogador paga um valor de baixo custo para ampliar sua visibilidade pública na plataforma. Não compra posição no ranking orgânico — compra destaque de identidade e ferramentas de apresentação pessoal.
 
-**Referências:** LinkedIn Premium segmentado para atletas amadores. Não há concorrente direto no nicho futebol amador BR.
+**Referências:** não há concorrente direto no nicho futebol amador BR. O modelo mais próximo é o LinkedIn Premium adaptado para atletas amadores.
 
 **Adequação ao MyClub:** ★★★☆☆
 
-Menor potencial de receita no curto prazo, pois o jogador amador raramente paga por visibilidade. Porém, conforme a base cresce e o histórico de badges/estatísticas se torna um "currículo esportivo", o valor percebido aumenta.
+Menor potencial de receita absoluta no curto prazo, mas alta relevância estratégica: é o único plano que monetiza diretamente o jogador, o usuário mais numeroso na plataforma. Conforme o perfil público se torna um "currículo esportivo" reconhecido, a proposta de valor cresce organicamente.
+
+**Features do Player Pro:**
+
+| Feature | Descrição |
+| --- | --- |
+| Destaque em rankings públicos | Card diferenciado + seção "Destaques" antes da tabela orgânica, claramente rotulada |
+| Cartão digital exportável em alta resolução | Compartilhável em WhatsApp e Instagram Stories |
+| URL amigável de perfil | `myclub.com.br/@nome` — identidade fácil de compartilhar |
+| Gráficos de evolução de desempenho | Gols, assistências e participações por temporada |
+| Comparativo percentual por posição | "Você está entre os top 10% dos MEIAs da sua cidade" |
+| Badge "Player Pro" permanente | Sinaliza comprometimento com o esporte no perfil público |
+
+> **Importante:** badges conquistados por performance (artilheiro, bola de ouro etc.) são **sempre gratuitos** — são prêmios, não features. O Player Pro não afeta a concessão ou visibilidade de badges de performance. O badge "Player Pro" é um distintivo de assinatura, separado dos badges de conquistas.
+
+**Relação com outros planos:**
+
+- Player Pro e Club são **ortogonais**: um jogador pode assinar Player Pro individualmente, mesmo que o time onde joga esteja no plano Free
+- Um dono de time no plano Free que assina Player Pro continua com o limite de 1 time — o Player Pro afeta apenas o perfil individual do atleta
+- O plano Club cobre o contexto gerencial (time, elenco, campeonatos); o Player Pro cobre o perfil pessoal do atleta
 
 **Prós:**
 
 - Monetiza diretamente o usuário mais engajado (o jogador que quer se destacar)
-- Baixo custo de implementação (extensão das features de profile já planejadas)
+- Ticket acessível para o público-alvo (futebol amador é sensível a preço)
+- Baixo custo de implementação (extensão das features de perfil já planejadas)
 - Pode crescer organicamente se o perfil virar referência para captação de jogadores
+- Não cria injustiça percebida: rankings orgânicos permanecem intactos
 
 **Contras:**
 
-- Ticket baixo (R$ 9–19/mês)
-- Difícil de justificar valor sem uma comunidade grande já formada
+- Ticket baixo — receita unitária pequena, requer volume
+- Difícil de justificar valor sem uma base de rankings públicos já consolidada
 
 ---
 
@@ -266,7 +288,7 @@ Funciona bem para projetos genuinamente open-source com comunidade de desenvolve
 | Patrocínio local integrado    | ★★★★★             | ★★★☆☆ (média)         | ★★★★★             | v2                          |
 | White-label / API             | ★★★★★             | ★★★★☆ (alta)          | ★★★★☆             | v3                          |
 | Taxa sobre transação          | ★★★★☆             | ★★★★☆ (alta)          | ★★★☆☆             | v3                          |
-| Perfil premium do jogador     | ★★☆☆☆             | ★☆☆☆☆ (baixa)         | ★★★☆☆             | v2                          |
+| Player Pro (plano do jogador)  | ★★☆☆☆             | ★☆☆☆☆ (baixa)         | ★★★☆☆             | v2                          |
 | AdSense (placement cirúrgico) | ★★☆☆☆             | ★☆☆☆☆ (mínima)        | ★★☆☆☆             | v1 apenas — transição em v2 |
 | Donates                       | ★☆☆☆☆             | ★☆☆☆☆ (mínima)        | ★☆☆☆☆             | Não recomendar              |
 
@@ -315,11 +337,13 @@ Freemium SaaS (base)  +  Patrocínio local (amplificador)  +  White-label (topo 
 
 - Lançar o plano Club (R$ 29–49/mês) com features que os super-usuários já usam e valorizam:
     - Rankings detalhados
-    - Badges e premiações de campeonato
     - Histórico completo de estatísticas
     - Campeonatos multi-fase (knockout, cup)
+    - Sem anúncios
+- Lançar o **Player Pro** com preço a definir (~R$ 3,90–9,90/mês): destaque em rankings, cartão exportável, URL amigável, gráficos de evolução
 - Criar um módulo de patrocínio simples: upload de logo, escolha do time/campeonato, pagamento via PIX/cartão
-- Ativar o perfil premium do jogador como experimento (R$ 9–14/mês)
+
+> **Nota sobre badges:** badges de performance são concedidos automaticamente ao encerrar campeonatos e são sempre visíveis para qualquer jogador, em qualquer plano. Nunca são feature paga.
 
 **Meta:** 5% dos times convertidos para pago, 10–20 patrocinadores locais ativos.
 

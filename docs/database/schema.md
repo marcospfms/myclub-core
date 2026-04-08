@@ -157,6 +157,25 @@ erDiagram
 
 ---
 
+### Sobreposição de papéis
+
+No MyClub, os perfis `player` e `staff_member` são extensões opcionais de `users`, e `teams.owner_id` é uma FK direta para `users`. Isso significa que um único usuário pode acumular qualquer combinação dessas relações simultaneamente:
+
+| Relação | Tabela criada | O que representa |
+| --- | --- | --- |
+| Usuário cadastrado | `users` | conta base de acesso |
+| Preenche dados esportivos | `players` | atleta com perfil de jogador |
+| Cria um time | `teams.owner_id` → `users.id` | responsável/gestor do time |
+| É adicionado à comissão técnica | `staff_members` + `team_staff` | membro da comissão de um time |
+
+**Um jogador que cria seu próprio racha** tem simultaneamente `players` e `teams.owner_id` apontando para o mesmo `users.id` — esse é o cenário mais comum no futebol amador e foi deliberadamente projetado assim.
+
+Não existe um campo `users.role` granular para distinguir "jogador" de "gestor de time". A presença ou ausência dos registros nas tabelas relacionadas (`players`, `teams`, `staff_members`) é o que define o contexto de cada usuário na plataforma.
+
+> A visão de produto que descreve cada persona e o impacto na navegação está em `docs/product/user-personas.md`.
+
+---
+
 ## 2. Configurações Esportivas
 
 Catálogos de suporte que definem o vocabulário esportivo do sistema. São tabelas de baixa volatilidade, gerenciadas pela operação interna.
