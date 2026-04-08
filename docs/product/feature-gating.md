@@ -2,13 +2,13 @@
 
 ## Planos existentes
 
-| Plano | Público-alvo | Preço estimado |
-| --- | --- | --- |
-| **Free** | Qualquer usuário | R$ 0 |
-| **Player Pro** | Jogador que quer visibilidade pública | A definir |
-| **Club** | Gestor de time | R$ 29–49/mês |
-| **Liga** | Organizador de campeonatos regionais | R$ 89–149/mês |
-| **Federação** | Federações e ligas organizadas | Sob consulta |
+| Plano          | Público-alvo                          | Preço estimado |
+| -------------- | ------------------------------------- | -------------- |
+| **Free**       | Qualquer usuário                      | R$ 0           |
+| **Player Pro** | Jogador que quer visibilidade pública | R$ 3,90/mês    |
+| **Club**       | Gestor de time                        | R$ 29–49/mês   |
+| **Liga**       | Organizador de campeonatos regionais  | R$ 89–149/mês  |
+| **Federação**  | Federações e ligas organizadas        | Sob consulta   |
 
 > **Progressão inclusiva:** Club inclui todas as features do Player Pro. Liga inclui tudo do Club. Quem paga Club ou Liga não precisa assinar o Player Pro separadamente — os benefícios de perfil já estão embutidos. O Player Pro existe para jogadores que querem os benefícios de visibilidade individual sem nenhuma necessidade de gestão de time.
 
@@ -18,19 +18,19 @@
 
 ### Identidade e Perfil
 
-| Feature | Free | Player Pro | Club | Liga |
-| --- | --- | --- | --- | --- |
-| Criar conta | ✅ | ✅ | ✅ | ✅ |
-| Preencher perfil de jogador | ✅ | ✅ | ✅ | ✅ |
-| Foto de perfil (avatar) | ✅ | ✅ | ✅ | ✅ |
-| Perfil público compartilhável | ✅ | ✅ | ✅ | ✅ |
-| Cartão digital básico | ✅ | ✅ | ✅ | ✅ |
-| URL amigável `myclub.com.br/@nome` | ❌ | ✅ | ✅ | ✅ |
-| Cartão digital exportável em alta resolução | ❌ | ✅ | ✅ | ✅ |
-| Destaque visual em rankings públicos | ❌ | ✅ | ✅ | ✅ |
-| Badge "Player Pro" permanente no perfil | ❌ | ✅ | ✅ | ✅ |
-| Gráficos de evolução de desempenho por temporada | ❌ | ❌ | ❌ | ❌ ¹ |
-| Comparativo percentual por posição e modalidade | ❌ | ❌ | ❌ | ❌ ¹ |
+| Feature                                          | Free | Player Pro | Club | Liga |
+| ------------------------------------------------ | ---- | ---------- | ---- | ---- |
+| Criar conta                                      | ✅   | ✅         | ✅   | ✅   |
+| Preencher perfil de jogador                      | ✅   | ✅         | ✅   | ✅   |
+| Foto de perfil (avatar)                          | ✅   | ✅         | ✅   | ✅   |
+| Perfil público compartilhável                    | ✅   | ✅         | ✅   | ✅   |
+| Cartão digital básico                            | ✅   | ✅         | ✅   | ✅   |
+| URL amigável `myclub.com.br/@nome`               | ❌   | ✅         | ✅   | ✅   |
+| Cartão digital exportável em alta resolução      | ❌   | ✅         | ✅   | ✅   |
+| Destaque visual em rankings públicos             | ❌   | ✅         | ✅   | ✅   |
+| Badge "Player Pro" permanente no perfil          | ❌   | ✅         | ✅   | ✅   |
+| Gráficos de evolução de desempenho por temporada | ❌   | ❌         | ❌   | ❌ ¹ |
+| Comparativo percentual por posição e modalidade  | ❌   | ❌         | ❌   | ❌ ¹ |
 
 > ¹ Features de alta complexidade analítica — previstas apenas para o tier Federação (fase 3).
 
@@ -38,11 +38,11 @@
 
 ### Badges (por performance)
 
-| Feature | Free | Player Pro | Club | Liga |
-| --- | --- | --- | --- | --- |
-| Receber badges por performance | ✅ | ✅ | ✅ | ✅ |
-| Visualizar badges no próprio perfil | ✅ | ✅ | ✅ | ✅ |
-| Badges visíveis no perfil público | ✅ | ✅ | ✅ | ✅ |
+| Feature                             | Free | Player Pro | Club | Liga |
+| ----------------------------------- | ---- | ---------- | ---- | ---- |
+| Receber badges por performance      | ✅   | ✅         | ✅   | ✅   |
+| Visualizar badges no próprio perfil | ✅   | ✅         | ✅   | ✅   |
+| Badges visíveis no perfil público   | ✅   | ✅         | ✅   | ✅   |
 
 > **Regra imutável:** badges são prêmios de performance. Nunca são bloqueados por plano. Quem ganhou, tem — independente de qualquer assinatura.
 
@@ -50,60 +50,60 @@
 
 ### Times
 
-| Feature | Free | Player Pro | Club | Liga |
-| --- | --- | --- | --- | --- |
-| Participar de times como jogador | ✅ | ✅ | ✅ | ✅ |
-| Criar times | ✅ (1 time) | — | ✅ (ilimitado) | ✅ |
-| Editar informações do time | ✅ | — | ✅ | ✅ |
-| Upload de escudo do time | ✅ | — | ✅ | ✅ |
-| Gerenciar elenco (adicionar/remover jogadores) | ✅ | — | ✅ | ✅ |
-| Gerenciar comissão técnica | ✅ | — | ✅ | ✅ |
-| Logo personalizado do time (marca própria) | ❌ | — | ✅ | ✅ |
+| Feature                                        | Free        | Player Pro | Club           | Liga |
+| ---------------------------------------------- | ----------- | ---------- | -------------- | ---- |
+| Participar de times como jogador               | ✅          | ✅         | ✅             | ✅   |
+| Criar times                                    | ✅ (1 time) | —          | ✅ (ilimitado) | ✅   |
+| Editar informações do time                     | ✅          | —          | ✅             | ✅   |
+| Upload de escudo do time                       | ✅          | —          | ✅             | ✅   |
+| Gerenciar elenco (adicionar/remover jogadores) | ✅          | —          | ✅             | ✅   |
+| Gerenciar comissão técnica                     | ✅          | —          | ✅             | ✅   |
+| Logo personalizado do time (marca própria)     | ❌          | —          | ✅             | ✅   |
 
 ---
 
 ### Amistosos
 
-| Feature | Free | Player Pro | Club | Liga |
-| --- | --- | --- | --- | --- |
-| Criar amistosos | ✅ (ilimitado) | — | ✅ | ✅ |
-| Confirmar/recusar amistoso | ✅ | — | ✅ | ✅ |
-| Registrar resultado e estatísticas | ✅ | — | ✅ | ✅ |
+| Feature                            | Free           | Player Pro | Club | Liga |
+| ---------------------------------- | -------------- | ---------- | ---- | ---- |
+| Criar amistosos                    | ✅ (ilimitado) | —          | ✅   | ✅   |
+| Confirmar/recusar amistoso         | ✅             | —          | ✅   | ✅   |
+| Registrar resultado e estatísticas | ✅             | —          | ✅   | ✅   |
 
 ---
 
 ### Campeonatos
 
-| Feature | Free | Player Pro | Club | Liga |
-| --- | --- | --- | --- | --- |
-| Participar de campeonatos como jogador | ✅ | ✅ | ✅ | ✅ |
-| Participar de campeonatos como time | ✅ | — | ✅ | ✅ |
-| Criar campeonato formato `league` (pontos corridos) | ✅ (1 ativo) | — | ✅ (ilimitado) | ✅ |
-| Criar campeonatos multi-fase (`knockout`, `cup`) | ❌ | — | ✅ | ✅ |
-| Campeonatos com múltiplas rodadas | ❌ | — | ✅ | ✅ |
-| Campeonatos públicos (visíveis externamente) | ❌ | — | ❌ | ✅ |
+| Feature                                             | Free         | Player Pro | Club           | Liga |
+| --------------------------------------------------- | ------------ | ---------- | -------------- | ---- |
+| Participar de campeonatos como jogador              | ✅           | ✅         | ✅             | ✅   |
+| Participar de campeonatos como time                 | ✅           | —          | ✅             | ✅   |
+| Criar campeonato formato `league` (pontos corridos) | ✅ (1 ativo) | —          | ✅ (ilimitado) | ✅   |
+| Criar campeonatos multi-fase (`knockout`, `cup`)    | ❌           | —          | ✅             | ✅   |
+| Campeonatos com múltiplas rodadas                   | ❌           | —          | ✅             | ✅   |
+| Campeonatos públicos (visíveis externamente)        | ❌           | —          | ❌             | ✅   |
 
 ---
 
 ### Rankings e Estatísticas
 
-| Feature | Free | Player Pro | Club | Liga |
-| --- | --- | --- | --- | --- |
-| Ver ranking do próprio time | ✅ | — | ✅ | ✅ |
-| Ver ranking de campeonatos em que participa | ✅ | ✅ | ✅ | ✅ |
-| Ver rankings públicos da plataforma | ✅ | ✅ | ✅ | ✅ |
-| Destaque no ranking (card diferenciado) | ❌ | ✅ | ✅ | ✅ |
-| Histórico completo de estatísticas por temporada | básico | completo | completo | completo |
+| Feature                                          | Free        | Player Pro | Club     | Liga     |
+| ------------------------------------------------ | ----------- | ---------- | -------- | -------- |
+| Ver ranking do próprio time                      | ✅          | —          | ✅       | ✅       |
+| Ver ranking de campeonatos em que participa      | ✅          | ✅         | ✅       | ✅       |
+| Ver rankings públicos da plataforma              | ✅          | ✅         | ✅       | ✅       |
+| Destaque no ranking (card diferenciado)          | ❌          | ✅         | ✅       | ✅       |
+| Histórico completo de estatísticas por temporada | ✅ completo | completo   | completo | completo |
 
 ---
 
 ### Plataforma
 
-| Feature | Free | Player Pro | Club | Liga |
-| --- | --- | --- | --- | --- |
-| Sem anúncios AdSense | ❌ | ✅ | ✅ | ✅ |
-| API de leitura | ❌ | — | ❌ | ✅ |
-| White-label / integração externa | ❌ | — | ❌ | Federação |
+| Feature                          | Free | Player Pro | Club | Liga      |
+| -------------------------------- | ---- | ---------- | ---- | --------- |
+| Sem anúncios AdSense             | ❌   | ✅         | ✅   | ✅        |
+| API de leitura                   | ❌   | —          | ❌   | ✅        |
+| White-label / integração externa | ❌   | —          | ❌   | Federação |
 
 ---
 
@@ -117,8 +117,10 @@
 
 ---
 
-## Decisões em aberto
+## Decisões resolvidas
 
-- Preço final do Player Pro (estimativa: R$ 3,90–9,90/mês)
-- Limite de campeonatos ativos simultâneos em planos Club e Liga (atualmente sem definição)
-- Critério exato de "histórico básico" vs "histórico completo" no plano Free (quais campos/períodos são visíveis)
+- **Preço Player Pro:** R$ 3,90/mês — valor simbólico para remover fricção de adoção sem desvalorizar o plano.
+- **Limite de campeonatos Free:** 1 campeonato ativo simultâneo; Club e Liga sem limite.
+- **Histórico Free:** completo — o histórico de estatísticas não é gated. Todos os usuários veem o histórico completo de temporadas.
+- **Busca de jogadores:** open — qualquer visitante (sem login) pode buscar jogadores descobríveis. Ver `docs/product/user-personas.md` §7.
+- **Escopo da comissão técnica:** somente leitura no curto prazo. Em fase futura, o papel de técnico poderá definir escalação (titular/reserva) para partidas de campeonato e amistosos.

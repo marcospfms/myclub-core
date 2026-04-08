@@ -80,8 +80,10 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 | Adicionar membro à comissão | Dono do time (`teams.owner_id`) |
 | Remover membro da comissão | Dono do time ou o próprio membro |
 | Ver escalação e elenco | Todos os membros da comissão vinculados ao time |
-| Editar escalação | Somente dono do time (`teams.owner_id`) |
+| Editar escalação (titular/reserva) | **Somente dono do time** (`teams.owner_id`) no curto prazo |
 | Registrar resultado de partida | Somente dono do time (`teams.owner_id`) |
+
+> **Evolução prevista:** em fase futura, o papel `head_coach` (técnico principal, via `staff_roles`) poderá definir a escalação de titulares e reservas para partidas de campeonato e amistosos, sem precisar ser dono do time. A tabela `team_staff` já suporta essa expansão sem mudança de schema.
 
 ---
 
@@ -107,13 +109,10 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 
 ## Campos a adicionar ao schema
 
-| Campo | Tabela | Tipo | Motivo |
-| --- | --- | --- | --- |
-| `created_by` | `championships` | bigint FK → `users` | Necessário para autorizar operações de gestão |
-| `is_public` | `friendly_matches` | boolean | Desafiante define se o amistoso é visível publicamente |
+> Resolvidos — `created_by` e `is_public` já adicionados ao schema. Ver `docs/database/schema.md`.
 
 ---
 
-## Decisões em aberto
+## Decisões resolvidas
 
-- **Escopo de ação da comissão técnica:** membros do staff têm acesso de leitura ao elenco e escalação. Edição de escalação e registro de resultados são exclusivos do dono do time — não há diferença por papel interno da comissão.
+- **Escopo da comissão técnica:** somente leitura (elenco e escalação) no curto prazo. Edição de escalação e registro de resultados são exclusivos do dono do time. Em fase futura o `head_coach` poderá editar escalação.
