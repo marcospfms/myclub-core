@@ -12,9 +12,9 @@
 | Item                                                       | Status         |
 | ---------------------------------------------------------- | -------------- |
 | Estrutura base (Laravel 13, Sanctum, Fortify, Inertia+Vue) | ✅ Concluído   |
-| Migrations — 6 tabelas de catálogo                         | ⬜ Pendente    |
-| Migrations — 3 tabelas pivô de catálogo                    | ⬜ Pendente    |
-| Seeders com dados de referência                            | ⬜ Pendente    |
+| Migrations — 6 tabelas de catálogo                         | ✅ Concluído   |
+| Migrations — 3 tabelas pivô de catálogo                    | ✅ Concluído   |
+| Seeders com dados de referência                            | ✅ Concluído   |
 | Models                                                     | ⬜ Pendente    |
 | Services                                                   | ⬜ Pendente    |
 | Form Requests                                              | ⬜ Pendente    |
@@ -1292,27 +1292,27 @@ Marcar ao concluir cada item. A fase só está concluída quando todos estiverem
 
 ### Banco
 
-- [ ] Migration `sport_modes` criada e executada
-- [ ] Migration `categories` criada e executada
-- [ ] Migration `positions` criada e executada
-- [ ] Migration `formations` criada e executada
-- [ ] Migration `staff_roles` criada e executada
-- [ ] Migration `badge_types` criada e executada
-- [ ] Migration `sport_mode_category` criada e executada
-- [ ] Migration `sport_mode_formation` criada e executada
-- [ ] Migration `sport_mode_position` criada e executada
+- [x] Migration `sport_modes` criada e validada em teste
+- [x] Migration `categories` criada e validada em teste
+- [x] Migration `positions` criada e validada em teste
+- [x] Migration `formations` criada e validada em teste
+- [x] Migration `staff_roles` criada e validada em teste
+- [x] Migration `badge_types` criada e validada em teste
+- [x] Migration `sport_mode_category` criada e validada em teste
+- [x] Migration `sport_mode_formation` criada e validada em teste
+- [x] Migration `sport_mode_position` criada e validada em teste
 
 ### Seeders
 
-- [ ] `SportModeSeeder` com 4 dados
-- [ ] `CategorySeeder` com 4 dados
-- [ ] `PositionSeeder` com 17 posições
-- [ ] `FormationSeeder` com 8 formações
-- [ ] `StaffRoleSeeder` com 9 funções
-- [ ] `BadgeTypeSeeder` com 14 tipos
-- [ ] `SportModeCategorySeeder` associando todas
-- [ ] `SportModeFormationSeeder` associando por tipo
-- [ ] `SportModePositionSeeder` associando por tipo
+- [x] `SportModeSeeder` com 4 dados
+- [x] `CategorySeeder` com 4 dados
+- [x] `PositionSeeder` com 17 posições
+- [x] `FormationSeeder` com 8 formações
+- [x] `StaffRoleSeeder` com 9 funções
+- [x] `BadgeTypeSeeder` com 14 tipos
+- [x] `SportModeCategorySeeder` associando todas
+- [x] `SportModeFormationSeeder` associando por tipo
+- [x] `SportModePositionSeeder` associando por tipo
 
 ### Backend
 
@@ -1336,6 +1336,7 @@ Marcar ao concluir cada item. A fase só está concluída quando todos estiverem
 
 ### Testes
 
+- [x] Teste de fundação de catálogo criado (`CatalogSetupTest`)
 - [ ] Factories criadas (6)
 - [ ] Feature tests admin: SportMode, Category, Position, Formation, StaffRole, BadgeType
 - [ ] Feature tests API: `CatalogApiTest`
