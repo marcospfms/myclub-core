@@ -51,18 +51,36 @@ Base de acesso do sistema. Usuários podem ter perfis especializados — jogador
 | `usuvalidate` | `email_verified_at` | timestamp    | confirmação de e-mail                    |
 | `ususenha`    | `password`          | varchar(100) | hash                                     |
 | `usuimg`      | `avatar`            | varchar(100) | imagem do perfil                         |
+| —             | `last_login_at`     | timestamp    | nullable — atualizado a cada login       |
 
 #### `jogador` → `players`
 
 | Campo legado        | Campo novo   | Tipo        | Observação                                   |
 | ------------------- | ------------ | ----------- | -------------------------------------------- |
-| `jog_usucodigo`     | `user_id`    | bigint      | PK + FK → `users`                            |
-| `jogcpf`            | `cpf`        | varchar(11) | único, **nullable** — preenchimento opcional |
-| `jogrg`             | `rg`         | varchar(20) | **nullable**                                 |
-| `jogdatanascimento` | `birth_date` | date        | **nullable**                                 |
-| `jogtelefone`       | `phone`      | varchar(15) | **nullable**                                 |
+| `jog_usucodigo`     | `user_id`         | bigint       | PK + FK → `users`                                         |
+| `jogcpf`            | `cpf`             | varchar(11)  | único, **nullable** — preenchimento opcional              |
+| `jogrg`             | `rg`              | varchar(20)  | **nullable**                                              |
+| `jogdatanascimento` | `birth_date`      | date         | **nullable**                                              |
+| `jogtelefone`       | `phone`           | varchar(15)  | **nullable**                                              |
+| —                   | `is_discoverable` | boolean      | default `false` — aparece em buscas de times              |
+| —                   | `history_public`  | boolean      | default `false` — histórico visível para outros times     |
+| —                   | `city`            | varchar(100) | **nullable**                                              |
+| —                   | `state`           | varchar(60)  | **nullable**                                              |
+| —                   | `country`         | char(2)      | código ISO 3166-1 (ex: `BR`) — **nullable**               |
 
 > Campos de endereço (`address`, `address_number`, `zip_code`, `address_complement`) foram removidos. Não são necessários para operação esportiva e amarrariam desnecessariamente o cadastro.
+
+#### `player_sport_preferences` (novo — preferências de modalidade para descoberta)
+
+| Campo | Tipo | Observação |
+| --- | --- | --- |
+| `id` | bigint | PK |
+| `player_id` | bigint FK | FK → `players` |
+| `sport_mode_id` | bigint FK | FK → `sport_modes` |
+| `position_id` | bigint FK | FK → `positions` |
+| `available_for_invite` | boolean | default `false` — aberto a convites nesta modalidade |
+
+> Unicidade composta: `(player_id, sport_mode_id)`. Um jogador tem no máximo uma posição declarada por modalidade.
 
 #### `tecnico` → `staff_members` + `staff_roles` (Comissão Técnica)
 
@@ -318,7 +336,8 @@ Gerencia os times, sua atuação por modalidade e o vínculo dos jogadores com p
 | `jt_tmcodigo`      | `team_sport_mode_id` | bigint FK | FK → `team_sport_modes`  |
 | `jt_jog_usucodigo` | `player_id`          | bigint FK | FK → `players`           |
 | `jt_poscodigo`     | `position_id`        | bigint FK | FK → `positions`         |
-| `jttitular`        | `is_starter`         | boolean   | `S`/`N` → `true`/`false` |
+| `jttitular`        | `is_starter`         | boolean   | `S`/`N` → `true`/`false`                                    |
+| —                  | `left_at`            | timestamp | nullable — `null` = ativo; preenchido = saiu do time        |
 
 ### Diagrama
 
@@ -400,6 +419,7 @@ Organiza campeonatos, suas modalidades e os times participantes.
 | —                            | `championship_matches`          | Partidas de um campeonato                               |
 | —                            | `championship_match_highlights` | Estatísticas individuais por partida de campeonato      |
 | —                            | `championship_awards`           | Prêmios e títulos individuais ao final de um campeonato |
+| —                            | `championship_team_players`     | Jogadores selecionados por cada time na inscrição       |
 
 ### Campos
 
@@ -414,6 +434,9 @@ Organiza campeonatos, suas modalidades e os times participantes.
 | `campdatainicio` | `starts_at`   | date         |                                               |
 | `campdatafim`    | `ends_at`     | date         |                                               |
 | —                | `format`      | enum         | `league` / `knockout` / `cup` — ver §Formatos |
+| —                | `status`      | enum         | `draft` / `enrollment` / `active` / `finished` / `archived` / `cancelled` |
+| —                | `created_by`  | bigint FK    | FK → `users` — organizador do campeonato      |
+| —                | `max_players` | int          | máximo de jogadores por time na disputa        |
 
 #### `campeonato_modalidade` → `championship_sport_modes`
 
@@ -441,6 +464,7 @@ Define as fases de um campeonato. Um campeonato pode ter uma ou mais fases seque
 | `type`            | enum        | `group_stage` / `knockout`               |
 | `phase_order`     | int         | ordem de execução da fase (1, 2, 3…)     |
 | `legs`            | int         | 1 = jogo único, 2 = ida e volta          |
+| `advances_count`  | int         | classificados por grupo que avançam à próxima fase |
 
 #### `championship_groups` (novo — somente fases `group_stage`)
 
@@ -520,6 +544,19 @@ Registra o jogador que ganhou cada prêmio ao encerrar o campeonato. Os prêmios
 | `best_assist`     | Garçom         | Maior soma de `assists` em `championship_match_highlights` |
 | `best_goalkeeper` | Melhor Goleiro | Goleiro da equipe com menor média de gols sofridos         |
 | `fair_play`       | Fair Play      | Jogador com 0 cartões em todo o campeonato                 |
+
+#### `championship_team_players` (novo — jogadores por time em cada campeonato)
+
+Registra quais jogadores do elenco cada time levou para disputar o campeonato. Definido pelo dono do time no momento da inscrição.
+
+| Campo | Tipo | Observação |
+| --- | --- | --- |
+| `id` | bigint | PK |
+| `championship_id` | bigint FK | FK → `championships` |
+| `team_sport_mode_id` | bigint FK | FK → `team_sport_modes` |
+| `player_membership_id` | bigint FK | FK → `player_memberships` |
+
+> Unicidade composta: `(championship_id, team_sport_mode_id, player_membership_id)`. Apenas jogadores presentes nesta tabela podem ser escalados em partidas do campeonato.
 
 ### Formatos e mínimo de equipes
 
@@ -662,7 +699,10 @@ Registra amistosos entre equipes e as estatísticas individuais dos jogadores em
 | `amigol_visitante`       | `away_goals`   | int          | nullable                                              |
 | `amiobs_casa`            | `home_notes`   | text         |                                                       |
 | `amiobs_visitante`       | `away_notes`   | text         |                                                       |
-| `amiconfimacao`          | `confirmation` | enum         | `pending` / `confirmed` / `rejected`                  |
+| `amiconfimacao`          | `confirmation`          | enum         | `pending` / `confirmed` / `rejected`                  |
+| —                        | `is_public`             | boolean      | default `false` — definido pelo desafiante             |
+| —                        | `result_status`         | enum         | `none` / `pending` / `confirmed` / `disputed`          |
+| —                        | `result_registered_by`  | bigint FK    | FK → `users` — quem registrou o placar                 |
 
 > `match_status` usa enum pois representa um ciclo de vida com múltiplos estados. Campos simples de ativo/inativo usam `boolean` (`is_active`). O mesmo padrão vale para `championship_matches.match_status`.
 
@@ -861,6 +901,7 @@ erDiagram
         timestamp email_verified_at
         varchar password
         varchar avatar
+        timestamp last_login_at
     }
     players {
         bigint user_id PK,FK
@@ -868,6 +909,11 @@ erDiagram
         varchar rg
         date birth_date
         varchar phone
+        boolean is_discoverable
+        boolean history_public
+        varchar city
+        varchar state
+        char country
     }
     staff_roles {
         bigint id PK
@@ -929,6 +975,14 @@ erDiagram
         bigint player_id FK
         bigint position_id FK
         boolean is_starter
+        timestamp left_at
+    }
+    player_sport_preferences {
+        bigint id PK
+        bigint player_id FK
+        bigint sport_mode_id FK
+        bigint position_id FK
+        boolean available_for_invite
     }
     championships {
         bigint id PK
@@ -938,6 +992,9 @@ erDiagram
         date starts_at
         date ends_at
         enum format
+        enum status
+        bigint created_by FK
+        int max_players
     }
     championship_sport_modes {
         bigint championship_id FK
@@ -947,6 +1004,12 @@ erDiagram
         bigint championship_id FK
         bigint team_sport_mode_id FK
     }
+    championship_team_players {
+        bigint id PK
+        bigint championship_id FK
+        bigint team_sport_mode_id FK
+        bigint player_membership_id FK
+    }
     championship_phases {
         bigint id PK
         bigint championship_id FK
@@ -954,6 +1017,7 @@ erDiagram
         enum type
         int phase_order
         int legs
+        int advances_count
     }
     championship_groups {
         bigint id PK
@@ -1011,6 +1075,9 @@ erDiagram
         text home_notes
         text away_notes
         enum confirmation
+        boolean is_public
+        enum result_status
+        bigint result_registered_by FK
     }
     performance_highlights {
         bigint player_membership_id FK
@@ -1092,6 +1159,13 @@ erDiagram
     badge_types ||--o{ player_badges : "typed as"
     championships ||--o{ player_badges : "origin"
     team_sport_modes ||--o{ team_stats_cache : "snapshot"
+    users ||--o{ championships : "organizes"
+    players ||--o{ player_sport_preferences : "prefers"
+    sport_modes ||--o{ player_sport_preferences : ""
+    positions ||--o{ player_sport_preferences : ""
+    championships ||--o{ championship_team_players : "selects"
+    team_sport_modes ||--o{ championship_team_players : ""
+    player_memberships ||--o{ championship_team_players : "selected in"
 ```
 
 ---
@@ -1110,8 +1184,8 @@ O legado usa PKs compostas em várias tabelas, mas adiciona surrogate keys únic
 
 | Tipo                 | Tabelas                                                                                                                                                                                                                                                                                                              |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Pivot puro           | `sport_mode_category`, `sport_mode_formation`, `sport_mode_position`, `championship_sport_modes`, `championship_group_entries`                                                                                                                                                                                       |
-| Entidade associativa | `team_sport_modes`, `team_staff`, `player_memberships`, `championship_teams`, `championship_phases`, `championship_groups`, `championship_rounds`, `championship_matches`, `championship_match_highlights`, `championship_awards`, `friendly_matches`, `performance_highlights`, `player_badges`, `team_stats_cache` |
+| Pivot puro           | `sport_mode_category`, `sport_mode_formation`, `sport_mode_position`, `championship_sport_modes`, `championship_group_entries`, `championship_team_players`                                                                                                                                                          |
+| Entidade associativa | `team_sport_modes`, `team_staff`, `player_memberships`, `player_sport_preferences`, `championship_teams`, `championship_phases`, `championship_groups`, `championship_rounds`, `championship_matches`, `championship_match_highlights`, `championship_awards`, `friendly_matches`, `performance_highlights`, `player_badges`, `team_stats_cache` |
 
 **Pivôs puros não precisam de Model Eloquent de primeira classe.** Podem ser gerenciados via `belongsToMany` com `withTimestamps()`. Criar um Model explícito para eles só se justifica quando:
 

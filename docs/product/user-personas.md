@@ -208,46 +208,83 @@ a um time pelo dono           ao elenco
 
 ### Contexto
 
-Um dos diferencias do MyClub é permitir que times encontrem jogadores por posição e proximidade geográfica. No futebol amador, a captação de atletas ainda acontece por indicação, grupos de WhatsApp e redes sociais genéricas. A plataforma pode formalizar e digitalizar esse processo.
+Um dos diferenciais do MyClub é permitir que times encontrem jogadores por posição, modalidade e localização. No futebol amador, a captação de atletas ainda acontece por indicação, grupos de WhatsApp e redes sociais genéricas. A plataforma formaliza e digitaliza esse processo.
 
 ### Modelo de descoberta
 
-O perfil de um jogador pode ser **descobrível** ou **privado**, controlado pelo próprio atleta.
+O perfil de um jogador pode ser **descobrível** ou **privado**, controlado pelo próprio atleta via `players.is_discoverable`.
 
-Quando descobrível, o jogador aparece em buscas realizadas por donos de time com os seguintes filtros:
+Para uma busca mais precisa, o jogador declara **uma ou mais preferências de modalidade** na tabela `player_sport_preferences`. Cada entrada registra:
+
+- a modalidade (`sport_mode_id`)
+- a posição que joga nela (`position_id`)
+- se está aberto a receber convites nessa modalidade (`available_for_invite`)
+
+**Exemplo:** João pode declarar que joga como MEIA no Futebol de Campo (aberto a convites) e como FIXO no Futsal (não aberto). Um time filtrando por MEIA / Campo o encontra; um time filtrando por FIXO / Futsal não receberá João numa lista de disponíveis.
+
+### Filtros de busca disponíveis para times
 
 | Filtro | Base de dados |
 | --- | --- |
-| **Posição** | `position_id` do último `player_membership` ativo ou declarado no perfil |
-| **Modalidade** | modalidade preferida declarada pelo jogador |
-| **Região / Cidade** | campo de localização do perfil do jogador |
-| **País** | campo de país do perfil |
-| **Disponibilidade** | flag booleana — jogador aberto a convites |
+| **Posição** | `player_sport_preferences.position_id` |
+| **Modalidade** | `player_sport_preferences.sport_mode_id` |
+| **Disponível para convite** | `player_sport_preferences.available_for_invite = true` |
+| **Cidade** | `players.city` |
+| **Estado** | `players.state` |
+| **País** | `players.country` |
+
+> Busca por proximidade via GPS não é implementada. A localização é declarada pelo próprio jogador (cidade, estado, país).
 
 ### O que o time vê no resultado da busca
 
 - Nome e foto do jogador
-- Posição e modalidade
-- Cidade / região
+- Posição e modalidade (da preferência que correspondeu ao filtro)
+- Cidade e estado
 - Badges conquistados (sempre visíveis)
-- Botão de "Convidar para o elenco"
+- Botão "Convidar para o elenco" (disponível apenas se `available_for_invite = true` para a modalidade filtrada)
 
 O histórico detalhado de estatísticas só é visível se o atleta permitir (`history_public = true`).
 
+### Ordenação dos resultados
+
+Os resultados são ordenados por **atividade na plataforma** — quem utilizou o sistema mais recentemente (`users.last_login_at`) aparece primeiro.
+
+Jogadores **Player Pro** são exibidos em destaque no início dos resultados antes da lista orgânica, de forma claramente sinalizada.
+
+### Notificações
+
+O jogador é notificado **somente quando recebe um convite** de time. Visualizações do perfil não geram notificação.
+
 ### Campos a adicionar ao schema
 
-| Campo | Tabela | Tipo | Observação |
-| --- | --- | --- | --- |
-| `is_discoverable` | `players` | boolean | default `false` — jogador aparece em buscas de times |
-| `available_for_invite` | `players` | boolean | default `false` — aberto a convites ativos |
-| `preferred_sport_mode_id` | `players` | bigint FK → `sport_modes` | modalidade preferida declarada |
-| `city` | `players` | varchar(100) | cidade do jogador |
-| `state` | `players` | varchar(60) | estado/província |
-| `country` | `players` | char(2) | código ISO 3166-1 (ex: `BR`) |
+Campos novos em `players`:
+
+| Campo | Tipo | Observação |
+| --- | --- | --- |
+| `is_discoverable` | boolean | default `false` — jogador aparece em buscas de times |
+| `history_public` | boolean | default `false` — histórico de outros times visível para quem busca |
+| `city` | varchar(100) | nullable — cidade declarada |
+| `state` | varchar(60) | nullable — estado/província |
+| `country` | char(2) | código ISO 3166-1 (ex: `BR`) — nullable |
+
+Campo novo em `users`:
+
+| Campo | Tipo | Observação |
+| --- | --- | --- |
+| `last_login_at` | timestamp | nullable — atualizado a cada login; base para ordenação na busca |
+
+Nova tabela `player_sport_preferences`:
+
+| Campo | Tipo | Observação |
+| --- | --- | --- |
+| `id` | bigint | PK |
+| `player_id` | bigint FK | FK → `players` |
+| `sport_mode_id` | bigint FK | FK → `sport_modes` |
+| `position_id` | bigint FK | FK → `positions` |
+| `available_for_invite` | boolean | default `false` — aberto a convites nesta modalidade específica |
+
+> Unicidade composta: `(player_id, sport_mode_id)` — um jogador tem no máximo uma posição declarada por modalidade.
 
 ### Decisões em aberto
 
-- **Busca por proximidade real (GPS):** usar coordenadas geográficas ou apenas cidade/estado declarado? Geolocalization exige considerações de LGPD.
 - **Visível para quem:** qualquer usuário logado pode buscar jogadores, ou apenas donos de time com plano Club+?
-- **Ordenação dos resultados:** ordem alfabética, por badges, por última atividade? Player Pro tem destaque também nessa busca?
-- **Notificação ao jogador:** quando um time visualiza o perfil dele ou envia convite, o jogador é notificado?
