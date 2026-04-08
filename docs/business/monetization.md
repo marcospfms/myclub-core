@@ -285,11 +285,11 @@ Funciona bem para projetos genuinamente open-source com comunidade de desenvolve
 | Modelo                        | Receita potencial | Complexidade de impl. | Fit com BR amador | Fase ideal                  |
 | ----------------------------- | ----------------- | --------------------- | ----------------- | --------------------------- |
 | Assinatura SaaS (Freemium)    | ★★★★☆             | ★★☆☆☆ (baixa)         | ★★★★☆             | v1 (MVP) → contínuo         |
+| AdSense (placement cirúrgico) | ★★☆☆☆             | ★☆☆☆☆ (mínima)        | ★★☆☆☆             | v1 apenas — transição em v2 |
 | Patrocínio local integrado    | ★★★★★             | ★★★☆☆ (média)         | ★★★★★             | v2                          |
+| Player Pro (plano do jogador) | ★★☆☆☆             | ★☆☆☆☆ (baixa)         | ★★★☆☆             | v2                          |
 | White-label / API             | ★★★★★             | ★★★★☆ (alta)          | ★★★★☆             | v3                          |
 | Taxa sobre transação          | ★★★★☆             | ★★★★☆ (alta)          | ★★★☆☆             | v3                          |
-| Player Pro (plano do jogador)  | ★★☆☆☆             | ★☆☆☆☆ (baixa)         | ★★★☆☆             | v2                          |
-| AdSense (placement cirúrgico) | ★★☆☆☆             | ★☆☆☆☆ (mínima)        | ★★☆☆☆             | v1 apenas — transição em v2 |
 | Donates                       | ★☆☆☆☆             | ★☆☆☆☆ (mínima)        | ★☆☆☆☆             | Não recomendar              |
 
 ---

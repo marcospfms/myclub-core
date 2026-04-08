@@ -37,7 +37,8 @@ Usuário que se cadastrou, preencheu seus dados esportivos e participa de times 
 **Perfil:**
 - Frequentemente adicionado ao elenco por um gestor de time
 - Quer ver seu histórico de jogos, estatísticas e badges
-- Pode assinar o **Player Pro** para ter destaque e visibilidade pública
+- Pode tornar seu perfil descobrível para que times o encontrem por posição e localização
+- Pode assinar o **Player Pro** para ter destaque e visibilidade pública ampliada
 
 **O que vê na plataforma:**
 - Seu perfil de jogador (posição, dados pessoais, histórico)
@@ -45,6 +46,7 @@ Usuário que se cadastrou, preencheu seus dados esportivos e participa de times 
 - Partidas agendadas e resultados
 - Seus badges conquistados
 - Ranking de times dos campeonatos em que participa
+- Convites de times para entrar no elenco
 
 **Não gerencia:**
 - Elencos
@@ -134,8 +136,6 @@ Jogador que optou pelo plano de baixo custo para ampliar sua visibilidade públi
 - Destaque visual nos rankings públicos (card diferenciado + seção "Destaques" antes da tabela orgânica)
 - Cartão digital exportável em alta resolução
 - URL amigável de perfil: `myclub.com.br/@nome`
-- Gráficos de evolução de desempenho por temporada
-- Comparativo percentual com jogadores da mesma posição e modalidade
 - Badge permanente "Player Pro" no perfil público
 
 **O que não muda:**
@@ -143,7 +143,7 @@ Jogador que optou pelo plano de baixo custo para ampliar sua visibilidade públi
 - Posição real no ranking orgânico — não é possível comprar posição
 - Acesso ao perfil público básico — esse permanece free para todos
 
-> Player Pro e plano Club são **ortogonais**: um jogador pode assinar o Player Pro individualmente, mesmo que o time onde joga esteja no plano Free.
+> **Progressão inclusiva:** quem assina Club ou Liga já tem todas as features do Player Pro embutidas — não é necessário assinar separado. O Player Pro existe como plano autônomo para jogadores que querem visibilidade sem nenhuma necessidade de gestão de time.
 
 ---
 
@@ -200,3 +200,54 @@ a um time pelo dono           ao elenco
 | Jogador em múltiplos times | `docs/product/player-membership-rules.md` |
 | Ciclo de vida de campeonatos | `docs/product/championship-lifecycle.md` |
 | Fluxo de criação de amistosos | `docs/product/friendly-match-flow.md` |
+| Perfil de descoberta de jogadores | ver seção 7 abaixo |
+
+---
+
+## 7. Perfil de descoberta de jogadores
+
+### Contexto
+
+Um dos diferencias do MyClub é permitir que times encontrem jogadores por posição e proximidade geográfica. No futebol amador, a captação de atletas ainda acontece por indicação, grupos de WhatsApp e redes sociais genéricas. A plataforma pode formalizar e digitalizar esse processo.
+
+### Modelo de descoberta
+
+O perfil de um jogador pode ser **descobrível** ou **privado**, controlado pelo próprio atleta.
+
+Quando descobrível, o jogador aparece em buscas realizadas por donos de time com os seguintes filtros:
+
+| Filtro | Base de dados |
+| --- | --- |
+| **Posição** | `position_id` do último `player_membership` ativo ou declarado no perfil |
+| **Modalidade** | modalidade preferida declarada pelo jogador |
+| **Região / Cidade** | campo de localização do perfil do jogador |
+| **País** | campo de país do perfil |
+| **Disponibilidade** | flag booleana — jogador aberto a convites |
+
+### O que o time vê no resultado da busca
+
+- Nome e foto do jogador
+- Posição e modalidade
+- Cidade / região
+- Badges conquistados (sempre visíveis)
+- Botão de "Convidar para o elenco"
+
+O histórico detalhado de estatísticas só é visível se o atleta permitir (`history_public = true`).
+
+### Campos a adicionar ao schema
+
+| Campo | Tabela | Tipo | Observação |
+| --- | --- | --- | --- |
+| `is_discoverable` | `players` | boolean | default `false` — jogador aparece em buscas de times |
+| `available_for_invite` | `players` | boolean | default `false` — aberto a convites ativos |
+| `preferred_sport_mode_id` | `players` | bigint FK → `sport_modes` | modalidade preferida declarada |
+| `city` | `players` | varchar(100) | cidade do jogador |
+| `state` | `players` | varchar(60) | estado/província |
+| `country` | `players` | char(2) | código ISO 3166-1 (ex: `BR`) |
+
+### Decisões em aberto
+
+- **Busca por proximidade real (GPS):** usar coordenadas geográficas ou apenas cidade/estado declarado? Geolocalization exige considerações de LGPD.
+- **Visível para quem:** qualquer usuário logado pode buscar jogadores, ou apenas donos de time com plano Club+?
+- **Ordenação dos resultados:** ordem alfabética, por badges, por última atividade? Player Pro tem destaque também nessa busca?
+- **Notificação ao jogador:** quando um time visualiza o perfil dele ou envia convite, o jogador é notificado?

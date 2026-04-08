@@ -21,7 +21,6 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 | Ver perfil público do time | Qualquer visitante (anônimo ou autenticado) |
 | Gerenciar elenco (adicionar/remover jogadores) | `teams.owner_id` ou `admin` |
 | Gerenciar comissão técnica | `teams.owner_id` ou `admin` |
-| Transferir ownership do time | `admin` apenas |
 
 ---
 
@@ -43,12 +42,14 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 | Ação | Quem pode |
 | --- | --- |
 | Criar (desafiar outro time) | Dono do time desafiante |
+| Remover convite pendente (sem confirmation) | Dono do time desafiante — sem manter histórico |
 | Confirmar o amistoso | Dono do time desafiado |
 | Recusar o amistoso | Dono do time desafiado |
-| Registrar resultado (`home_goals`, `away_goals`) | Dono de qualquer um dos dois times |
-| Registrar estatísticas individuais | Dono de qualquer um dos dois times |
-| Encerrar amistoso (`completed`) | Dono de qualquer um dos dois times |
-| Cancelar amistoso (`cancelled`) | Dono do time criador ou `admin` |
+| Definir visibilidade (público ou privado) | Dono do time desafiante (no momento da criação) |
+| Registrar resultado (`home_goals`, `away_goals`) | Desafiante registra; desafiado deve confirmar. Desafiado também pode registrar o resultado — desafiante confirma. |
+| Registrar estatísticas individuais (`performance_highlights`) | Cada dono registra as estatísticas dos seus próprios jogadores |
+| Encerrar amistoso (`completed`) | Sistema (automático após confirmação bilateral do resultado) |
+| Cancelar amistoso (`cancelled`) | Dono de qualquer um dos dois times |
 | Adiar amistoso (`postponed`) | Dono de qualquer um dos dois times |
 
 ---
@@ -79,8 +80,8 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 | Adicionar membro à comissão | Dono do time (`teams.owner_id`) |
 | Remover membro da comissão | Dono do time ou o próprio membro |
 | Ver escalação e elenco | Todos os membros da comissão vinculados ao time |
-| Editar escalação | **A definir** — ver decisões em aberto |
-| Registrar resultado de partida | **A definir** — ver decisões em aberto |
+| Editar escalação | Somente dono do time (`teams.owner_id`) |
+| Registrar resultado de partida | Somente dono do time (`teams.owner_id`) |
 
 ---
 
@@ -109,12 +110,10 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 | Campo | Tabela | Tipo | Motivo |
 | --- | --- | --- | --- |
 | `created_by` | `championships` | bigint FK → `users` | Necessário para autorizar operações de gestão |
+| `is_public` | `friendly_matches` | boolean | Desafiante define se o amistoso é visível publicamente |
 
 ---
 
 ## Decisões em aberto
 
-- **Escopo de ação da comissão técnica:** membros do staff devem ter poder de editar escalação e registrar resultados? Se sim, todos os papéis (`head_coach`, `physiotherapist`, `doctor`) têm o mesmo escopo, ou deve ser granularizado por papel?
-- **Visibilidade de amistosos:** amistosos devem ser visíveis publicamente ou apenas para os donos dos times participantes?
-- **Co-gestão de time:** pode existir mais de um `owner` por time? (ex: sócio fundador e gerente)
-- **Transferência de ownership:** quem pode promover outro usuário a dono do time?
+- **Escopo de ação da comissão técnica:** membros do staff têm acesso de leitura ao elenco e escalação. Edição de escalação e registro de resultados são exclusivos do dono do time — não há diferença por papel interno da comissão.

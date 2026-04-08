@@ -15,6 +15,10 @@ O vínculo é **por time e por modalidade** — o mesmo jogador pode ter papéis
 
 ## Regras de pertencimento
 
+### Adição ao elenco requer aprovação do atleta
+
+Para adicionar um jogador a um time, o dono do time envia um convite. O atleta precisa aceitar antes de aparecer no elenco ativo. Saída do time é sempre livre — qualquer jogador pode sair sem aprovação do dono do time.
+
 ### Múltiplos times simultaneamente
 
 Um jogador **pode** pertencer a múltiplos times ao mesmo tempo. Não há restrição no schema que impeça isso.
@@ -23,7 +27,7 @@ Cenários válidos:
 - Jogador que participa do racha de quarta (Time A) e do campeonato de domingo (Time B)
 - Jogador que representa times diferentes em cidades distintas
 
-O sistema não faz checagem de conflito de agenda nem impõe exclusividade de vínculo.
+O sistema não faz checagem de conflito de agenda nem impõe exclusividade de vínculo. Não há limite máximo de times por jogador nem de jogadores por elenco.
 
 ### Mesmo time, múltiplas modalidades
 
@@ -60,18 +64,50 @@ Um jogador com `left_at` preenchido:
 
 ---
 
+## Reativação de vínculo
+
+Quando `left_at` está preenchido e o jogador retorna ao mesmo time, existem duas abordagens:
+
+**Opção A — Criar novo `player_membership`** (recomendada)
+
+| Prós | Contras |
+| --- | --- |
+| Histórico separado e delimitado por período | Dois registros para o mesmo jogador no mesmo time |
+| Consultas de "ativo" são simples (`left_at = null`) | Relatórios de carreira precisam agregar múltiplos vínculos |
+| Nunca há ambiguidade sobre quando o jogador saiu e voltou | |  
+| Auditoria completa preservada | |
+
+**Opção B — Zerar o `left_at` do vínculo anterior**
+
+| Prós | Contras |
+| --- | --- |
+| Estrutura mais simples: sempre um único registro por (player, team_sport_mode) | Perde a informação de que houve uma ausência |
+| | O período fora do time desaparece do histórico |
+| | Auditoria prejudicada |
+
+> **Recomendação:** Opção A. Preserva o histórico completo com datas de entrada e saída de cada período, o que é essencial para cálculos de carreira e badges como `loyal_player`.
+
+---
+
 ## Participação em campeonatos
 
 Para que um jogador possa ser escalado em partidas de um campeonato:
 
 1. O `team_sport_mode_id` deve estar inscrito no campeonato (`championship_teams`)
-2. O jogador deve ter um `player_membership` ativo (sem `left_at`) naquele `team_sport_mode_id`
+2. O jogador deve ter sido selecionado pelo dono do time na inscrição do campeonato (`championship_team_players`)
+3. O jogador deve ter um `player_membership` ativo (sem `left_at`) naquele `team_sport_mode_id`
+
+**Adição ao elenco após início do campeonato:** o dono pode adicionar novos jogadores ao elenco do time a qualquer momento. Porém, apenas os jogadores selecionados na inscrição podem jogar — não é possível adicionar um jogador à lista de disputão do campeonato após o início.
 
 Se o jogador for desvinculado durante o campeonato:
 - Estatísticas já registradas são mantidas
 - Ele não pode ser escalado em partidas futuras do campeonato
 
-> **Decisão em aberto:** pode um dono de time adicionar um jogador ao elenco após o campeonato já ter iniciado? Se sim, existe um limite de rodadas (ex: não pode ser adicionado após a rodada 2)?
+---
+
+## Histórico entre times
+
+O histórico de estatísticas de um jogador em outros times é visível apenas se o próprio atleta permitir. Essa é uma configuração do perfil do jogador (`players.history_public`). Por padrão, o histórico é privado.
 
 ---
 
@@ -80,13 +116,15 @@ Se o jogador for desvinculado durante o campeonato:
 | Campo | Tabela | Tipo | Observação |
 | --- | --- | --- | --- |
 | `left_at` | `player_memberships` | timestamp | nullable — `null` = vínculo ativo; preenchido = histórico |
+| `history_public` | `players` | boolean | default `false` — controla visibilidade do histórico entre times |
 
 ---
 
-## Decisões em aberto
+## Decisões resolvidas
 
-- **Transferência formal:** existe um mecanismo de "pedido de saída" que o dono do time deve aprovar antes do `left_at` ser registrado, ou qualquer jogador pode sair livremente?
-- **Histórico visível entre times:** o proprietário do Time B pode ver que um jogador já jogou no Time A e quais foram suas estatísticas lá?
-- **Entrada durante campeonato:** jogador pode entrar no elenco após início do campeonato? Com restrição de rodadas?
-- **Limite máximo de jogadores por elenco:** o legado tinha limite por time — manter esse controle, e qual é o número para o plano Free?
-- **Reativação de vínculo:** se um jogador saiu e quer voltar ao mesmo time, cria-se um novo `player_membership` ou o `left_at` do anterior é zerado?
+- **Adição ao time:** requer aprovação do atleta via convite
+- **Saída do time:** qualquer jogador pode sair livremente; sem aprovação
+- **Histórico visível:** controlado pelo próprio atleta via `history_public`
+- **Limite de elenco:** sem limite máximo de jogadores por time
+- **Reativação:** cria novo `player_membership` (Opção A)
+- **Entrada durante campeonato:** pode entrar no elenco a qualquer momento, mas só pode jogar no campeonato se estava na lista de inscrição
