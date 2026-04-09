@@ -45,7 +45,7 @@ defineProps<{
                             </CardDescription>
                         </div>
                     </CardHeader>
-                    <CardContent class="px-8 py-8 md:px-10">
+                    <CardContent class="px-8 pb-8 md:px-10">
                         <slot />
                     </CardContent>
                 </Card>
