@@ -901,9 +901,9 @@ Marcar ao concluir cada item. A fase só está concluída quando todos estiverem
 
 - [x] Teste de fundação de catálogo criado (`CatalogSetupTest`)
 - [x] Teste de models e services de catálogo criado (`CatalogModelAndServiceTest`)
+- [x] Feature tests admin: SportMode, Category, Position, Formation, StaffRole, BadgeType
+- [x] Feature tests API: `CatalogApiResponseTest`
 - [ ] Factories criadas (6)
-- [ ] Feature tests admin: SportMode, Category, Position, Formation, StaffRole, BadgeType
-- [ ] Feature tests API: `CatalogApiTest`
 - [ ] Todos os testes passando (`php artisan test`)
 
 ---

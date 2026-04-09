@@ -9,11 +9,11 @@ Este arquivo registra cada teste criado, seu objetivo e cenarios cobertos.
 | Modulo | Arquivos | Metodos | Cobertura | Status |
 |--------|----------|---------|-----------|--------|
 | Auth | 7 | 25 | 100% | ✅ Completo |
-| Catalog Foundation | 4 | 15 | 100% | ✅ Completo |
+| Catalog Foundation | 7 | 29 | 100% | ✅ Completo |
 | Navigation/Core | 2 | 3 | 100% | ✅ Completo |
 | Settings | 2 | 11 | 100% | ✅ Completo |
 | Unit | 1 | 1 | 100% | ✅ Completo |
-| **Total** | **15** | **52** | **100%** | ✅ |
+| **Total** | **18** | **66** | **100%** | ✅ |
 
 ---
 
@@ -131,6 +131,38 @@ Valida rotas de catálogo na API e no painel admin.
 | `test_non_admin_users_cannot_access_admin_catalog_routes` | Usuário autenticado comum recebe 403 nas rotas admin de catálogo |
 | `test_admin_users_can_access_admin_catalog_index_routes` | Usuário admin consegue acessar as listagens admin de catálogo |
 
+### `tests/Feature/Catalog/AdminSportModeCrudTest.php`
+Valida CRUD administrativo completo de modalidades esportivas.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_admin_can_list_sport_modes` | Admin acessa a listagem Inertia de modalidades |
+| `test_admin_can_render_create_sport_mode_screen` | Admin abre tela de criação com catálogos auxiliares carregados |
+| `test_admin_can_create_sport_mode_with_catalog_links` | Admin cria modalidade e sincroniza categorias, formações e posições |
+| `test_admin_can_render_edit_sport_mode_screen` | Admin abre tela de edição com vínculos carregados |
+| `test_admin_can_update_sport_mode_and_sync_links` | Admin atualiza modalidade e ressincroniza pivôs |
+| `test_admin_can_delete_sport_mode` | Admin remove modalidade do catálogo |
+| `test_sport_mode_requires_required_fields` | Validação de obrigatoriedade no cadastro de modalidade |
+
+### `tests/Feature/Catalog/AdminSimpleCatalogCrudTest.php`
+Valida CRUD administrativo das entidades simples de catálogo.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_admin_can_crud_categories` | Admin lista, cria, edita e exclui categorias |
+| `test_admin_can_crud_positions` | Admin lista, cria, edita e exclui posições |
+| `test_admin_can_crud_formations` | Admin lista, cria, edita e exclui formações |
+| `test_admin_can_crud_staff_roles` | Admin lista, cria, edita e exclui funções da comissão |
+| `test_admin_can_crud_badge_types` | Admin lista, cria, edita e exclui tipos de badge |
+
+### `tests/Feature/Catalog/CatalogApiResponseTest.php`
+Valida o contrato de resposta da API de catálogo.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_sport_modes_api_returns_nested_catalog_payload` | API de modalidades retorna payload aninhado com categorias, formações e posições |
+| `test_simple_catalog_endpoints_return_expected_payload_shapes` | Endpoints simples retornam envelope e shape esperados em `snake_case` |
+
 ---
 
 ## Navigation/Core
@@ -208,6 +240,8 @@ As principais regras cobertas hoje pela suite sao:
 - form requests de catalogo
 - api resources de catalogo
 - rotas autenticadas de catalogo na API e no admin
+- CRUD administrativo de catálogo via Inertia
+- contrato HTTP da API de catálogo
 
 ---
 
@@ -215,5 +249,4 @@ As principais regras cobertas hoje pela suite sao:
 
 - A suite atual esta concentrada em autenticacao, settings e fundacao inicial do dominio.
 - Os proximos blocos do roadmap devem adicionar testes para:
-  - CRUD administrativo via Inertia
   - regras de autorizacao do dominio esportivo
