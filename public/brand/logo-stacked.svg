@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 76" fill="none" aria-label="MyClub">
+  <!--
+    MyClub — Logo empilhado (símbolo acima do wordmark)
+    Uso: cards, peças quadradas, materiais promocionais
+    Versão: fundo claro
+  -->
+
+  <!-- Símbolo: escudo heráldico centralizado, tamanho natural 48x52 -->
+  <svg x="16" y="2" width="48" height="52" viewBox="0 0 48 52">
+    <defs>
+      <clipPath id="ssc">
+        <path d="M24 5 L7 14 V29 C7 39 16 46 24 49 C32 46 41 39 41 29 V14 L24 5 Z"/>
+      </clipPath>
+    </defs>
+    <path d="M24 2 L4 11 V29 C4 40 13 48 24 50 C35 48 44 40 44 29 V11 L24 2 Z" fill="#126A43"/>
+    <path d="M24 5 L7 14 V29 C7 39 16 46 24 49 C32 46 41 39 41 29 V14 L24 5 Z"
+      fill="none" stroke="#F5F7F3" stroke-width="1.25" stroke-linejoin="round"/>
+    <g clip-path="url(#ssc)">
+      <line x1="7" y1="29" x2="41" y2="29" stroke="#F5F7F3" stroke-width="1.25" opacity="0.45"/>
+      <path d="M7 48 L18 20 L24 30 L30 20 L41 48"
+        stroke="#F5F7F3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="24" cy="30" r="2.5" fill="#D9A441"/>
+    </g>
+  </svg>
+
+  <!-- Wordmark: MYCLUB espacejado, abaixo do símbolo -->
+  <text
+    x="40"
+    y="73"
+    text-anchor="middle"
+    font-family="Manrope, system-ui, sans-serif"
+    font-size="12"
+    font-weight="700"
+    fill="#0E1512"
+    letter-spacing="2"
+  >MYCLUB</text>
+</svg>

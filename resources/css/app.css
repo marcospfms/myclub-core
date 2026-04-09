@@ -9,9 +9,8 @@
 
 @theme inline {
     --font-sans:
-        Instrument Sans, ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+        Manrope, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -89,77 +88,130 @@
     }
 }
 
+/* =========================================================
+   MyClub Design Token Theme
+   Paleta: Club Green / Pitch Dark / Tape White / Victory Gold
+   ========================================================= */
 :root {
-    --background: hsl(0 0% 100%);
-    --foreground: hsl(0 0% 3.9%);
+    /* --- Superfícies --- */
+    --background: hsl(90 14% 94%); /* Tape White #F5F7F3 */
+    --foreground: hsl(140 21% 9%); /* texto primário #142018 */
     --card: hsl(0 0% 100%);
-    --card-foreground: hsl(0 0% 3.9%);
+    --card-foreground: hsl(140 21% 9%);
     --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(0 0% 3.9%);
-    --primary: hsl(0 0% 9%);
-    --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(0 0% 92.1%);
-    --secondary-foreground: hsl(0 0% 9%);
-    --muted: hsl(0 0% 96.1%);
-    --muted-foreground: hsl(0 0% 45.1%);
-    --accent: hsl(0 0% 96.1%);
-    --accent-foreground: hsl(0 0% 9%);
-    --destructive: hsl(0 84.2% 60.2%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 92.8%);
-    --input: hsl(0 0% 89.8%);
-    --ring: hsl(0 0% 3.9%);
-    --chart-1: hsl(12 76% 61%);
-    --chart-2: hsl(173 58% 39%);
-    --chart-3: hsl(197 37% 24%);
-    --chart-4: hsl(43 74% 66%);
-    --chart-5: hsl(27 87% 67%);
-    --radius: 0.5rem;
-    --sidebar-background: hsl(0 0% 98%);
-    --sidebar-foreground: hsl(240 5.3% 26.1%);
-    --sidebar-primary: hsl(0 0% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(0 0% 94%);
-    --sidebar-accent-foreground: hsl(0 0% 30%);
-    --sidebar-border: hsl(0 0% 91%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(0 0% 98%);
+    --popover-foreground: hsl(140 21% 9%);
+
+    /* --- Ação primária: Club Green --- */
+    --primary: hsl(151 71% 24%); /* Club Green #126A43 */
+    --primary-foreground: hsl(90 14% 94%); /* Tape White */
+
+    /* --- Secundário: muted do sistema --- */
+    --secondary: hsl(130 14% 87%); /* Field Line #DCE6DE */
+    --secondary-foreground: hsl(140 21% 9%);
+
+    /* --- Muted / suppressed --- */
+    --muted: hsl(130 10% 91%);
+    --muted-foreground: hsl(150 7% 45%); /* texto muted #6B7C72 */
+
+    /* --- Accent: Victory Gold --- */
+    --accent: hsl(38 63% 55%); /* Victory Gold #D9A441 */
+    --accent-foreground: hsl(140 21% 9%);
+
+    /* --- Destrutivo / perigo --- */
+    --destructive: hsl(4 68% 40%); /* Danger #B42318 */
+    --destructive-foreground: hsl(90 14% 94%);
+
+    /* --- Bordas e inputs --- */
+    --border: hsl(130 14% 87%); /* Field Line */
+    --input: hsl(130 14% 87%);
+    --ring: hsl(151 71% 24%); /* Club Green como focus ring */
+
+    /* --- Charts (paleta esportiva) --- */
+    --chart-1: hsl(151 71% 24%); /* Club Green */
+    --chart-2: hsl(38 63% 55%); /* Victory Gold */
+    --chart-3: hsl(142 70% 29%); /* Success */
+    --chart-4: hsl(4 68% 40%); /* Danger */
+    --chart-5: hsl(215 25% 27%); /* Neutral Strong */
+
+    /* --- Raio padrão --- */
+    --radius: 0.75rem; /* 12px — alinhado ao design system */
+
+    /* --- Sidebar: Pitch Dark --- */
+    --sidebar: hsl(150 20% 8%); /* Pitch Dark #0E1512 */
+    --sidebar-background: hsl(150 20% 8%);
+    --sidebar-foreground: hsl(90 14% 94%); /* Tape White */
+    --sidebar-primary: hsl(151 71% 24%); /* Club Green */
+    --sidebar-primary-foreground: hsl(90 14% 94%);
+    --sidebar-accent: hsl(153 24% 11%); /* Night Stand #13211B */
+    --sidebar-accent-foreground: hsl(90 14% 94%);
+    --sidebar-border: hsl(153 18% 14%);
+    --sidebar-ring: hsl(151 71% 24%);
+
+    /* --- Tokens de marca adicionais (uso direto no CSS/componentes) --- */
+    --brand-club-green: hsl(151 71% 24%);
+    --brand-club-green-hover: hsl(151 71% 20%);
+    --brand-club-green-active: hsl(151 71% 16%);
+    --brand-pitch-dark: hsl(150 20% 8%);
+    --brand-tape-white: hsl(90 14% 94%);
+    --brand-victory-gold: hsl(38 63% 55%);
+    --brand-field-line: hsl(130 14% 87%);
+    --brand-night-stand: hsl(153 24% 11%);
+
+    /* --- Estados semânticos --- */
+    --color-success: hsl(142 70% 29%);
+    --color-warning: hsl(42 96% 40%);
+    --color-danger: hsl(4 68% 40%);
+    --color-info: hsl(210 70% 38%);
 }
 
 .dark {
-    --background: hsl(0 0% 3.9%);
-    --foreground: hsl(0 0% 98%);
-    --card: hsl(0 0% 3.9%);
-    --card-foreground: hsl(0 0% 98%);
-    --popover: hsl(0 0% 3.9%);
-    --popover-foreground: hsl(0 0% 98%);
-    --primary: hsl(0 0% 98%);
-    --primary-foreground: hsl(0 0% 9%);
-    --secondary: hsl(0 0% 14.9%);
-    --secondary-foreground: hsl(0 0% 98%);
-    --muted: hsl(0 0% 16.08%);
-    --muted-foreground: hsl(0 0% 63.9%);
-    --accent: hsl(0 0% 14.9%);
-    --accent-foreground: hsl(0 0% 98%);
-    --destructive: hsl(0 84% 60%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 14.9%);
-    --input: hsl(0 0% 14.9%);
-    --ring: hsl(0 0% 83.1%);
-    --chart-1: hsl(220 70% 50%);
-    --chart-2: hsl(160 60% 45%);
-    --chart-3: hsl(30 80% 55%);
-    --chart-4: hsl(280 65% 60%);
-    --chart-5: hsl(340 75% 55%);
-    --sidebar-background: hsl(0 0% 7%);
-    --sidebar-foreground: hsl(0 0% 95.9%);
-    --sidebar-primary: hsl(360, 100%, 100%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(0 0% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(0 0% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(240 5.9% 10%);
+    /* --- Superfícies invertidas (produto público / superfícies dramáticas) --- */
+    --background: hsl(150 20% 8%); /* Pitch Dark */
+    --foreground: hsl(90 14% 94%); /* Tape White */
+    --card: hsl(153 24% 11%); /* Night Stand */
+    --card-foreground: hsl(90 14% 94%);
+    --popover: hsl(153 24% 11%);
+    --popover-foreground: hsl(90 14% 94%);
+
+    /* --- Ação primária mantém Club Green --- */
+    --primary: hsl(
+        151 71% 30%
+    ); /* Club Green ligeiramente mais claro no escuro */
+    --primary-foreground: hsl(90 14% 94%);
+
+    --secondary: hsl(153 18% 16%);
+    --secondary-foreground: hsl(90 14% 94%);
+
+    --muted: hsl(153 18% 14%);
+    --muted-foreground: hsl(
+        145 10% 67%
+    ); /* border strong #A7B6AA como texto muted escuro */
+
+    --accent: hsl(38 63% 55%); /* Victory Gold inalterado */
+    --accent-foreground: hsl(150 20% 8%);
+
+    --destructive: hsl(4 68% 50%);
+    --destructive-foreground: hsl(90 14% 94%);
+
+    --border: hsl(153 18% 16%);
+    --input: hsl(153 18% 16%);
+    --ring: hsl(151 71% 35%);
+
+    --chart-1: hsl(151 71% 35%);
+    --chart-2: hsl(38 63% 60%);
+    --chart-3: hsl(142 55% 40%);
+    --chart-4: hsl(4 68% 55%);
+    --chart-5: hsl(145 10% 67%);
+
+    --sidebar: hsl(150 20% 6%);
+    --sidebar-background: hsl(150 20% 6%);
+    --sidebar-foreground: hsl(90 14% 94%);
+    --sidebar-primary: hsl(151 71% 30%);
+    --sidebar-primary-foreground: hsl(90 14% 94%);
+    --sidebar-accent: hsl(153 24% 11%);
+    --sidebar-accent-foreground: hsl(90 14% 94%);
+    --sidebar-border: hsl(153 18% 11%);
+    --sidebar-ring: hsl(151 71% 30%);
 }
 
 @layer base {

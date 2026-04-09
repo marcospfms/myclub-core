@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 52" fill="none" aria-label="MyClub">
+  <!--
+    MyClub — Símbolo V2
+
+    Estrutura:
+    - Escudo heráldico clássico: arestas superiores em ângulo a partir da quina central,
+      lados retos verticais, fundo curvo convergindo em ponta — forma típica de clube
+    - Borda branca interna (1.25px): traço de identidade de clube
+    - Faixa divisora horizontal sutil dividindo campo superior e inferior
+    - Marca M: dois chevrons ascendentes com picos para cima — M heráldico correto
+    - Acento Victory Gold no vértice central do M (gema de viúda)
+    - Clip-path: M clippado na área interna do escudo — pernas seguem a curva naturalmente
+
+    Cores:
+    - #126A43  Club Green   — corpo do escudo
+    - #F5F7F3  Tape White   — marca, bordas
+    - #D9A441  Victory Gold — acento central
+
+    Use public/favicon.svg para 16-20px.
+    Este símbolo é adequado para 24px em diante.
+  -->
+
+  <defs>
+    <!-- Clip: interior do escudo, recuado ~3px do contorno externo -->
+    <clipPath id="sc">
+      <path d="M24 5 L7 14 V29 C7 39 16 46 24 49 C32 46 41 39 41 29 V14 L24 5 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Corpo do escudo — Club Green -->
+  <path
+    d="M24 2 L4 11 V29 C4 40 13 48 24 50 C35 48 44 40 44 29 V11 L24 2 Z"
+    fill="#126A43"
+  />
+
+  <!-- Borda interna — traço branco fino seguindo o contorno do escudo -->
+  <path
+    d="M24 5 L7 14 V29 C7 39 16 46 24 49 C32 46 41 39 41 29 V14 L24 5 Z"
+    fill="none"
+    stroke="#F5F7F3"
+    stroke-width="1.25"
+    stroke-linejoin="round"
+  />
+
+  <!-- Elementos clippados ao interior do escudo -->
+  <g clip-path="url(#sc)">
+
+    <!-- Faixa divisora horizontal — separa campo superior (decorativo) e inferior (marca) -->
+    <line
+      x1="7" y1="29" x2="41" y2="29"
+      stroke="#F5F7F3"
+      stroke-width="1.25"
+      opacity="0.45"
+    />
+
+    <!-- Marca M: picos voltados para CIMA = M correto (não W) -->
+    <!-- Inicia no canto inferior esquerdo, sobe ao pico esquerdo, desce ao vale,
+         sobe ao pico direito, desce ao canto inferior direito -->
+    <path
+      d="M7 48 L18 20 L24 30 L30 20 L41 48"
+      stroke="#F5F7F3"
+      stroke-width="4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+
+    <!-- Gema Victory Gold no vértice do M — ponto de inflexão central -->
+    <circle cx="24" cy="30" r="2.5" fill="#D9A441" />
+
+  </g>
+</svg>

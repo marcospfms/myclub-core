@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 52" fill="none" aria-label="MyClub">
+  <!--
+    MyClub — Logo horizontal, versão invertida (fundo escuro)
+    Uso: sidebar, headers Pitch Dark / Night Stand, materiais com fundo escuro
+    Símbolo: Club Green (mantido) | Wordmark: Tape White
+  -->
+
+  <!-- Símbolo: nested SVG com o escudo heráldico, escalado para 44x48 -->
+  <svg x="0" y="2" width="44" height="48" viewBox="0 0 48 52">
+    <defs>
+      <clipPath id="shci">
+        <path d="M24 5 L7 14 V29 C7 39 16 46 24 49 C32 46 41 39 41 29 V14 L24 5 Z"/>
+      </clipPath>
+    </defs>
+    <path d="M24 2 L4 11 V29 C4 40 13 48 24 50 C35 48 44 40 44 29 V11 L24 2 Z" fill="#126A43"/>
+    <path d="M24 5 L7 14 V29 C7 39 16 46 24 49 C32 46 41 39 41 29 V14 L24 5 Z"
+      fill="none" stroke="#F5F7F3" stroke-width="1.25" stroke-linejoin="round"/>
+    <g clip-path="url(#shci)">
+      <line x1="7" y1="29" x2="41" y2="29" stroke="#F5F7F3" stroke-width="1.25" opacity="0.45"/>
+      <path d="M7 48 L18 20 L24 30 L30 20 L41 48"
+        stroke="#F5F7F3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="24" cy="30" r="2.5" fill="#D9A441"/>
+    </g>
+  </svg>
+
+  <!-- Wordmark: Tape White, fundo escuro -->
+  <text
+    x="54"
+    y="33"
+    font-family="Manrope, system-ui, sans-serif"
+    font-size="22"
+    font-weight="700"
+    fill="#F5F7F3"
+    letter-spacing="-0.5"
+  >MyClub</text>
+</svg>
