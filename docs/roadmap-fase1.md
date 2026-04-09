@@ -18,7 +18,7 @@
 | Migration — `team_staff`                 | ✅ Concluído |
 | Migration — `player_memberships`         | ✅ Concluído |
 | Migration — `team_invitations`           | ✅ Concluído |
-| Models (7)                               | ⬜ Pendente |
+| Models (7)                               | ✅ Concluído |
 | Enums — `InvitationStatus`, `UserRole`   | ✅ Concluído |
 | Services                                 | ⬜ Pendente |
 | Form Requests                            | ⬜ Pendente |
@@ -37,10 +37,10 @@ Primeiro bloco da Fase 1 já implementado:
 - migration de convites
 - enum `InvitationStatus`
 - enum `UserRole`
+- models do contexto de identidade, times e elenco
 
 Próximo bloco recomendado:
 
-- models
 - services
 - requests/resources/controllers da API
 
