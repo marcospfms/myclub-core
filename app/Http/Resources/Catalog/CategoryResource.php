@@ -5,17 +5,14 @@ namespace App\Http\Resources\Catalog;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BadgeTypeResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
+            'key' => $this->key,
             'name' => $this->name,
-            'label_key' => $this->label_key,
-            'description_key' => $this->description_key,
-            'icon' => $this->icon,
-            'scope' => $this->scope?->value ?? $this->scope,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

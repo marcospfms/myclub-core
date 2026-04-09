@@ -9,7 +9,7 @@ Este arquivo registra cada teste criado, seu objetivo e cenarios cobertos.
 | Modulo | Arquivos | Metodos | Cobertura | Status |
 |--------|----------|---------|-----------|--------|
 | Auth | 7 | 25 | 100% | ✅ Completo |
-| Catalog Foundation | 2 | 7 | 100% | ✅ Completo |
+| Catalog Foundation | 3 | 10 | 100% | ✅ Completo |
 | Navigation/Core | 2 | 3 | 100% | ✅ Completo |
 | Settings | 2 | 11 | 100% | ✅ Completo |
 | Unit | 1 | 1 | 100% | ✅ Completo |
@@ -108,6 +108,16 @@ Valida enum, relacionamentos Eloquent e comportamento inicial dos services de ca
 | `test_badge_type_resource_returns_translation_keys_and_icon_key` | `BadgeTypeResource` retorna `label_key`, `description_key` e `icon` como contrato da API |
 | `test_catalog_services_can_create_update_list_and_delete_basic_entities` | Services basicos executam CRUD de `Category`, `Position`, `Formation`, `StaffRole` e `BadgeType` |
 | `test_sport_mode_service_can_create_update_and_sync_catalog_links` | `SportModeService` cria modalidade, sincroniza pivots e atualiza/remover corretamente |
+| `test_seeded_sport_modes_positions_and_staff_roles_use_translation_keys_and_icon_keys` | Seeds usam `label_key`, `description_key` e `icon` como contrato estavel |
+
+### `tests/Feature/Catalog/CatalogRequestAndResourceTest.php`
+Valida Form Requests e API Resources dos catalogos.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_store_requests_validate_catalog_creation_payloads` | Requests de criacao validam o contrato atual de catalogo, incluindo pivots e enum de badge |
+| `test_update_requests_ignore_current_unique_values` | Requests de update ignoram o proprio registro nas regras `unique` |
+| `test_catalog_resources_return_expected_payload_shapes` | Resources retornam payloads em `snake_case`, com campos e relacionamentos esperados |
 
 ---
 
@@ -183,6 +193,8 @@ As principais regras cobertas hoje pela suite sao:
 - exclusao de conta com confirmacao de senha
 - pagina de seguranca com comportamento dependente da configuracao do Fortify
 - fundacao da Fase 0: migrations e seeders de catalogo
+- form requests de catalogo
+- api resources de catalogo
 
 ---
 
@@ -190,8 +202,6 @@ As principais regras cobertas hoje pela suite sao:
 
 - A suite atual esta concentrada em autenticacao, settings e fundacao inicial do dominio.
 - Os proximos blocos do roadmap devem adicionar testes para:
-  - models de catalogo
-  - services de catalogo
   - API autenticada de leitura dos catalogos
   - CRUD administrativo via Inertia
   - regras de autorizacao do dominio esportivo

@@ -17,8 +17,8 @@
 | Seeders com dados de referência                            | ✅ Concluído   |
 | Models                                                     | ✅ Concluído   |
 | Services                                                   | ✅ Concluído   |
-| Form Requests                                              | ⬜ Pendente    |
-| API Resources                                              | ⬜ Pendente    |
+| Form Requests                                              | ✅ Concluído   |
+| API Resources                                              | ✅ Concluído   |
 | API Controllers (selects autenticados — leitura de catálogo) | ⬜ Pendente    |
 | Admin Controllers (CRUD via Inertia)                       | ⬜ Pendente    |
 | Rotas API e Admin                                          | ⬜ Pendente    |
@@ -248,50 +248,34 @@ Localização: `app/Http/Requests/Catalog/`
 
 ### Store requests
 
+Implementado em:
+- [`StoreSportModeRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/StoreSportModeRequest.php)
+- [`StoreCategoryRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/StoreCategoryRequest.php)
+- [`StorePositionRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/StorePositionRequest.php)
+- [`StoreFormationRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/StoreFormationRequest.php)
+- [`StoreStaffRoleRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/StoreStaffRoleRequest.php)
+- [`StoreBadgeTypeRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/StoreBadgeTypeRequest.php)
+
 | Classe                    | Regras de validação principais                                                               |
 | ------------------------- | -------------------------------------------------------------------------------------------- |
-| `StoreSportModeRequest`   | `key`: required, alpha_dash, max:60, unique:sport_modes \| `name`: required, string, max:45  |
-| `StoreCategoryRequest`    | `key`: required, alpha_dash, max:60, unique:categories \| `name`: required, string, max:45   |
-| `StorePositionRequest`    | `key`: required, alpha_dash, max:60, unique:positions \| `name`: required, string, max:45 \| `abbreviation`: required, string, size:3 |
-| `StoreFormationRequest`   | `key`: required, max:30, unique:formations \| `name`: required, string, max:15              |
-| `StoreStaffRoleRequest`   | `name`: required, alpha_dash, max:60, unique:staff_roles _(name é o slug)_                  |
-| `StoreBadgeTypeRequest`   | `name`: required, alpha_dash, max:60, unique:badge_types _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: required, string, max:150 \| `icon`: required, string, max:100 \| `scope`: required, in:championship,friendly,career,seasonal |
+| `StoreSportModeRequest`   | `key`: required, alpha_dash, max:60, unique:sport_modes \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| arrays de pivô opcionais |
+| `StoreCategoryRequest`    | `key`: required, alpha_dash, max:60, unique:categories \| `name`: required, string, max:45 |
+| `StorePositionRequest`    | `key`: required, alpha_dash, max:60, unique:positions \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| `abbreviation`: required, string, size:3 |
+| `StoreFormationRequest`   | `key`: required, string, max:30, unique:formations \| `name`: required, string, max:15 |
+| `StoreStaffRoleRequest`   | `name`: required, alpha_dash, max:60, unique:staff_roles _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 |
+| `StoreBadgeTypeRequest`   | `name`: required, alpha_dash, max:60, unique:badge_types _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| `scope`: required, enum `BadgeScope` |
 
 ### Update requests
 
-Mesmas regras, mas `unique` com except no ID atual:
+Implementado em:
+- [`UpdateSportModeRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/UpdateSportModeRequest.php)
+- [`UpdateCategoryRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/UpdateCategoryRequest.php)
+- [`UpdatePositionRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/UpdatePositionRequest.php)
+- [`UpdateFormationRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/UpdateFormationRequest.php)
+- [`UpdateStaffRoleRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/UpdateStaffRoleRequest.php)
+- [`UpdateBadgeTypeRequest.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Requests/Catalog/UpdateBadgeTypeRequest.php)
 
-```php
-'name' => ['required', 'string', 'max:45', Rule::unique('sport_modes')->ignore($this->sport_mode)],
-```
-
-> Update requests herdam das Store — só sobrescrevem a regra `unique`.
-
-### `UpdateSportModeRequest` (exemplo completo)
-
-```php
-class UpdateSportModeRequest extends FormRequest
-{
-    public function authorize(): bool
-    {
-        return $this->user()?->role === 'admin';
-    }
-
-    public function rules(): array
-    {
-        return [
-            'key'           => ['required', 'alpha_dash', 'max:60', Rule::unique('sport_modes')->ignore($this->sport_mode)],
-            'name'          => ['required', 'string', 'max:45'],
-            'category_ids'  => ['sometimes', 'array'],
-            'category_ids.*' => ['integer', 'exists:categories,id'],
-            'formation_ids' => ['sometimes', 'array'],
-            'formation_ids.*' => ['integer', 'exists:formations,id'],
-            'position_ids'  => ['sometimes', 'array'],
-            'position_ids.*' => ['integer', 'exists:positions,id'],
-        ];
-    }
-}
-```
+> Update requests herdam das Store e sobrescrevem apenas as regras `unique` com `ignore()` do registro atual.
 
 ---
 
@@ -303,44 +287,17 @@ Todos os campos em `snake_case`. Relacionamentos com `whenLoaded()`.
 
 ### `SportModeResource`
 
-```php
-class SportModeResource extends JsonResource
-{
-    public function toArray(Request $request): array
-    {
-        return [
-            'id'         => $this->id,
-            'key'        => $this->key,
-            'name'       => $this->name,
-            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-            'formations' => FormationResource::collection($this->whenLoaded('formations')),
-            'positions'  => PositionResource::collection($this->whenLoaded('positions')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ];
-    }
-}
-```
+Implementado em:
+[`SportModeResource.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Resources/Catalog/SportModeResource.php)
 
 ### Outros Resources (estrutura mínima)
 
-```php
-// CategoryResource
-['id' => $this->id, 'key' => $this->key, 'name' => $this->name]
-
-// PositionResource
-['id' => $this->id, 'key' => $this->key, 'name' => $this->name, 'abbreviation' => $this->abbreviation]
-
-// FormationResource
-['id' => $this->id, 'key' => $this->key, 'name' => $this->name]
-
-// StaffRoleResource  (name é o slug-chave)
-['id' => $this->id, 'name' => $this->name]
-
-// BadgeTypeResource  (retorna translation keys + icon key)
-['id' => $this->id, 'name' => $this->name, 'label_key' => $this->label_key,
- 'description_key' => $this->description_key, 'icon' => $this->icon, 'scope' => $this->scope]
-```
+Implementado em:
+- [`CategoryResource.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Resources/Catalog/CategoryResource.php)
+- [`PositionResource.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Resources/Catalog/PositionResource.php)
+- [`FormationResource.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Resources/Catalog/FormationResource.php)
+- [`StaffRoleResource.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Resources/Catalog/StaffRoleResource.php)
+- [`BadgeTypeResource.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Resources/Catalog/BadgeTypeResource.php)
 
 ---
 
