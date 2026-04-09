@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             SportModeCategorySeeder::class,
             SportModeFormationSeeder::class,
             SportModePositionSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }
