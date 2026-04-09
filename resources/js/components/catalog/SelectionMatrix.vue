@@ -51,8 +51,8 @@ function toggleItem(id: number, checked: boolean | 'indeterminate'): void {
                 class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200/70 bg-slate-50/80 p-3 transition-colors hover:border-emerald-300 hover:bg-emerald-50 dark:border-slate-800 dark:bg-slate-950/40 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/20"
             >
                 <Checkbox
-                    :checked="selectedValues.includes(item.id)"
-                    @update:checked="toggleItem(item.id, $event)"
+                    :model-value="selectedValues.includes(item.id)"
+                    @update:model-value="toggleItem(item.id, $event)"
                     class="mt-0.5"
                 />
                 <span class="space-y-1">
