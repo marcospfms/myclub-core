@@ -21,10 +21,10 @@
 | Models (7)                               | ✅ Concluído |
 | Enums — `InvitationStatus`, `UserRole`   | ✅ Concluído |
 | Services                                 | ✅ Concluído |
-| Form Requests                            | ⬜ Pendente |
-| API Resources                            | ⬜ Pendente |
-| API Controllers                          | ⬜ Pendente |
-| Rotas API (`routes/api.php`)             | ⬜ Pendente |
+| Form Requests                            | ✅ Concluído |
+| API Resources                            | ✅ Concluído |
+| API Controllers                          | ✅ Concluído |
+| Rotas API (`routes/api.php`)             | ✅ Concluído |
 | Types TypeScript                         | ⬜ Pendente |
 | Testes Feature                           | ⬜ Pendente |
 
@@ -39,10 +39,15 @@ Primeiro bloco da Fase 1 já implementado:
 - enum `UserRole`
 - models do contexto de identidade, times e elenco
 - services do contexto de identidade, times, elenco e convites
+- requests da API da fase 1
+- resources da API da fase 1
+- controllers da API da fase 1
+- rotas protegidas da API da fase 1
 
 Próximo bloco recomendado:
 
-- requests/resources/controllers da API
+- types TypeScript
+- testes feature
 
 ---
 
