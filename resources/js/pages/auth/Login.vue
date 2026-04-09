@@ -55,7 +55,7 @@ defineProps<{
                     autofocus
                     :tabindex="1"
                     autocomplete="email"
-                    placeholder="admin@myclub.app"
+                    placeholder="Digite o email"
                 />
                 <InputError :message="errors.email" />
             </div>
