@@ -855,19 +855,12 @@ class PlayerController extends BaseController
 }
 ```
 
-### 9.2 `StaffMemberController`
-
-```
-POST   /api/v1/staff-members        → store  (cria perfil do usuário autenticado)
-PUT    /api/v1/staff-members        → update (atualiza perfil do usuário autenticado)
-```
-
-### 9.3 `TeamController`
+### 9.2 `TeamController`
 
 ```
 GET    /api/v1/teams                → index  (times do usuário autenticado)
 POST   /api/v1/teams                → store
-GET    /api/v1/teams/{team}         → show
+GET    /api/v1/teams/{team}         → show (público)
 PUT    /api/v1/teams/{team}         → update (somente owner)
 DELETE /api/v1/teams/{team}         → destroy → desativa (is_active = false)
 ```
@@ -913,17 +906,17 @@ class TeamController extends BaseController
 }
 ```
 
-### 9.4 `TeamSportModeController`
+### 9.3 `TeamSportModeController`
 
 ```
 POST   /api/v1/teams/{team}/sport-modes              → store  (adiciona modalidade)
 DELETE /api/v1/teams/{team}/sport-modes/{teamSportMode} → destroy (remove modalidade)
 ```
 
-### 9.5 `TeamRosterController`
+### 9.4 `TeamRosterController`
 
 ```
-GET    /api/v1/teams/{team}/sport-modes/{teamSportMode}/members        → index
+GET    /api/v1/teams/{team}/sport-modes/{teamSportMode}/members        → index (público)
 DELETE /api/v1/teams/{team}/sport-modes/{teamSportMode}/members/{membership} → destroy (remove jogador)
 ```
 
@@ -962,7 +955,7 @@ class TeamRosterController extends BaseController
 }
 ```
 
-### 9.6 `TeamInvitationController`
+### 9.5 `TeamInvitationController`
 
 ```
 POST   /api/v1/teams/{team}/sport-modes/{teamSportMode}/invitations → store (owner envia convite)
@@ -1053,9 +1046,12 @@ class TeamPolicy
 
 ## 11. Rotas
 
-`routes/api.php` — tudo sob `auth:sanctum`:
+`routes/api.php` — perfil público e elenco público fora do middleware; escrita e inbox sob `auth:sanctum`:
 
 ```php
+Route::get('v1/teams/{team}', [Api\TeamController::class, 'show']);
+Route::get('v1/teams/{team}/sport-modes/{teamSportMode}/members', [Api\TeamRosterController::class, 'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     // Perfis de usuário
@@ -1063,19 +1059,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('v1/players',          [Api\PlayerController::class, 'update']);
     Route::get('v1/players/{player}', [Api\PlayerController::class, 'show']);
 
-    Route::post('v1/staff-members',   [Api\StaffMemberController::class, 'store']);
-    Route::put('v1/staff-members',    [Api\StaffMemberController::class, 'update']);
-
     // Times
-    Route::apiResource('v1/teams', Api\TeamController::class);
+    Route::get('v1/teams',            [Api\TeamController::class, 'index']);
+    Route::post('v1/teams',           [Api\TeamController::class, 'store']);
+    Route::put('v1/teams/{team}',     [Api\TeamController::class, 'update']);
+    Route::delete('v1/teams/{team}',  [Api\TeamController::class, 'destroy']);
 
     // Modalidades de um time
     Route::prefix('v1/teams/{team}/sport-modes')->name('api.teams.sport-modes.')->group(function () {
         Route::post('/',                               [Api\TeamSportModeController::class, 'store'])->name('store');
         Route::delete('/{teamSportMode}',              [Api\TeamSportModeController::class, 'destroy'])->name('destroy');
 
-        // Elenco por modalidade
-        Route::get('/{teamSportMode}/members',                            [Api\TeamRosterController::class, 'index'])->name('members.index');
+        // Elenco por modalidade (gestão)
         Route::delete('/{teamSportMode}/members/{membership}',            [Api\TeamRosterController::class, 'destroy'])->name('members.destroy');
         Route::delete('/{teamSportMode}/members/{membership}/leave',      [Api\TeamRosterController::class, 'leave'])->name('members.leave');
 

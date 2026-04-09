@@ -19,10 +19,7 @@ class TeamController extends BaseController
 
     public function index(Request $request): JsonResponse
     {
-        $teams = Team::query()
-            ->where('owner_id', $request->user()->id)
-            ->with(['owner', 'sportModes.sportMode', 'sportModes.activeMemberships'])
-            ->get();
+        $teams = $this->teamService->listOwnedByUser($request->user());
 
         return $this->sendResponse(
             TeamResource::collection($teams),
@@ -35,7 +32,7 @@ class TeamController extends BaseController
         $team = $this->teamService->create($request->validated(), $request->user());
 
         return $this->sendResponse(
-            new TeamResource($team->load(['owner', 'sportModes.sportMode', 'sportModes.activeMemberships'])),
+            new TeamResource($team),
             'Time criado.',
             201
         );
@@ -43,7 +40,7 @@ class TeamController extends BaseController
 
     public function show(Team $team): JsonResponse
     {
-        $team->load(['owner', 'sportModes.sportMode', 'sportModes.activeMemberships']);
+        $team = $this->teamService->loadForApi($team);
 
         return $this->sendResponse(
             new TeamResource($team),
@@ -58,7 +55,7 @@ class TeamController extends BaseController
         $team = $this->teamService->update($team, $request->validated());
 
         return $this->sendResponse(
-            new TeamResource($team->load(['owner', 'sportModes.sportMode', 'sportModes.activeMemberships'])),
+            new TeamResource($team),
             'Time atualizado.'
         );
     }

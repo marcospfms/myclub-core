@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\TeamInvitation;
 use App\Models\TeamSportMode;
 use Illuminate\Http\JsonResponse;
+use DomainException;
 use App\Services\Team\TeamRosterService;
 use App\Http\Controllers\Api\BaseController;
 use App\Services\Team\TeamInvitationService;
@@ -30,7 +31,11 @@ class TeamInvitationController extends BaseController
             return $this->sendError('Modalidade do time não encontrada.', [], 404);
         }
 
-        $invitation = $this->invitationService->send($teamSportMode, $request->validated(), $request->user());
+        try {
+            $invitation = $this->invitationService->send($teamSportMode, $request->validated(), $request->user());
+        } catch (DomainException $exception) {
+            return $this->sendError($exception->getMessage(), [], 409);
+        }
 
         return $this->sendResponse(
             new TeamInvitationResource($invitation->load(['teamSportMode.sportMode', 'invitedUser', 'position'])),
@@ -41,11 +46,7 @@ class TeamInvitationController extends BaseController
 
     public function index(Request $request): JsonResponse
     {
-        $invitations = TeamInvitation::query()
-            ->where('invited_user_id', $request->user()->id)
-            ->where('status', InvitationStatus::Pending)
-            ->with(['teamSportMode.sportMode', 'invitedUser', 'position'])
-            ->get();
+        $invitations = $this->invitationService->listPendingForUser($request->user());
 
         return $this->sendResponse(
             TeamInvitationResource::collection($invitations),
@@ -63,7 +64,11 @@ class TeamInvitationController extends BaseController
             return $this->sendError('Convite não está mais pendente.', [], 409);
         }
 
-        $membership = $this->rosterService->acceptInvitation($invitation);
+        try {
+            $membership = $this->rosterService->acceptInvitation($invitation);
+        } catch (DomainException $exception) {
+            return $this->sendError($exception->getMessage(), [], 409);
+        }
 
         return $this->sendResponse(
             new PlayerMembershipResource($membership->load(['player.user', 'position'])),

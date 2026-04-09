@@ -16,7 +16,11 @@ return new class extends Migration
             $table->foreignId('position_id')->nullable()->constrained()->nullOnDelete();
             $table->boolean('is_starter')->default(false);
             $table->timestamp('left_at')->nullable();
-            $table->unique(['team_sport_mode_id', 'player_id', 'left_at']);
+            $table->boolean('is_active_membership')->nullable()->storedAs('case when `left_at` is null then 1 else null end');
+            $table->unique(
+                ['team_sport_mode_id', 'player_id', 'is_active_membership'],
+                'player_memberships_active_unique'
+            );
             $table->timestamps();
         });
     }

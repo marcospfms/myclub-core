@@ -23,9 +23,7 @@ class TeamRosterController extends BaseController
             return $this->sendError('Modalidade do time não encontrada.', [], 404);
         }
 
-        $members = $teamSportMode->activeMemberships()
-            ->with(['player.user', 'position'])
-            ->get();
+        $members = $this->rosterService->listActiveMembers($teamSportMode);
 
         return $this->sendResponse(
             PlayerMembershipResource::collection($members),

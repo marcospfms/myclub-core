@@ -6,10 +6,24 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\TeamSportMode;
 use DomainException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class TeamService
 {
+    public function listOwnedByUser(User $user): Collection
+    {
+        return Team::query()
+            ->where('owner_id', $user->id)
+            ->with(['owner', 'sportModes.sportMode', 'sportModes.activeMemberships'])
+            ->get();
+    }
+
+    public function loadForApi(Team $team): Team
+    {
+        return $team->load(['owner', 'sportModes.sportMode', 'sportModes.activeMemberships']);
+    }
+
     public function create(array $data, User $owner): Team
     {
         return DB::transaction(function () use ($data, $owner): Team {
@@ -22,7 +36,7 @@ class TeamService
                 $team->sportModes()->create(['sport_mode_id' => $sportModeId]);
             }
 
-            return $team->load('sportModes.sportMode');
+            return $this->loadForApi($team);
         });
     }
 
@@ -30,7 +44,7 @@ class TeamService
     {
         $team->update($data);
 
-        return $team->fresh();
+        return $this->loadForApi($team->fresh());
     }
 
     public function deactivate(Team $team): void

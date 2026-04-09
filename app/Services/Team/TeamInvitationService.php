@@ -7,9 +7,19 @@ use App\Models\User;
 use App\Models\TeamInvitation;
 use App\Models\TeamSportMode;
 use DomainException;
+use Illuminate\Database\Eloquent\Collection;
 
 class TeamInvitationService
 {
+    public function listPendingForUser(User $user): Collection
+    {
+        return TeamInvitation::query()
+            ->where('invited_user_id', $user->id)
+            ->where('status', InvitationStatus::Pending)
+            ->with(['teamSportMode.sportMode', 'invitedUser', 'position'])
+            ->get();
+    }
+
     public function send(TeamSportMode $teamSportMode, array $data, User $sender): TeamInvitation
     {
         if ($teamSportMode->activeMemberships()->where('player_id', $data['invited_user_id'])->exists()) {

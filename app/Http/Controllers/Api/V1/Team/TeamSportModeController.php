@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Team;
 use App\Models\Team;
 use App\Models\TeamSportMode;
 use Illuminate\Http\JsonResponse;
+use DomainException;
 use App\Services\Team\TeamService;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Resources\Team\TeamSportModeResource;
@@ -37,7 +38,11 @@ class TeamSportModeController extends BaseController
             return $this->sendError('Modalidade do time não encontrada.', [], 404);
         }
 
-        $this->teamService->removeSportMode($teamSportMode);
+        try {
+            $this->teamService->removeSportMode($teamSportMode);
+        } catch (DomainException $exception) {
+            return $this->sendError($exception->getMessage(), [], 409);
+        }
 
         return $this->sendResponse([], 'Modalidade removida do time.');
     }
