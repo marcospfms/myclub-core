@@ -21,7 +21,7 @@
 | API Resources                                              | ✅ Concluído   |
 | API Controllers (selects autenticados — leitura de catálogo) | ✅ Concluído   |
 | Admin Controllers (CRUD via Inertia)                       | ✅ Concluído   |
-| Rotas API e Admin                                          | ⬜ Pendente    |
+| Rotas API e Admin                                          | ✅ Concluído   |
 | Páginas Vue/Inertia — painel admin                         | ⬜ Pendente    |
 | Types TypeScript                                           | ⬜ Pendente    |
 | Testes Feature (Admin CRUD + API leitura)                  | ⬜ Pendente    |
@@ -344,41 +344,15 @@ Implementado em:
 
 ### `routes/api.php`
 
-```php
-Route::middleware('auth:sanctum')->prefix('v1/catalog')->name('api.catalog.')->group(function () {
-    Route::get('sport-modes', [Api\Catalog\SportModeController::class, 'index'])->name('sport-modes.index');
-    Route::get('categories',  [Api\Catalog\CategoryController::class, 'index'])->name('categories.index');
-    Route::get('positions',   [Api\Catalog\PositionController::class, 'index'])->name('positions.index');
-    Route::get('formations',  [Api\Catalog\FormationController::class, 'index'])->name('formations.index');
-    Route::get('staff-roles', [Api\Catalog\StaffRoleController::class, 'index'])->name('staff-roles.index');
-    Route::get('badge-types', [Api\Catalog\BadgeTypeController::class, 'index'])->name('badge-types.index');
-});
-```
+Implementado em:
+[`routes/api.php`](/mnt/c/wamp64/www/MyClub/myclub-core/routes/api.php)
 
 > Requer `auth:sanctum`. Estes endpoints são consumidos pelo frontend autenticado para popular selects em formulários.
 
 ### `routes/admin.php`
 
-```php
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-
-    Route::prefix('catalog')->name('catalog.')->group(function () {
-        Route::resource('sport-modes', Admin\Catalog\SportModeController::class)
-            ->except(['show']);
-        Route::resource('categories', Admin\Catalog\CategoryController::class)
-            ->except(['show']);
-        Route::resource('positions', Admin\Catalog\PositionController::class)
-            ->except(['show']);
-        Route::resource('formations', Admin\Catalog\FormationController::class)
-            ->except(['show']);
-        Route::resource('staff-roles', Admin\Catalog\StaffRoleController::class)
-            ->except(['show']);
-        Route::resource('badge-types', Admin\Catalog\BadgeTypeController::class)
-            ->except(['show']);
-    });
-
-});
-```
+Implementado em:
+[`routes/admin.php`](/mnt/c/wamp64/www/MyClub/myclub-core/routes/admin.php)
 
 > O middleware `auth` protege todas as rotas admin. Adicionar um middleware de `role:admin` quando a política de autorização for implementada na Fase 4.
 

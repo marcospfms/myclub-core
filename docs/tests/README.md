@@ -9,11 +9,11 @@ Este arquivo registra cada teste criado, seu objetivo e cenarios cobertos.
 | Modulo | Arquivos | Metodos | Cobertura | Status |
 |--------|----------|---------|-----------|--------|
 | Auth | 7 | 25 | 100% | ✅ Completo |
-| Catalog Foundation | 3 | 11 | 100% | ✅ Completo |
+| Catalog Foundation | 4 | 15 | 100% | ✅ Completo |
 | Navigation/Core | 2 | 3 | 100% | ✅ Completo |
 | Settings | 2 | 11 | 100% | ✅ Completo |
 | Unit | 1 | 1 | 100% | ✅ Completo |
-| **Total** | **14** | **48** | **100%** | ✅ |
+| **Total** | **15** | **52** | **100%** | ✅ |
 
 ---
 
@@ -120,6 +120,17 @@ Valida Form Requests e API Resources dos catalogos.
 | `test_catalog_resources_return_expected_payload_shapes` | Resources retornam payloads em `snake_case`, com campos e relacionamentos esperados |
 | `test_catalog_write_requests_allow_only_admin_users` | Escrita de catalogo fica restrita a usuarios com `role = admin` |
 
+### `tests/Feature/Catalog/CatalogRouteTest.php`
+Valida rotas de catálogo na API e no painel admin.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_catalog_api_routes_require_authentication` | Endpoints de catálogo da API exigem autenticação Sanctum |
+| `test_authenticated_users_can_list_catalog_api_routes` | Usuário autenticado consegue listar todos os catálogos via API |
+| `test_admin_catalog_routes_require_authentication` | Rotas administrativas de catálogo redirecionam visitante para login |
+| `test_non_admin_users_cannot_access_admin_catalog_routes` | Usuário autenticado comum recebe 403 nas rotas admin de catálogo |
+| `test_admin_users_can_access_admin_catalog_index_routes` | Usuário admin consegue acessar as listagens admin de catálogo |
+
 ---
 
 ## Navigation/Core
@@ -196,6 +207,7 @@ As principais regras cobertas hoje pela suite sao:
 - fundacao da Fase 0: migrations e seeders de catalogo
 - form requests de catalogo
 - api resources de catalogo
+- rotas autenticadas de catalogo na API e no admin
 
 ---
 
@@ -203,6 +215,5 @@ As principais regras cobertas hoje pela suite sao:
 
 - A suite atual esta concentrada em autenticacao, settings e fundacao inicial do dominio.
 - Os proximos blocos do roadmap devem adicionar testes para:
-  - API autenticada de leitura dos catalogos
   - CRUD administrativo via Inertia
   - regras de autorizacao do dominio esportivo
