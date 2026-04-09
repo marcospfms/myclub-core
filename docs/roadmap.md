@@ -32,7 +32,10 @@ O que implementar:
 
 Status atual:
 
-- migrations e enums já iniciados
+- concluída no backend e testes
+- `Types TypeScript` adiados para quando existirem os clientes:
+  - React Native (mobile)
+  - Nuxt (web)
 
 ---
 

@@ -1,5 +1,7 @@
 # Roadmap Fase 1 — Identidade, Times e Elenco
 
+> Status final: **✅ Encerrada**
+
 > Detalhamento completo de implementação da Fase 1. Cobertura: migrations, seeders, models, services, form requests, resources, controllers, rotas, types TypeScript e testes.
 >
 > **Importante:** A partir da Fase 1, a entrega é exclusivamente via API (`auth:sanctum`). O painel administrativo de acompanhamento será implementado ao final de todas as fases, reutilizando os services já existentes.
@@ -25,7 +27,7 @@
 | API Resources                            | ✅ Concluído |
 | API Controllers                          | ✅ Concluído |
 | Rotas API (`routes/api.php`)             | ✅ Concluído |
-| Types TypeScript                         | ⬜ Pendente |
+| Types TypeScript                         | ⏸️ Adiado |
 | Testes Feature                           | ✅ Concluído |
 
 ### Progresso atual
@@ -47,9 +49,30 @@ Primeiro bloco da Fase 1 já implementado:
 
 Próximo bloco recomendado:
 
-- types TypeScript
+- aplicar `Types TypeScript` quando existirem consumidores reais da API:
+  - app mobile em React Native
+  - app web em Nuxt
 
 ---
+
+## Observação sobre `Types TypeScript`
+
+O item de `Types TypeScript` não bloqueia a conclusão da Fase 1 neste momento.
+
+Ele foi adiado intencionalmente porque ainda não existe consumidor frontend ativo para este contexto.
+
+Quando os projetos clientes forem iniciados, os contratos devem ser materializados para:
+
+- **React Native (mobile)**: tipos de payload para perfis, times, convites e elenco
+- **Nuxt (web)**: tipos de consumo da API pública e páginas autenticadas do produto
+
+Até lá, a Fase 1 é considerada concluída do ponto de vista de:
+
+- domínio
+- banco
+- API
+- autorização
+- testes feature
 
 ## 2. Contexto de Domínio
 
