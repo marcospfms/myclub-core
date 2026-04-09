@@ -19,8 +19,8 @@
 | Services                                                   | ✅ Concluído   |
 | Form Requests                                              | ✅ Concluído   |
 | API Resources                                              | ✅ Concluído   |
-| API Controllers (selects autenticados — leitura de catálogo) | ⬜ Pendente    |
-| Admin Controllers (CRUD via Inertia)                       | ⬜ Pendente    |
+| API Controllers (selects autenticados — leitura de catálogo) | ✅ Concluído   |
+| Admin Controllers (CRUD via Inertia)                       | ✅ Concluído   |
 | Rotas API e Admin                                          | ⬜ Pendente    |
 | Páginas Vue/Inertia — painel admin                         | ⬜ Pendente    |
 | Types TypeScript                                           | ⬜ Pendente    |
@@ -309,24 +309,15 @@ A API de catálogo expõe **apenas leitura** (`GET index`). É consumida pelo fr
 
 Todos estendem `BaseController` e retornam via `sendResponse()`.
 
-### `SportModeController` (API)
+Implementado em:
+- [`SportModeController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Api/Catalog/SportModeController.php)
+- [`CategoryController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Api/Catalog/CategoryController.php)
+- [`PositionController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Api/Catalog/PositionController.php)
+- [`FormationController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Api/Catalog/FormationController.php)
+- [`StaffRoleController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Api/Catalog/StaffRoleController.php)
+- [`BadgeTypeController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Api/Catalog/BadgeTypeController.php)
 
-```php
-namespace App\Http\Controllers\Api\Catalog;
-
-class SportModeController extends BaseController
-{
-    public function __construct(private SportModeService $sportModeService) {}
-
-    public function index(): JsonResponse
-    {
-        $sportModes = $this->sportModeService->listAll();
-        return $this->sendResponse(SportModeResource::collection($sportModes), 'Sport modes retrieved.');
-    }
-}
-```
-
-> Repetir o mesmo padrão para `CategoryController`, `PositionController`, `FormationController`, `StaffRoleController`, `BadgeTypeController`.
+> Todos expõem apenas `index()`, usam o service do contexto e retornam `Resource` via `sendResponse()`.
 
 ---
 
@@ -335,89 +326,17 @@ class SportModeController extends BaseController
 Localização: `app/Http/Controllers/Admin/Catalog/`
 
 Não estendem `BaseController`. Retornam `Inertia::render()` ou `redirect()`.
+Usam [`Controller.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Admin/Controller.php) como base para garantir `ensureAdmin()` até a fase de policies.
 
-### `SportModeController` (Admin)
+Implementado em:
+- [`SportModeController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Admin/Catalog/SportModeController.php)
+- [`CategoryController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Admin/Catalog/CategoryController.php)
+- [`PositionController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Admin/Catalog/PositionController.php)
+- [`FormationController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Admin/Catalog/FormationController.php)
+- [`StaffRoleController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Admin/Catalog/StaffRoleController.php)
+- [`BadgeTypeController.php`](/mnt/c/wamp64/www/MyClub/myclub-core/app/Http/Controllers/Admin/Catalog/BadgeTypeController.php)
 
-```php
-namespace App\Http\Controllers\Admin\Catalog;
-
-use Inertia\Inertia;
-use Inertia\Response;
-
-class SportModeController extends Controller
-{
-    public function __construct(private SportModeService $sportModeService) {}
-
-    public function index(): Response
-    {
-        return Inertia::render('admin/catalog/sport-modes/Index', [
-            'sportModes' => SportModeResource::collection(
-                $this->sportModeService->listAll()
-            ),
-        ]);
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('admin/catalog/sport-modes/Create', [
-            'categories' => CategoryResource::collection(Category::all()),
-            'formations' => FormationResource::collection(Formation::all()),
-            'positions'  => PositionResource::collection(Position::all()),
-        ]);
-    }
-
-    public function store(StoreSportModeRequest $request): RedirectResponse
-    {
-        $sportMode = $this->sportModeService->create($request->validated());
-
-        if ($request->filled('category_ids')) {
-            $this->sportModeService->syncCategories($sportMode, $request->category_ids);
-        }
-        if ($request->filled('formation_ids')) {
-            $this->sportModeService->syncFormations($sportMode, $request->formation_ids);
-        }
-        if ($request->filled('position_ids')) {
-            $this->sportModeService->syncPositions($sportMode, $request->position_ids);
-        }
-
-        return redirect()->route('admin.catalog.sport-modes.index')
-            ->with('success', 'Modalidade criada com sucesso.');
-    }
-
-    public function edit(SportMode $sportMode): Response
-    {
-        $sportMode->load(['categories', 'formations', 'positions']);
-
-        return Inertia::render('admin/catalog/sport-modes/Edit', [
-            'sportMode'  => new SportModeResource($sportMode),
-            'categories' => CategoryResource::collection(Category::all()),
-            'formations' => FormationResource::collection(Formation::all()),
-            'positions'  => PositionResource::collection(Position::all()),
-        ]);
-    }
-
-    public function update(UpdateSportModeRequest $request, SportMode $sportMode): RedirectResponse
-    {
-        $this->sportModeService->update($sportMode, $request->only('name'));
-        $this->sportModeService->syncCategories($sportMode, $request->category_ids ?? []);
-        $this->sportModeService->syncFormations($sportMode, $request->formation_ids ?? []);
-        $this->sportModeService->syncPositions($sportMode, $request->position_ids ?? []);
-
-        return redirect()->route('admin.catalog.sport-modes.index')
-            ->with('success', 'Modalidade atualizada com sucesso.');
-    }
-
-    public function destroy(SportMode $sportMode): RedirectResponse
-    {
-        $this->sportModeService->delete($sportMode);
-
-        return redirect()->route('admin.catalog.sport-modes.index')
-            ->with('success', 'Modalidade removida.');
-    }
-}
-```
-
-> Os demais controllers de catálogo (`CategoryController`, `PositionController`, `FormationController`, `StaffRoleController`, `BadgeTypeController`) seguem o mesmo padrão sem as chamadas de sync de pivô.
+> `SportModeController` também carrega os catálogos auxiliares e faz `sync` dos pivôs em criação/edição. Os demais seguem o CRUD simples do service.
 
 ---
 
