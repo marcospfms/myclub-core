@@ -6,6 +6,7 @@ import CatalogMetricGrid from '@/components/catalog/CatalogMetricGrid.vue';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { resolveCatalogIcon } from '@/catalog/badgeIcons';
 import { resolveCatalogMessage } from '@/i18n/catalog';
 import { dashboard } from '@/routes';
 import {
@@ -17,7 +18,7 @@ import {
 import type { CatalogMetricItem, Position } from '@/types';
 
 const props = defineProps<{
-    positions: Position[];
+    positions: { data: Position[] };
 }>();
 
 const indexHref = positionsIndex.url();
@@ -26,16 +27,16 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Positions', href: indexHref },
+            { title: 'Catalog', href: positionsIndex.url() },
+            { title: 'Positions', href: positionsIndex.url() },
         ],
     },
 });
 
 const metrics: CatalogMetricItem[] = [
-    { label: 'Total positions', value: props.positions.length, description: 'Posições reutilizadas em escalação, convites e preferências.' },
-    { label: 'Unique abbreviations', value: new Set(props.positions.map((item) => item.abbreviation)).size, description: 'Abreviações disponíveis para lineup e resumos de partida.' },
-    { label: 'With icon key', value: props.positions.filter((item) => item.icon).length, description: 'Entradas prontas para render visual no admin e em clientes externos.' },
+    { label: 'Total positions', value: props.positions.data.length, description: 'Posições reutilizadas em escalação, convites e preferências.' },
+    { label: 'Unique abbreviations', value: new Set(props.positions.data.map((item) => item.abbreviation)).size, description: 'Abreviações disponíveis para lineup e resumos de partida.' },
+    { label: 'With icon key', value: props.positions.data.filter((item) => item.icon).length, description: 'Entradas prontas para render visual no admin e em clientes externos.' },
 ];
 
 function destroyPosition(id: number): void {
@@ -61,7 +62,7 @@ function destroyPosition(id: number): void {
 
         <CatalogMetricGrid :items="metrics" />
 
-        <CatalogEmptyState v-if="positions.length === 0" title="No positions yet" description="Cadastre as posições para liberar convites, escalações e preferências de jogadores.">
+        <CatalogEmptyState v-if="positions.data.length === 0" title="No positions yet" description="Cadastre as posições para liberar convites, escalações e preferências de jogadores.">
             <Button as-child><Link :href="createPosition.url()">Create first position</Link></Button>
         </CatalogEmptyState>
 
@@ -78,7 +79,7 @@ function destroyPosition(id: number): void {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800">
-                        <tr v-for="position in positions" :key="position.id">
+                        <tr v-for="position in positions.data" :key="position.id">
                             <td class="px-6 py-5">
                                 <div class="space-y-1">
                                     <p class="font-semibold">{{ resolveCatalogMessage('pt-BR', position.label_key) }}</p>
@@ -87,7 +88,16 @@ function destroyPosition(id: number): void {
                             </td>
                             <td class="px-6 py-5 text-sm text-muted-foreground">{{ position.key }}</td>
                             <td class="px-6 py-5 font-medium">{{ position.abbreviation }}</td>
-                            <td class="px-6 py-5 text-sm text-muted-foreground">{{ position.icon ?? '—' }}</td>
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-3 text-sm text-muted-foreground">
+                                    <component
+                                        :is="resolveCatalogIcon(position.icon)"
+                                        v-if="resolveCatalogIcon(position.icon)"
+                                        class="size-4"
+                                    />
+                                    <span>{{ position.icon ?? '—' }}</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">

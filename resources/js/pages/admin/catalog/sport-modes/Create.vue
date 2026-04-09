@@ -10,24 +10,24 @@ import {
 } from '@/routes/admin/catalog/sport-modes';
 import type { Category, Formation, Position } from '@/types';
 
-defineProps<{
-    categories: Category[];
-    formations: Formation[];
-    positions: Position[];
-}>();
-
 const indexHref = sportModesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Sport Modes', href: indexHref },
+            { title: 'Catalog', href: sportModesIndex.url() },
+            { title: 'Sport Modes', href: sportModesIndex.url() },
             { title: 'Create', href: createSportMode.url() },
         ],
     },
 });
+
+const props = defineProps<{
+    categories: { data: Category[] };
+    formations: { data: Formation[] };
+    positions: { data: Position[] };
+}>();
 
 const form = useForm({
     key: '',
@@ -56,9 +56,9 @@ function submit(): void {
 
         <SportModeForm
             :form="form"
-            :categories="categories"
-            :formations="formations"
-            :positions="positions"
+            :categories="props.categories.data"
+            :formations="props.formations.data"
+            :positions="props.positions.data"
             submit-label="Create sport mode"
             :cancel-href="indexHref"
             @submit="submit"

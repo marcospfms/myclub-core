@@ -11,7 +11,7 @@ import {
 import type { Position } from '@/types';
 
 const props = defineProps<{
-    position: Position;
+    position: { data: Position };
 }>();
 
 const indexHref = positionsIndex.url();
@@ -20,23 +20,23 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Positions', href: indexHref },
-            { title: 'Edit', href: editPosition.url(props.position.id) },
+            { title: 'Catalog', href: positionsIndex.url() },
+            { title: 'Positions', href: positionsIndex.url() },
+            { title: 'Edit', href: positionsIndex.url() },
         ],
     },
 });
 
 const form = useForm({
-    key: props.position.key,
-    label_key: props.position.label_key,
-    description_key: props.position.description_key ?? '',
-    icon: props.position.icon ?? '',
-    abbreviation: props.position.abbreviation,
+    key: props.position.data.key,
+    label_key: props.position.data.label_key,
+    description_key: props.position.data.description_key ?? '',
+    icon: props.position.data.icon ?? '',
+    abbreviation: props.position.data.abbreviation,
 });
 
 function submit(): void {
-    form.put(updatePosition.url(props.position.id));
+    form.put(updatePosition.url(props.position.data.id));
 }
 </script>
 

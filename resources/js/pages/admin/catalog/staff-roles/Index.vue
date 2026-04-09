@@ -6,6 +6,7 @@ import CatalogMetricGrid from '@/components/catalog/CatalogMetricGrid.vue';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { resolveCatalogIcon } from '@/catalog/badgeIcons';
 import { resolveCatalogMessage } from '@/i18n/catalog';
 import { dashboard } from '@/routes';
 import {
@@ -17,7 +18,7 @@ import {
 import type { CatalogMetricItem, StaffRole } from '@/types';
 
 const props = defineProps<{
-    staffRoles: StaffRole[];
+    staffRoles: { data: StaffRole[] };
 }>();
 
 const indexHref = staffRolesIndex.url();
@@ -26,16 +27,16 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Staff Roles', href: indexHref },
+            { title: 'Catalog', href: staffRolesIndex.url() },
+            { title: 'Staff Roles', href: staffRolesIndex.url() },
         ],
     },
 });
 
 const metrics: CatalogMetricItem[] = [
-    { label: 'Total roles', value: props.staffRoles.length, description: 'Papéis administrativos e esportivos disponíveis para a comissão.' },
-    { label: 'With icon key', value: props.staffRoles.filter((item) => item.icon).length, description: 'Roles com referência visual pronta para consumo no admin.' },
-    { label: 'Translated labels', value: props.staffRoles.filter((item) => item.label_key).length, description: 'Entradas prontas para renderização em múltiplos idiomas.' },
+    { label: 'Total roles', value: props.staffRoles.data.length, description: 'Papéis administrativos e esportivos disponíveis para a comissão.' },
+    { label: 'With icon key', value: props.staffRoles.data.filter((item) => item.icon).length, description: 'Roles com referência visual pronta para consumo no admin.' },
+    { label: 'Translated labels', value: props.staffRoles.data.filter((item) => item.label_key).length, description: 'Entradas prontas para renderização em múltiplos idiomas.' },
 ];
 
 function destroyStaffRole(id: number): void {
@@ -59,7 +60,7 @@ function destroyStaffRole(id: number): void {
 
         <CatalogMetricGrid :items="metrics" />
 
-        <CatalogEmptyState v-if="staffRoles.length === 0" title="No staff roles yet" description="Cadastre os papéis da comissão técnica antes de abrir os módulos de time e staff.">
+        <CatalogEmptyState v-if="staffRoles.data.length === 0" title="No staff roles yet" description="Cadastre os papéis da comissão técnica antes de abrir os módulos de time e staff.">
             <Button as-child><Link :href="createStaffRole.url()">Create first staff role</Link></Button>
         </CatalogEmptyState>
 
@@ -75,7 +76,7 @@ function destroyStaffRole(id: number): void {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800">
-                        <tr v-for="staffRole in staffRoles" :key="staffRole.id">
+                        <tr v-for="staffRole in staffRoles.data" :key="staffRole.id">
                             <td class="px-6 py-5">
                                 <div class="space-y-1">
                                     <p class="font-semibold">{{ resolveCatalogMessage('pt-BR', staffRole.label_key) }}</p>
@@ -83,7 +84,16 @@ function destroyStaffRole(id: number): void {
                                 </div>
                             </td>
                             <td class="px-6 py-5 text-sm text-muted-foreground">{{ staffRole.name }}</td>
-                            <td class="px-6 py-5 text-sm text-muted-foreground">{{ staffRole.icon ?? '—' }}</td>
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-3 text-sm text-muted-foreground">
+                                    <component
+                                        :is="resolveCatalogIcon(staffRole.icon)"
+                                        v-if="resolveCatalogIcon(staffRole.icon)"
+                                        class="size-4"
+                                    />
+                                    <span>{{ staffRole.icon ?? '—' }}</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">

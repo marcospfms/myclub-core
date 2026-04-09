@@ -39,7 +39,7 @@ const scopeOptions: { value: BadgeScope; label: string }[] = [
 <template>
     <form class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]" @submit.prevent="$emit('submit')">
         <Card class="gap-0 py-0">
-            <CardHeader class="border-b">
+            <CardHeader class="border-b pt-6">
                 <CardTitle>Badge contract</CardTitle>
                 <CardDescription>
                     Tipos de badge têm um slug estável, chaves de tradução e escopo de concessão.

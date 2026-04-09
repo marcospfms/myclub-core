@@ -6,6 +6,7 @@ import CatalogMetricGrid from '@/components/catalog/CatalogMetricGrid.vue';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { resolveCatalogIcon } from '@/catalog/badgeIcons';
 import { resolveCatalogMessage } from '@/i18n/catalog';
 import { dashboard } from '@/routes';
 import {
@@ -17,7 +18,7 @@ import {
 import type { BadgeType, CatalogMetricItem } from '@/types';
 
 const props = defineProps<{
-    badgeTypes: BadgeType[];
+    badgeTypes: { data: BadgeType[] };
 }>();
 
 const indexHref = badgeTypesIndex.url();
@@ -26,16 +27,16 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Badge Types', href: indexHref },
+            { title: 'Catalog', href: badgeTypesIndex.url() },
+            { title: 'Badge Types', href: badgeTypesIndex.url() },
         ],
     },
 });
 
 const metrics: CatalogMetricItem[] = [
-    { label: 'Total badges', value: props.badgeTypes.length, description: 'Tipos de badge disponíveis para carreira, temporada e campeonatos.' },
-    { label: 'Championship scope', value: props.badgeTypes.filter((item) => item.scope === 'championship').length, description: 'Badges ligadas a distribuição em campeonatos.' },
-    { label: 'Career scope', value: props.badgeTypes.filter((item) => item.scope === 'career').length, description: 'Badges relacionadas a evolução individual do jogador.' },
+    { label: 'Total badges', value: props.badgeTypes.data.length, description: 'Tipos de badge disponíveis para carreira, temporada e campeonatos.' },
+    { label: 'Championship scope', value: props.badgeTypes.data.filter((item) => item.scope === 'championship').length, description: 'Badges ligadas a distribuição em campeonatos.' },
+    { label: 'Career scope', value: props.badgeTypes.data.filter((item) => item.scope === 'career').length, description: 'Badges relacionadas a evolução individual do jogador.' },
 ];
 
 function destroyBadgeType(id: number): void {
@@ -59,7 +60,7 @@ function destroyBadgeType(id: number): void {
 
         <CatalogMetricGrid :items="metrics" />
 
-        <CatalogEmptyState v-if="badgeTypes.length === 0" title="No badge types yet" description="Cadastre os tipos de badge para destravar distribuição e reconhecimento no ecossistema MyClub.">
+        <CatalogEmptyState v-if="badgeTypes.data.length === 0" title="No badge types yet" description="Cadastre os tipos de badge para destravar distribuição e reconhecimento no ecossistema MyClub.">
             <Button as-child><Link :href="createBadgeType.url()">Create first badge type</Link></Button>
         </CatalogEmptyState>
 
@@ -76,7 +77,7 @@ function destroyBadgeType(id: number): void {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800">
-                        <tr v-for="badgeType in badgeTypes" :key="badgeType.id">
+                        <tr v-for="badgeType in badgeTypes.data" :key="badgeType.id">
                             <td class="px-6 py-5">
                                 <div class="space-y-1">
                                     <p class="font-semibold">{{ resolveCatalogMessage('pt-BR', badgeType.label_key) }}</p>
@@ -89,7 +90,16 @@ function destroyBadgeType(id: number): void {
                                     {{ badgeType.scope }}
                                 </span>
                             </td>
-                            <td class="px-6 py-5 text-sm text-muted-foreground">{{ badgeType.icon ?? '—' }}</td>
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-3 text-sm text-muted-foreground">
+                                    <component
+                                        :is="resolveCatalogIcon(badgeType.icon)"
+                                        v-if="resolveCatalogIcon(badgeType.icon)"
+                                        class="size-4"
+                                    />
+                                    <span>{{ badgeType.icon ?? '—' }}</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">

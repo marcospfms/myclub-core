@@ -16,7 +16,7 @@ import {
 import type { CatalogMetricItem, Formation } from '@/types';
 
 const props = defineProps<{
-    formations: Formation[];
+    formations: { data: Formation[] };
 }>();
 
 const indexHref = formationsIndex.url();
@@ -25,16 +25,16 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Formations', href: indexHref },
+            { title: 'Catalog', href: formationsIndex.url() },
+            { title: 'Formations', href: formationsIndex.url() },
         ],
     },
 });
 
 const metrics: CatalogMetricItem[] = [
-    { label: 'Total formations', value: props.formations.length, description: 'Desenhos táticos cadastrados para modalidades esportivas.' },
-    { label: 'Distinct lines', value: new Set(props.formations.map((item) => item.name)).size, description: 'Padrões táticos únicos publicados.' },
-    { label: 'Max width', value: props.formations.reduce((max, item) => Math.max(max, item.name.length), 0), description: 'Maior comprimento textual entre formações cadastradas.' },
+    { label: 'Total formations', value: props.formations.data.length, description: 'Desenhos táticos cadastrados para modalidades esportivas.' },
+    { label: 'Distinct lines', value: new Set(props.formations.data.map((item) => item.name)).size, description: 'Padrões táticos únicos publicados.' },
+    { label: 'Max width', value: props.formations.data.reduce((max, item) => Math.max(max, item.name.length), 0), description: 'Maior comprimento textual entre formações cadastradas.' },
 ];
 
 function destroyFormation(id: number): void {
@@ -58,7 +58,7 @@ function destroyFormation(id: number): void {
 
         <CatalogMetricGrid :items="metrics" />
 
-        <CatalogEmptyState v-if="formations.length === 0" title="No formations yet" description="Comece pelas formações principais usadas nas modalidades atuais.">
+        <CatalogEmptyState v-if="formations.data.length === 0" title="No formations yet" description="Comece pelas formações principais usadas nas modalidades atuais.">
             <Button as-child><Link :href="createFormation.url()">Create first formation</Link></Button>
         </CatalogEmptyState>
 
@@ -73,7 +73,7 @@ function destroyFormation(id: number): void {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800">
-                        <tr v-for="formation in formations" :key="formation.id">
+                        <tr v-for="formation in formations.data" :key="formation.id">
                             <td class="px-6 py-5 font-medium">{{ formation.name }}</td>
                             <td class="px-6 py-5 text-sm text-muted-foreground">{{ formation.key }}</td>
                             <td class="px-6 py-5">

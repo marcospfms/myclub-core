@@ -15,8 +15,8 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Formations', href: indexHref },
+            { title: 'Catalog', href: formationsIndex.url() },
+            { title: 'Formations', href: formationsIndex.url() },
             { title: 'Create', href: createFormation.url() },
         ],
     },

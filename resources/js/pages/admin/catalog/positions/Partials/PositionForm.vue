@@ -30,7 +30,7 @@ defineEmits<{
 <template>
     <form class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]" @submit.prevent="$emit('submit')">
         <Card class="gap-0 py-0">
-            <CardHeader class="border-b">
+            <CardHeader class="border-b pt-6">
                 <CardTitle>Position identity</CardTitle>
                 <CardDescription>
                     A posição precisa de abreviação estável para lineup e `label_key` para os clientes.

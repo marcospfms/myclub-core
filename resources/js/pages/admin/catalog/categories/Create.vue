@@ -15,8 +15,8 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Categories', href: indexHref },
+            { title: 'Catalog', href: categoriesIndex.url() },
+            { title: 'Categories', href: categoriesIndex.url() },
             { title: 'Create', href: createCategory.url() },
         ],
     },

@@ -11,7 +11,7 @@ import {
 import type { Category } from '@/types';
 
 const props = defineProps<{
-    category: Category;
+    category: { data: Category };
 }>();
 
 const indexHref = categoriesIndex.url();
@@ -20,20 +20,20 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Categories', href: indexHref },
-            { title: 'Edit', href: editCategory.url(props.category.id) },
+            { title: 'Catalog', href: categoriesIndex.url() },
+            { title: 'Categories', href: categoriesIndex.url() },
+            { title: 'Edit', href: categoriesIndex.url() },
         ],
     },
 });
 
 const form = useForm({
-    key: props.category.key,
-    name: props.category.name,
+    key: props.category.data.key,
+    name: props.category.data.name,
 });
 
 function submit(): void {
-    form.put(updateCategory.url(props.category.id));
+    form.put(updateCategory.url(props.category.data.id));
 }
 </script>
 

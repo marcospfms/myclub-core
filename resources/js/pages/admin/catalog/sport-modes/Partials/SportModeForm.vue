@@ -38,7 +38,7 @@ defineEmits<{
     <form class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]" @submit.prevent="$emit('submit')">
         <div class="space-y-6">
             <Card class="gap-0 py-0">
-                <CardHeader class="border-b">
+                <CardHeader class="border-b pt-6">
                     <CardTitle>Core identity</CardTitle>
                     <CardDescription>
                         Defina a chave estável da modalidade e as chaves de tradução consumidas pelos clientes.
@@ -118,7 +118,7 @@ defineEmits<{
             />
 
             <Card class="gap-0 py-0">
-                <CardHeader class="border-b">
+                <CardHeader class="border-b pt-6">
                     <CardTitle>Sideline notes</CardTitle>
                     <CardDescription>
                         Mantenha a `key` imutável depois de publicada e use `label_key` para textos visíveis.

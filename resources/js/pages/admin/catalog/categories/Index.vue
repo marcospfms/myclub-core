@@ -16,7 +16,7 @@ import {
 import type { CatalogMetricItem, Category } from '@/types';
 
 const props = defineProps<{
-    categories: Category[];
+    categories: { data: Category[] };
 }>();
 
 const indexHref = categoriesIndex.url();
@@ -25,16 +25,16 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Categories', href: indexHref },
+            { title: 'Catalog', href: categoriesIndex.url() },
+            { title: 'Categories', href: categoriesIndex.url() },
         ],
     },
 });
 
 const metrics: CatalogMetricItem[] = [
-    { label: 'Total categories', value: props.categories.length, description: 'Faixas etárias e agrupamentos esportivos disponíveis.' },
-    { label: 'Distinct keys', value: new Set(props.categories.map((item) => item.key)).size, description: 'Chaves únicas já publicadas para integrações.' },
-    { label: 'Named entries', value: props.categories.filter((item) => item.name.length > 0).length, description: 'Entradas com nomenclatura administrativa pronta para uso.' },
+    { label: 'Total categories', value: props.categories.data.length, description: 'Faixas etárias e agrupamentos esportivos disponíveis.' },
+    { label: 'Distinct keys', value: new Set(props.categories.data.map((item) => item.key)).size, description: 'Chaves únicas já publicadas para integrações.' },
+    { label: 'Named entries', value: props.categories.data.filter((item) => item.name.length > 0).length, description: 'Entradas com nomenclatura administrativa pronta para uso.' },
 ];
 
 function destroyCategory(id: number): void {
@@ -64,7 +64,7 @@ function destroyCategory(id: number): void {
 
         <CatalogMetricGrid :items="metrics" />
 
-        <CatalogEmptyState v-if="categories.length === 0" title="No categories yet" description="Crie categorias administrativas para começar a estruturar as modalidades.">
+        <CatalogEmptyState v-if="categories.data.length === 0" title="No categories yet" description="Crie categorias administrativas para começar a estruturar as modalidades.">
             <Button as-child>
                 <Link :href="createCategory.url()">Create first category</Link>
             </Button>
@@ -81,7 +81,7 @@ function destroyCategory(id: number): void {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800">
-                        <tr v-for="category in categories" :key="category.id">
+                        <tr v-for="category in categories.data" :key="category.id">
                             <td class="px-6 py-5 font-medium">{{ category.name }}</td>
                             <td class="px-6 py-5 text-sm text-muted-foreground">{{ category.key }}</td>
                             <td class="px-6 py-5">

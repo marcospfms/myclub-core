@@ -6,6 +6,7 @@ import CatalogMetricGrid from '@/components/catalog/CatalogMetricGrid.vue';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { resolveCatalogIcon } from '@/catalog/badgeIcons';
 import { resolveCatalogMessage } from '@/i18n/catalog';
 import { dashboard } from '@/routes';
 import {
@@ -17,7 +18,7 @@ import {
 import type { CatalogMetricItem, SportMode } from '@/types';
 
 const props = defineProps<{
-    sportModes: SportMode[];
+    sportModes: { data: SportMode[] };
 }>();
 
 const indexHref = sportModesIndex.url();
@@ -26,8 +27,8 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Sport Modes', href: indexHref },
+            { title: 'Catalog', href: sportModesIndex.url() },
+            { title: 'Sport Modes', href: sportModesIndex.url() },
         ],
     },
 });
@@ -35,17 +36,17 @@ defineOptions({
 const metrics: CatalogMetricItem[] = [
     {
         label: 'Total modes',
-        value: props.sportModes.length,
+        value: props.sportModes.data.length,
         description: 'Modalidades disponíveis para campeonatos, amistosos e descoberta.',
     },
     {
         label: 'With formations',
-        value: props.sportModes.filter((item) => item.formations.length > 0).length,
+        value: props.sportModes.data.filter((item) => item.formations.length > 0).length,
         description: 'Entradas com desenho tático pronto para escalação.',
     },
     {
         label: 'With positions',
-        value: props.sportModes.reduce((count, item) => count + item.positions.length, 0),
+        value: props.sportModes.data.reduce((count, item) => count + item.positions.length, 0),
         description: 'Relações de posição ativas distribuídas pelas modalidades.',
     },
 ];
@@ -81,7 +82,7 @@ function destroySportMode(id: number): void {
         <CatalogMetricGrid :items="metrics" />
 
         <CatalogEmptyState
-            v-if="sportModes.length === 0"
+            v-if="sportModes.data.length === 0"
             title="No sport modes registered yet"
             description="Create the first modality to unlock tactical configuration for matches and championships."
         >
@@ -103,7 +104,7 @@ function destroySportMode(id: number): void {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800">
-                        <tr v-for="sportMode in sportModes" :key="sportMode.id" class="align-top">
+                        <tr v-for="sportMode in sportModes.data" :key="sportMode.id" class="align-top">
                             <td class="px-6 py-5">
                                 <div class="space-y-1">
                                     <p class="font-semibold">{{ resolveCatalogMessage('pt-BR', sportMode.label_key) }}</p>
@@ -126,7 +127,16 @@ function destroySportMode(id: number): void {
                                     </span>
                                 </div>
                             </td>
-                            <td class="px-6 py-5 text-sm text-muted-foreground">{{ sportMode.icon ?? '—' }}</td>
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-3 text-sm text-muted-foreground">
+                                    <component
+                                        :is="resolveCatalogIcon(sportMode.icon)"
+                                        v-if="resolveCatalogIcon(sportMode.icon)"
+                                        class="size-4"
+                                    />
+                                    <span>{{ sportMode.icon ?? '—' }}</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">

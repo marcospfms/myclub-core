@@ -11,7 +11,7 @@ import {
 import type { BadgeType } from '@/types';
 
 const props = defineProps<{
-    badgeType: BadgeType;
+    badgeType: { data: BadgeType };
 }>();
 
 const indexHref = badgeTypesIndex.url();
@@ -20,23 +20,23 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Badge Types', href: indexHref },
-            { title: 'Edit', href: editBadgeType.url(props.badgeType.id) },
+            { title: 'Catalog', href: badgeTypesIndex.url() },
+            { title: 'Badge Types', href: badgeTypesIndex.url() },
+            { title: 'Edit', href: badgeTypesIndex.url() },
         ],
     },
 });
 
 const form = useForm({
-    name: props.badgeType.name,
-    label_key: props.badgeType.label_key,
-    description_key: props.badgeType.description_key ?? '',
-    icon: props.badgeType.icon ?? '',
-    scope: props.badgeType.scope,
+    name: props.badgeType.data.name,
+    label_key: props.badgeType.data.label_key,
+    description_key: props.badgeType.data.description_key ?? '',
+    icon: props.badgeType.data.icon ?? '',
+    scope: props.badgeType.data.scope,
 });
 
 function submit(): void {
-    form.put(updateBadgeType.url(props.badgeType.id));
+    form.put(updateBadgeType.url(props.badgeType.data.id));
 }
 </script>
 

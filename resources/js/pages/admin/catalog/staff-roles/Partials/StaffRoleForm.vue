@@ -29,7 +29,7 @@ defineEmits<{
 <template>
     <form class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]" @submit.prevent="$emit('submit')">
         <Card class="gap-0 py-0">
-            <CardHeader class="border-b">
+            <CardHeader class="border-b pt-6">
                 <CardTitle>Staff role identity</CardTitle>
                 <CardDescription>
                     A `name` funciona como slug técnico. Os clientes exibem o papel via chaves de tradução.

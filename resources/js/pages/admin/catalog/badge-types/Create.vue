@@ -15,8 +15,8 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Badge Types', href: indexHref },
+            { title: 'Catalog', href: badgeTypesIndex.url() },
+            { title: 'Badge Types', href: badgeTypesIndex.url() },
             { title: 'Create', href: createBadgeType.url() },
         ],
     },

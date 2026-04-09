@@ -15,8 +15,8 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Staff Roles', href: indexHref },
+            { title: 'Catalog', href: staffRolesIndex.url() },
+            { title: 'Staff Roles', href: staffRolesIndex.url() },
             { title: 'Create', href: createStaffRole.url() },
         ],
     },

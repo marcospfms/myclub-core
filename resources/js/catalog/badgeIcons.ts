@@ -1,34 +1,80 @@
 import type { Component } from 'vue';
 import {
+    Activity,
+    ArrowLeft,
+    ArrowRight,
     Award,
+    BarChart3,
+    Binoculars,
+    Briefcase,
+    Circle,
+    CornerUpLeft,
+    CornerUpRight,
+    Cross,
     Flag,
     Flame,
     Goal,
     Handshake,
     HeartHandshake,
+    HeartPulse,
+    Link,
+    Map,
+    Megaphone,
     Medal,
+    MoveLeft,
+    MoveRight,
     Shield,
     ShieldCheck,
     Sparkles,
     Star,
+    Square,
+    Sun,
     Target,
     Trophy,
+    Users,
     Zap,
 } from 'lucide-vue-next';
 
-export const badgeIconMap: Record<string, Component> = {
+export const catalogIconMap: Record<string, Component> = {
+    activity: Activity,
+    'arrow-left': ArrowLeft,
+    'arrow-right': ArrowRight,
     award: Award,
+    'bar-chart': BarChart3,
+    binoculars: Binoculars,
+    briefcase: Briefcase,
+    circle: Circle,
+    'corner-up-left': CornerUpLeft,
+    'corner-up-right': CornerUpRight,
+    cross: Cross,
     flag: Flag,
     flame: Flame,
     goal: Goal,
     handshake: Handshake,
     heart_handshake: HeartHandshake,
+    heart_pulse: HeartPulse,
+    link: Link,
+    map: Map,
     medal: Medal,
+    'move-left': MoveLeft,
+    'move-right': MoveRight,
     shield: Shield,
     shield_check: ShieldCheck,
     sparkles: Sparkles,
+    square: Square,
     star: Star,
+    sun: Sun,
     target: Target,
     trophy: Trophy,
+    users: Users,
+    whistle: Megaphone,
     zap: Zap,
 };
+
+export function resolveCatalogIcon(iconKey?: string | null): Component | null {
+    if (!iconKey) {
+        return null;
+    }
+
+    return catalogIconMap[iconKey] ?? null;
+}

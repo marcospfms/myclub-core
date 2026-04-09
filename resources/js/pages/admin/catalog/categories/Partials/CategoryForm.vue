@@ -26,7 +26,7 @@ defineEmits<{
 <template>
     <form class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem]" @submit.prevent="$emit('submit')">
         <Card class="gap-0 py-0">
-            <CardHeader class="border-b">
+            <CardHeader class="border-b pt-6">
                 <CardTitle>Category profile</CardTitle>
                 <CardDescription>
                     Categorias seguem um contrato simples: chave estável e nome administrativo.
@@ -55,7 +55,7 @@ defineEmits<{
         </Card>
 
         <Card class="gap-0 py-0">
-            <CardHeader class="border-b">
+            <CardHeader class="border-b pt-6">
                 <CardTitle>Guideline</CardTitle>
                 <CardDescription>
                     Use nomes curtos e consistentes. Esta entidade é administrativa e reaproveitada em toda a plataforma.

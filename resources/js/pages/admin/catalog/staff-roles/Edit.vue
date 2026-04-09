@@ -11,7 +11,7 @@ import {
 import type { StaffRole } from '@/types';
 
 const props = defineProps<{
-    staffRole: StaffRole;
+    staffRole: { data: StaffRole };
 }>();
 
 const indexHref = staffRolesIndex.url();
@@ -20,22 +20,22 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Staff Roles', href: indexHref },
-            { title: 'Edit', href: editStaffRole.url(props.staffRole.id) },
+            { title: 'Catalog', href: staffRolesIndex.url() },
+            { title: 'Staff Roles', href: staffRolesIndex.url() },
+            { title: 'Edit', href: staffRolesIndex.url() },
         ],
     },
 });
 
 const form = useForm({
-    name: props.staffRole.name,
-    label_key: props.staffRole.label_key,
-    description_key: props.staffRole.description_key ?? '',
-    icon: props.staffRole.icon ?? '',
+    name: props.staffRole.data.name,
+    label_key: props.staffRole.data.label_key,
+    description_key: props.staffRole.data.description_key ?? '',
+    icon: props.staffRole.data.icon ?? '',
 });
 
 function submit(): void {
-    form.put(updateStaffRole.url(props.staffRole.id));
+    form.put(updateStaffRole.url(props.staffRole.data.id));
 }
 </script>
 

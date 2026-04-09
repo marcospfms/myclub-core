@@ -26,7 +26,7 @@ defineEmits<{
 <template>
     <form class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem]" @submit.prevent="$emit('submit')">
         <Card class="gap-0 py-0">
-            <CardHeader class="border-b">
+            <CardHeader class="border-b pt-6">
                 <CardTitle>Formation pattern</CardTitle>
                 <CardDescription>
                     Use o mesmo valor em `key` e `name` quando a formação for autoexplicativa.
@@ -55,7 +55,7 @@ defineEmits<{
         </Card>
 
         <Card class="gap-0 py-0">
-            <CardHeader class="border-b">
+            <CardHeader class="border-b pt-6">
                 <CardTitle>Tactical note</CardTitle>
                 <CardDescription>
                     Este catálogo alimenta convites, formações iniciais e visualizações táticas.

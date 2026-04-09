@@ -11,7 +11,7 @@ import {
 import type { Formation } from '@/types';
 
 const props = defineProps<{
-    formation: Formation;
+    formation: { data: Formation };
 }>();
 
 const indexHref = formationsIndex.url();
@@ -20,20 +20,20 @@ defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: dashboard.url() },
-            { title: 'Catalog', href: indexHref },
-            { title: 'Formations', href: indexHref },
-            { title: 'Edit', href: editFormation.url(props.formation.id) },
+            { title: 'Catalog', href: formationsIndex.url() },
+            { title: 'Formations', href: formationsIndex.url() },
+            { title: 'Edit', href: formationsIndex.url() },
         ],
     },
 });
 
 const form = useForm({
-    key: props.formation.key,
-    name: props.formation.name,
+    key: props.formation.data.key,
+    name: props.formation.data.name,
 });
 
 function submit(): void {
-    form.put(updateFormation.url(props.formation.id));
+    form.put(updateFormation.url(props.formation.data.id));
 }
 </script>
 
