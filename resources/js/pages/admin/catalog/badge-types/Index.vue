@@ -7,18 +7,25 @@ import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { resolveCatalogMessage } from '@/i18n/catalog';
+import { dashboard } from '@/routes';
+import {
+    create as createBadgeType,
+    destroy as destroyBadgeTypeRoute,
+    edit as editBadgeType,
+    index as badgeTypesIndex,
+} from '@/routes/admin/catalog/badge-types';
 import type { BadgeType, CatalogMetricItem } from '@/types';
 
 const props = defineProps<{
     badgeTypes: BadgeType[];
 }>();
 
-const indexHref = '/admin/catalog/badge-types';
+const indexHref = badgeTypesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Badge Types', href: indexHref },
         ],
@@ -36,7 +43,7 @@ function destroyBadgeType(id: number): void {
         return;
     }
 
-    router.delete(`${indexHref}/${id}`);
+    router.delete(destroyBadgeTypeRoute.url(id));
 }
 </script>
 
@@ -46,14 +53,14 @@ function destroyBadgeType(id: number): void {
     <div class="space-y-6 px-4 py-4 md:px-6">
         <CatalogPageHeader eyebrow="Recognition Catalog" title="Badge types" description="Gerencie os símbolos de reconhecimento usados por campeonatos, carreira e eventos sazonais." >
             <template #actions>
-                <Button as-child><Link :href="`${indexHref}/create`"><Plus class="size-4" />New badge type</Link></Button>
+                <Button as-child><Link :href="createBadgeType.url()"><Plus class="size-4" />New badge type</Link></Button>
             </template>
         </CatalogPageHeader>
 
         <CatalogMetricGrid :items="metrics" />
 
         <CatalogEmptyState v-if="badgeTypes.length === 0" title="No badge types yet" description="Cadastre os tipos de badge para destravar distribuição e reconhecimento no ecossistema MyClub.">
-            <Button as-child><Link :href="`${indexHref}/create`">Create first badge type</Link></Button>
+            <Button as-child><Link :href="createBadgeType.url()">Create first badge type</Link></Button>
         </CatalogEmptyState>
 
         <Card v-else class="gap-0 py-0">
@@ -86,7 +93,7 @@ function destroyBadgeType(id: number): void {
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">
-                                        <Link :href="`${indexHref}/${badgeType.id}/edit`"><Pencil class="size-4" />Edit</Link>
+                                        <Link :href="editBadgeType.url(badgeType.id)"><Pencil class="size-4" />Edit</Link>
                                     </Button>
                                     <Button variant="outline" size="sm" @click="destroyBadgeType(badgeType.id)">
                                         <Trash2 class="size-4" />Remove

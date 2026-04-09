@@ -2,21 +2,27 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import FormationForm from '@/pages/admin/catalog/formations/Partials/FormationForm.vue';
+import { dashboard } from '@/routes';
+import {
+    edit as editFormation,
+    index as formationsIndex,
+    update as updateFormation,
+} from '@/routes/admin/catalog/formations';
 import type { Formation } from '@/types';
 
 const props = defineProps<{
     formation: Formation;
 }>();
 
-const indexHref = '/admin/catalog/formations';
+const indexHref = formationsIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Formations', href: indexHref },
-            { title: 'Edit', href: indexHref },
+            { title: 'Edit', href: editFormation.url(props.formation.id) },
         ],
     },
 });
@@ -27,7 +33,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.put(`${indexHref}/${props.formation.id}`);
+    form.put(updateFormation.url(props.formation.id));
 }
 </script>
 

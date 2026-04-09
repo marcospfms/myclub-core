@@ -7,18 +7,25 @@ import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { resolveCatalogMessage } from '@/i18n/catalog';
+import { dashboard } from '@/routes';
+import {
+    create as createStaffRole,
+    destroy as destroyStaffRoleRoute,
+    edit as editStaffRole,
+    index as staffRolesIndex,
+} from '@/routes/admin/catalog/staff-roles';
 import type { CatalogMetricItem, StaffRole } from '@/types';
 
 const props = defineProps<{
     staffRoles: StaffRole[];
 }>();
 
-const indexHref = '/admin/catalog/staff-roles';
+const indexHref = staffRolesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Staff Roles', href: indexHref },
         ],
@@ -36,7 +43,7 @@ function destroyStaffRole(id: number): void {
         return;
     }
 
-    router.delete(`${indexHref}/${id}`);
+    router.delete(destroyStaffRoleRoute.url(id));
 }
 </script>
 
@@ -46,14 +53,14 @@ function destroyStaffRole(id: number): void {
     <div class="space-y-6 px-4 py-4 md:px-6">
         <CatalogPageHeader eyebrow="Sports Catalog" title="Staff roles" description="Gerencie o vocabulário oficial da comissão técnica para vínculos, permissões futuras e visualização pública." >
             <template #actions>
-                <Button as-child><Link :href="`${indexHref}/create`"><Plus class="size-4" />New staff role</Link></Button>
+                <Button as-child><Link :href="createStaffRole.url()"><Plus class="size-4" />New staff role</Link></Button>
             </template>
         </CatalogPageHeader>
 
         <CatalogMetricGrid :items="metrics" />
 
         <CatalogEmptyState v-if="staffRoles.length === 0" title="No staff roles yet" description="Cadastre os papéis da comissão técnica antes de abrir os módulos de time e staff.">
-            <Button as-child><Link :href="`${indexHref}/create`">Create first staff role</Link></Button>
+            <Button as-child><Link :href="createStaffRole.url()">Create first staff role</Link></Button>
         </CatalogEmptyState>
 
         <Card v-else class="gap-0 py-0">
@@ -80,7 +87,7 @@ function destroyStaffRole(id: number): void {
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">
-                                        <Link :href="`${indexHref}/${staffRole.id}/edit`"><Pencil class="size-4" />Edit</Link>
+                                        <Link :href="editStaffRole.url(staffRole.id)"><Pencil class="size-4" />Edit</Link>
                                     </Button>
                                     <Button variant="outline" size="sm" @click="destroyStaffRole(staffRole.id)">
                                         <Trash2 class="size-4" />Remove

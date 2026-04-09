@@ -6,18 +6,25 @@ import CatalogMetricGrid from '@/components/catalog/CatalogMetricGrid.vue';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { dashboard } from '@/routes';
+import {
+    create as createFormation,
+    destroy as destroyFormationRoute,
+    edit as editFormation,
+    index as formationsIndex,
+} from '@/routes/admin/catalog/formations';
 import type { CatalogMetricItem, Formation } from '@/types';
 
 const props = defineProps<{
     formations: Formation[];
 }>();
 
-const indexHref = '/admin/catalog/formations';
+const indexHref = formationsIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Formations', href: indexHref },
         ],
@@ -35,7 +42,7 @@ function destroyFormation(id: number): void {
         return;
     }
 
-    router.delete(`${indexHref}/${id}`);
+    router.delete(destroyFormationRoute.url(id));
 }
 </script>
 
@@ -45,14 +52,14 @@ function destroyFormation(id: number): void {
     <div class="space-y-6 px-4 py-4 md:px-6">
         <CatalogPageHeader eyebrow="Sports Catalog" title="Formations" description="Centralize os desenhos táticos que alimentam escalações, convites e resumos de jogo." >
             <template #actions>
-                <Button as-child><Link :href="`${indexHref}/create`"><Plus class="size-4" />New formation</Link></Button>
+                <Button as-child><Link :href="createFormation.url()"><Plus class="size-4" />New formation</Link></Button>
             </template>
         </CatalogPageHeader>
 
         <CatalogMetricGrid :items="metrics" />
 
         <CatalogEmptyState v-if="formations.length === 0" title="No formations yet" description="Comece pelas formações principais usadas nas modalidades atuais.">
-            <Button as-child><Link :href="`${indexHref}/create`">Create first formation</Link></Button>
+            <Button as-child><Link :href="createFormation.url()">Create first formation</Link></Button>
         </CatalogEmptyState>
 
         <Card v-else class="gap-0 py-0">
@@ -72,7 +79,7 @@ function destroyFormation(id: number): void {
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">
-                                        <Link :href="`${indexHref}/${formation.id}/edit`"><Pencil class="size-4" />Edit</Link>
+                                        <Link :href="editFormation.url(formation.id)"><Pencil class="size-4" />Edit</Link>
                                     </Button>
                                     <Button variant="outline" size="sm" @click="destroyFormation(formation.id)">
                                         <Trash2 class="size-4" />Remove

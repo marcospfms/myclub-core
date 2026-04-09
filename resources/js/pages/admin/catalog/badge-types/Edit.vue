@@ -2,21 +2,27 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import BadgeTypeForm from '@/pages/admin/catalog/badge-types/Partials/BadgeTypeForm.vue';
+import { dashboard } from '@/routes';
+import {
+    edit as editBadgeType,
+    index as badgeTypesIndex,
+    update as updateBadgeType,
+} from '@/routes/admin/catalog/badge-types';
 import type { BadgeType } from '@/types';
 
 const props = defineProps<{
     badgeType: BadgeType;
 }>();
 
-const indexHref = '/admin/catalog/badge-types';
+const indexHref = badgeTypesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Badge Types', href: indexHref },
-            { title: 'Edit', href: indexHref },
+            { title: 'Edit', href: editBadgeType.url(props.badgeType.id) },
         ],
     },
 });
@@ -30,7 +36,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.put(`${indexHref}/${props.badgeType.id}`);
+    form.put(updateBadgeType.url(props.badgeType.id));
 }
 </script>
 

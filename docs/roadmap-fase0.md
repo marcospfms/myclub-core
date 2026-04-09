@@ -652,6 +652,7 @@ Implementado em:
 [`AppSidebar.vue`](/mnt/c/wamp64/www/myclub/myclub-core/resources/js/components/AppSidebar.vue)
 
 > Nesta etapa os links do catálogo foram registrados diretamente na sidebar para liberar navegação interna do módulo.
+> As páginas do módulo passaram a usar os helpers já gerados em `resources/js/routes/admin/catalog/*` no lugar de URLs literais.
 
 ---
 
@@ -903,7 +904,7 @@ Marcar ao concluir cada item. A fase só está concluída quando todos estiverem
 - [x] Teste de models e services de catálogo criado (`CatalogModelAndServiceTest`)
 - [x] Feature tests admin: SportMode, Category, Position, Formation, StaffRole, BadgeType
 - [x] Feature tests API: `CatalogApiResponseTest`
-- [ ] Factories criadas (6)
+- [x] Factories criadas (6)
 - [ ] Todos os testes passando (`php artisan test`)
 
 ---

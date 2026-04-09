@@ -2,21 +2,27 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import StaffRoleForm from '@/pages/admin/catalog/staff-roles/Partials/StaffRoleForm.vue';
+import { dashboard } from '@/routes';
+import {
+    edit as editStaffRole,
+    index as staffRolesIndex,
+    update as updateStaffRole,
+} from '@/routes/admin/catalog/staff-roles';
 import type { StaffRole } from '@/types';
 
 const props = defineProps<{
     staffRole: StaffRole;
 }>();
 
-const indexHref = '/admin/catalog/staff-roles';
+const indexHref = staffRolesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Staff Roles', href: indexHref },
-            { title: 'Edit', href: indexHref },
+            { title: 'Edit', href: editStaffRole.url(props.staffRole.id) },
         ],
     },
 });
@@ -29,7 +35,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.put(`${indexHref}/${props.staffRole.id}`);
+    form.put(updateStaffRole.url(props.staffRole.id));
 }
 </script>
 

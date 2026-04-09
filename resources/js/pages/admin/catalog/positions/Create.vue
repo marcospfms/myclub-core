@@ -2,16 +2,22 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import PositionForm from '@/pages/admin/catalog/positions/Partials/PositionForm.vue';
+import { dashboard } from '@/routes';
+import {
+    create as createPosition,
+    index as positionsIndex,
+    store as storePosition,
+} from '@/routes/admin/catalog/positions';
 
-const indexHref = '/admin/catalog/positions';
+const indexHref = positionsIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Positions', href: indexHref },
-            { title: 'Create', href: `${indexHref}/create` },
+            { title: 'Create', href: createPosition.url() },
         ],
     },
 });
@@ -25,7 +31,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.post(indexHref);
+    form.post(storePosition.url());
 }
 </script>
 

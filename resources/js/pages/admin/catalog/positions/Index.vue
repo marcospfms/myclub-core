@@ -7,18 +7,25 @@ import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { resolveCatalogMessage } from '@/i18n/catalog';
+import { dashboard } from '@/routes';
+import {
+    create as createPosition,
+    destroy as destroyPositionRoute,
+    edit as editPosition,
+    index as positionsIndex,
+} from '@/routes/admin/catalog/positions';
 import type { CatalogMetricItem, Position } from '@/types';
 
 const props = defineProps<{
     positions: Position[];
 }>();
 
-const indexHref = '/admin/catalog/positions';
+const indexHref = positionsIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Positions', href: indexHref },
         ],
@@ -36,7 +43,7 @@ function destroyPosition(id: number): void {
         return;
     }
 
-    router.delete(`${indexHref}/${id}`);
+    router.delete(destroyPositionRoute.url(id));
 }
 </script>
 
@@ -47,7 +54,7 @@ function destroyPosition(id: number): void {
         <CatalogPageHeader eyebrow="Sports Catalog" title="Positions" description="Orquestre as posições esportivas com siglas curtas, chaves i18n e iconografia neutra." >
             <template #actions>
                 <Button as-child>
-                    <Link :href="`${indexHref}/create`"><Plus class="size-4" />New position</Link>
+                    <Link :href="createPosition.url()"><Plus class="size-4" />New position</Link>
                 </Button>
             </template>
         </CatalogPageHeader>
@@ -55,7 +62,7 @@ function destroyPosition(id: number): void {
         <CatalogMetricGrid :items="metrics" />
 
         <CatalogEmptyState v-if="positions.length === 0" title="No positions yet" description="Cadastre as posições para liberar convites, escalações e preferências de jogadores.">
-            <Button as-child><Link :href="`${indexHref}/create`">Create first position</Link></Button>
+            <Button as-child><Link :href="createPosition.url()">Create first position</Link></Button>
         </CatalogEmptyState>
 
         <Card v-else class="gap-0 py-0">
@@ -84,7 +91,7 @@ function destroyPosition(id: number): void {
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">
-                                        <Link :href="`${indexHref}/${position.id}/edit`"><Pencil class="size-4" />Edit</Link>
+                                        <Link :href="editPosition.url(position.id)"><Pencil class="size-4" />Edit</Link>
                                     </Button>
                                     <Button variant="outline" size="sm" @click="destroyPosition(position.id)">
                                         <Trash2 class="size-4" />Remove

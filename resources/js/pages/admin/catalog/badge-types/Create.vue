@@ -2,16 +2,22 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import BadgeTypeForm from '@/pages/admin/catalog/badge-types/Partials/BadgeTypeForm.vue';
+import { dashboard } from '@/routes';
+import {
+    create as createBadgeType,
+    index as badgeTypesIndex,
+    store as storeBadgeType,
+} from '@/routes/admin/catalog/badge-types';
 
-const indexHref = '/admin/catalog/badge-types';
+const indexHref = badgeTypesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Badge Types', href: indexHref },
-            { title: 'Create', href: `${indexHref}/create` },
+            { title: 'Create', href: createBadgeType.url() },
         ],
     },
 });
@@ -25,7 +31,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.post(indexHref);
+    form.post(storeBadgeType.url());
 }
 </script>
 

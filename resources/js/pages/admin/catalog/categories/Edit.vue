@@ -2,21 +2,27 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import CategoryForm from '@/pages/admin/catalog/categories/Partials/CategoryForm.vue';
+import { dashboard } from '@/routes';
+import {
+    edit as editCategory,
+    index as categoriesIndex,
+    update as updateCategory,
+} from '@/routes/admin/catalog/categories';
 import type { Category } from '@/types';
 
 const props = defineProps<{
     category: Category;
 }>();
 
-const indexHref = '/admin/catalog/categories';
+const indexHref = categoriesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Categories', href: indexHref },
-            { title: 'Edit', href: indexHref },
+            { title: 'Edit', href: editCategory.url(props.category.id) },
         ],
     },
 });
@@ -27,7 +33,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.put(`${indexHref}/${props.category.id}`);
+    form.put(updateCategory.url(props.category.id));
 }
 </script>
 

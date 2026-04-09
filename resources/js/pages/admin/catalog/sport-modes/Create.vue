@@ -2,6 +2,12 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import SportModeForm from '@/pages/admin/catalog/sport-modes/Partials/SportModeForm.vue';
+import { dashboard } from '@/routes';
+import {
+    create as createSportMode,
+    index as sportModesIndex,
+    store as storeSportMode,
+} from '@/routes/admin/catalog/sport-modes';
 import type { Category, Formation, Position } from '@/types';
 
 defineProps<{
@@ -10,15 +16,15 @@ defineProps<{
     positions: Position[];
 }>();
 
-const indexHref = '/admin/catalog/sport-modes';
+const indexHref = sportModesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Sport Modes', href: indexHref },
-            { title: 'Create', href: `${indexHref}/create` },
+            { title: 'Create', href: createSportMode.url() },
         ],
     },
 });
@@ -34,7 +40,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.post(indexHref);
+    form.post(storeSportMode.url());
 }
 </script>
 

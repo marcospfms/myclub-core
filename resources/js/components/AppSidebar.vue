@@ -25,6 +25,12 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as badgeTypesIndex } from '@/routes/admin/catalog/badge-types';
+import { index as categoriesIndex } from '@/routes/admin/catalog/categories';
+import { index as formationsIndex } from '@/routes/admin/catalog/formations';
+import { index as positionsIndex } from '@/routes/admin/catalog/positions';
+import { index as sportModesIndex } from '@/routes/admin/catalog/sport-modes';
+import { index as staffRolesIndex } from '@/routes/admin/catalog/staff-roles';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -38,32 +44,32 @@ const mainNavItems: NavItem[] = [
 const catalogNavItems: NavItem[] = [
     {
         title: 'Sport Modes',
-        href: '/admin/catalog/sport-modes',
+        href: sportModesIndex.url(),
         icon: Map,
     },
     {
         title: 'Categories',
-        href: '/admin/catalog/categories',
+        href: categoriesIndex.url(),
         icon: Tags,
     },
     {
         title: 'Positions',
-        href: '/admin/catalog/positions',
+        href: positionsIndex.url(),
         icon: Shapes,
     },
     {
         title: 'Formations',
-        href: '/admin/catalog/formations',
+        href: formationsIndex.url(),
         icon: Shield,
     },
     {
         title: 'Staff Roles',
-        href: '/admin/catalog/staff-roles',
+        href: staffRolesIndex.url(),
         icon: Users,
     },
     {
         title: 'Badge Types',
-        href: '/admin/catalog/badge-types',
+        href: badgeTypesIndex.url(),
         icon: Award,
     },
 ];

@@ -7,18 +7,25 @@ import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { resolveCatalogMessage } from '@/i18n/catalog';
+import { dashboard } from '@/routes';
+import {
+    create as createSportMode,
+    destroy as destroySportModeRoute,
+    edit as editSportMode,
+    index as sportModesIndex,
+} from '@/routes/admin/catalog/sport-modes';
 import type { CatalogMetricItem, SportMode } from '@/types';
 
 const props = defineProps<{
     sportModes: SportMode[];
 }>();
 
-const indexHref = '/admin/catalog/sport-modes';
+const indexHref = sportModesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Sport Modes', href: indexHref },
         ],
@@ -48,7 +55,7 @@ function destroySportMode(id: number): void {
         return;
     }
 
-    router.delete(`/admin/catalog/sport-modes/${id}`);
+    router.delete(destroySportModeRoute.url(id));
 }
 </script>
 
@@ -63,7 +70,7 @@ function destroySportMode(id: number): void {
         >
             <template #actions>
                 <Button as-child>
-                    <Link :href="`${indexHref}/create`">
+                    <Link :href="createSportMode.url()">
                         <Plus class="size-4" />
                         New sport mode
                     </Link>
@@ -79,7 +86,7 @@ function destroySportMode(id: number): void {
             description="Create the first modality to unlock tactical configuration for matches and championships."
         >
             <Button as-child>
-                <Link :href="`${indexHref}/create`">Create first sport mode</Link>
+                <Link :href="createSportMode.url()">Create first sport mode</Link>
             </Button>
         </CatalogEmptyState>
 
@@ -123,7 +130,7 @@ function destroySportMode(id: number): void {
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">
-                                        <Link :href="`${indexHref}/${sportMode.id}/edit`">
+                                        <Link :href="editSportMode.url(sportMode.id)">
                                             <Pencil class="size-4" />
                                             Edit
                                         </Link>

@@ -6,18 +6,25 @@ import CatalogMetricGrid from '@/components/catalog/CatalogMetricGrid.vue';
 import CatalogPageHeader from '@/components/catalog/CatalogPageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { dashboard } from '@/routes';
+import {
+    create as createCategory,
+    destroy as destroyCategoryRoute,
+    edit as editCategory,
+    index as categoriesIndex,
+} from '@/routes/admin/catalog/categories';
 import type { CatalogMetricItem, Category } from '@/types';
 
 const props = defineProps<{
     categories: Category[];
 }>();
 
-const indexHref = '/admin/catalog/categories';
+const indexHref = categoriesIndex.url();
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Dashboard', href: '/dashboard' },
+            { title: 'Dashboard', href: dashboard.url() },
             { title: 'Catalog', href: indexHref },
             { title: 'Categories', href: indexHref },
         ],
@@ -35,7 +42,7 @@ function destroyCategory(id: number): void {
         return;
     }
 
-    router.delete(`${indexHref}/${id}`);
+    router.delete(destroyCategoryRoute.url(id));
 }
 </script>
 
@@ -50,7 +57,7 @@ function destroyCategory(id: number): void {
         >
             <template #actions>
                 <Button as-child>
-                    <Link :href="`${indexHref}/create`"><Plus class="size-4" />New category</Link>
+                    <Link :href="createCategory.url()"><Plus class="size-4" />New category</Link>
                 </Button>
             </template>
         </CatalogPageHeader>
@@ -59,7 +66,7 @@ function destroyCategory(id: number): void {
 
         <CatalogEmptyState v-if="categories.length === 0" title="No categories yet" description="Crie categorias administrativas para começar a estruturar as modalidades.">
             <Button as-child>
-                <Link :href="`${indexHref}/create`">Create first category</Link>
+                <Link :href="createCategory.url()">Create first category</Link>
             </Button>
         </CatalogEmptyState>
 
@@ -80,7 +87,7 @@ function destroyCategory(id: number): void {
                             <td class="px-6 py-5">
                                 <div class="flex justify-end gap-2">
                                     <Button as-child variant="outline" size="sm">
-                                        <Link :href="`${indexHref}/${category.id}/edit`"><Pencil class="size-4" />Edit</Link>
+                                        <Link :href="editCategory.url(category.id)"><Pencil class="size-4" />Edit</Link>
                                     </Button>
                                     <Button variant="outline" size="sm" @click="destroyCategory(category.id)">
                                         <Trash2 class="size-4" />Remove
