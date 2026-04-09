@@ -322,6 +322,10 @@ class FriendlyMatchService
 
     public function cancel(FriendlyMatch $match): FriendlyMatch
     {
+        if (!$match->isConfirmed()) {
+            throw new \DomainException('Apenas amistosos confirmados podem ser cancelados. Para remover um convite pendente, use DELETE /friendly-matches/{id}.');
+        }
+
         if ($match->isCompleted()) {
             throw new \DomainException('Não é possível cancelar um amistoso já encerrado.');
         }
@@ -333,6 +337,10 @@ class FriendlyMatchService
 
     public function postpone(FriendlyMatch $match, array $data): FriendlyMatch
     {
+        if (!$match->isConfirmed()) {
+            throw new \DomainException('Apenas amistosos confirmados podem ser adiados.');
+        }
+
         if ($match->isCompleted()) {
             throw new \DomainException('Não é possível adiar um amistoso já encerrado.');
         }

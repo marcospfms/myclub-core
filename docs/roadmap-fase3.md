@@ -6,6 +6,8 @@
 >
 > **Escopo de formato:** apenas `league` (pontos corridos). Formatos `knockout` e `cup` → Fase 7.
 >
+> **Dependência de plano:** o campo `users.plan` (enum `free|player_pro|club|liga|federacao`) deve estar disponível para aplicar o limite de 1 league ativo no plano Free (`feature-gating.md`). Até lá, o campo é lido com `$user->plan ?? 'free'`.
+>
 > Referências de schema: `docs/database/schema.md` §4 e §6.
 > Referências de produto: `docs/product/championship-lifecycle.md`, `docs/product/authorization-rules.md`, `docs/product/feature-gating.md`.
 > Referências de padrões: `docs/patterns/`.
@@ -593,6 +595,30 @@ class ChampionshipService
 {
     public function create(array $data, User $creator): Championship
     {
+        // feature-gating.md: plano Free → máximo 1 league ativo simultâneo
+        // Requer campo `users.plan` (enum: free|player_pro|club|liga|federacao).
+        // Planos club, liga e federacao não têm limite.
+        if (!$creator->isAdmin()) {
+            $plan = $creator->plan ?? 'free';
+
+            if (in_array($plan, ['free', 'player_pro'])) {
+                $activeCount = Championship::where('created_by', $creator->id)
+                    ->where('format', ChampionshipFormat::League)
+                    ->whereNotIn('status', [
+                        ChampionshipStatus::Finished->value,
+                        ChampionshipStatus::Archived->value,
+                        ChampionshipStatus::Cancelled->value,
+                    ])
+                    ->count();
+
+                if ($activeCount >= 1) {
+                    throw new \DomainException(
+                        'Plano Free permite apenas 1 campeonato league ativo por vez. Encerre o campeonato atual ou faça upgrade para o plano Club.'
+                    );
+                }
+            }
+        }
+
         return DB::transaction(function () use ($data, $creator) {
             $championship = Championship::create(array_merge($data, [
                 'created_by' => $creator->id,
@@ -677,10 +703,15 @@ class ChampionshipService
         });
     }
 
-    public function cancel(Championship $championship): Championship
+    public function cancel(Championship $championship, User $actor): Championship
     {
         if ($championship->isFinished() || $championship->status === ChampionshipStatus::Archived) {
             throw new \DomainException('Campeonatos encerrados ou arquivados não podem ser cancelados.');
+        }
+
+        // authorization-rules.md: "active → cancelled somente admin"
+        if ($championship->isActive() && !$actor->isAdmin()) {
+            throw new \DomainException('Apenas admin pode cancelar um campeonato em andamento.');
         }
 
         $championship->update(['status' => ChampionshipStatus::Cancelled]);
@@ -767,9 +798,10 @@ class ChampionshipEnrollmentService
 
     public function selectPlayers(Championship $championship, TeamSportMode $tsm, array $membershipIds): void
     {
-        if ($championship->status === ChampionshipStatus::Archived
-            || $championship->status === ChampionshipStatus::Finished) {
-            throw new \DomainException('Não é possível alterar jogadores em campeonatos encerrados.');
+        if ($championship->isActive()
+            || $championship->status === ChampionshipStatus::Finished
+            || $championship->status === ChampionshipStatus::Archived) {
+            throw new \DomainException('A seleção de jogadores só é permitida durante o período de inscrições (enrollment). Após o início do campeonato, a lista é bloqueada.');
         }
 
         if (count($membershipIds) > $championship->max_players) {
@@ -834,16 +866,16 @@ class ChampionshipMatchService
         return $match->fresh();
     }
 
-    public function registerHighlights(ChampionshipMatch $match, array $items, int $ownerUserId): void
+    public function registerHighlights(ChampionshipMatch $match, array $items): void
     {
         if (!$match->isCompleted()) {
             throw new \DomainException('Estatísticas só podem ser registradas em partidas encerradas.');
         }
 
-        // Coleta IDs permitidos: jogadores do time do usuário nesta partida
+        // authorization-rules.md: somente created_by/admin chega aqui (policy manageMatch).
+        // O organizador pode registrar estatísticas de QUALQUER jogador inscrito pelos dois times.
         $allowedIds = ChampionshipTeamPlayer::where('championship_id', $match->round->phase->championship_id)
             ->whereIn('team_sport_mode_id', [$match->home_team_id, $match->away_team_id])
-            ->whereHas('membership.teamSportMode.team', fn ($q) => $q->where('owner_id', $ownerUserId))
             ->pluck('player_membership_id')
             ->toArray();
 
@@ -897,9 +929,24 @@ class ChampionshipClosingService
         DB::transaction(function () use ($championship) {
             $championship->update(['status' => ChampionshipStatus::Finished]);
 
-            $this->calculateAwards($championship);
-            $this->grantBadges($championship);
+            $this->calculateAwards($championship);      // passo 2 do lifecycle
+            $this->grantBadges($championship);          // passo 3 — badges de escopo championship
+            $this->detectCareerBadges($championship);   // passo 4 — badges de escopo career
+            // passo 5: team_stats_cache → adiado para Fase 6
+            // passo 6: championship_titles → adiado para Fase 6
         });
+    }
+
+    /**
+     * Detecta badges de carreira disparados por eventos deste campeonato.
+     * Exemplos: hat_trick (≥3 gols em uma partida), mvp_streak (MVP em partidas consecutivas),
+     * loyal_player (jogou todos os rounds).
+     *
+     * TODO Fase 6 — implementar detecção completa quando team_stats_cache estiver disponível.
+     */
+    private function detectCareerBadges(Championship $championship): void
+    {
+        // placeholder — os cálculos dependem de team_stats_cache (Fase 6)
     }
 
     private function calculateAwards(Championship $championship): void
@@ -1272,42 +1319,51 @@ Localização: `app/Policies/ChampionshipPolicy.php`
 ```php
 class ChampionshipPolicy
 {
-    /** Editar configurações basicas (somente draft) */
+    /** Editar configurações básicas (criador ou admin; somente quando draft na camada de service) */
     public function update(User $user, Championship $championship): bool
     {
-        return $user->id === $championship->created_by;
+        return $user->id === $championship->created_by || $user->isAdmin();
     }
 
-    /** Excluir (somente draft) */
+    /** Excluir (criador ou admin; somente draft) */
     public function delete(User $user, Championship $championship): bool
     {
-        return $user->id === $championship->created_by
+        return ($user->id === $championship->created_by || $user->isAdmin())
             && $championship->isDraft();
     }
 
-    /** Gerenciar lifecycle (abrir inscrições, ativar, cancelar, encerrar) */
+    /** Abrir inscrições / ativar / encerrar forçado — criador ou admin */
     public function manageLifecycle(User $user, Championship $championship): bool
     {
-        return $user->id === $championship->created_by;
+        return $user->id === $championship->created_by || $user->isAdmin();
     }
 
-    /** Gerenciar inscrições de times */
+    /**
+     * Cancelar campeonato ATIVO — somente admin.
+     * Para draft/enrollment use manageLifecycle.
+     * (authorization-rules.md: "active → cancelled: apenas admin")
+     */
+    public function cancelActive(User $user, Championship $championship): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /** Remover time inscrito / bloquear inscrições — criador ou admin */
     public function manageEnrollment(User $user, Championship $championship): bool
     {
-        return $user->id === $championship->created_by;
+        return $user->id === $championship->created_by || $user->isAdmin();
     }
 
-    /** Inscrever o próprio time (dono do time) */
+    /** Inscrever o próprio time — qualquer dono de time */
     public function enroll(User $user, Championship $championship): bool
     {
-        // Qualquer usuário dono de um time pode se inscrever
         return true;
     }
 
-    /** Registrar resultado de partida */
+    /** Registrar resultado e estatísticas — criador ou admin */
     public function manageMatch(User $user, Championship $championship): bool
     {
-        return $user->id === $championship->created_by;
+        return $user->id === $championship->created_by || $user->isAdmin();
     }
 }
 ```
@@ -1398,8 +1454,14 @@ class ChampionshipController extends BaseController
 
     public function cancel(Request $request, Championship $championship): JsonResponse
     {
-        $this->authorize('manageLifecycle', $championship);
-        $championship = $this->service->cancel($championship);
+        // championship-lifecycle.md: active → cancelled somente admin; draft/enrollment → criador ou admin
+        if ($championship->isActive()) {
+            $this->authorize('cancelActive', $championship);
+        } else {
+            $this->authorize('manageLifecycle', $championship);
+        }
+
+        $championship = $this->service->cancel($championship, $request->user());
 
         return $this->sendResponse(new ChampionshipResource($championship), 'Campeonato cancelado.');
     }
@@ -1562,7 +1624,6 @@ class ChampionshipMatchHighlightController extends BaseController
         $this->matchService->registerHighlights(
             $match,
             $request->validated()['highlights'],
-            $request->user()->id,
         );
 
         return $this->sendResponse([], 'Estatísticas registradas.');
@@ -1805,6 +1866,20 @@ class ChampionshipTest extends TestCase
         ])->assertCreated()->assertJsonPath('data.status', 'draft');
     }
 
+    public function test_free_user_cannot_create_second_active_league(): void
+    {
+        $user = User::factory()->create(['plan' => 'free']);
+        $sm   = SportMode::factory()->create();
+        // campeonato ativo já existe
+        Championship::factory()->enrollment()->for($user, 'creator')->withSportMode($sm)->create();
+
+        $this->actingAs($user)->postJson('/api/v1/championships', [
+            'name'           => 'Segundo Campeonato',
+            'format'         => 'league',
+            'sport_mode_ids' => [$sm->id],
+        ])->assertUnprocessable();
+    }
+
     public function test_only_league_format_allowed_in_phase_3(): void
     {
         $user = User::factory()->create();
@@ -1869,6 +1944,27 @@ class ChampionshipTest extends TestCase
             ->postJson("/api/v1/championships/{$c->id}/open-enrollment")
             ->assertForbidden();
     }
+
+    public function test_creator_cannot_cancel_active_championship(): void
+    {
+        $user = User::factory()->create();
+        $c    = Championship::factory()->active()->for($user, 'creator')->create();
+
+        $this->actingAs($user)
+            ->postJson("/api/v1/championships/{$c->id}/cancel")
+            ->assertForbidden();
+    }
+
+    public function test_admin_can_cancel_active_championship(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $c     = Championship::factory()->active()->create();
+
+        $this->actingAs($admin)
+            ->postJson("/api/v1/championships/{$c->id}/cancel")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'cancelled');
+    }
 }
 ```
 
@@ -1925,6 +2021,22 @@ class ChampionshipEnrollmentTest extends TestCase
         )->assertOk();
 
         $this->assertDatabaseCount('championship_team_players', 5);
+    }
+
+    public function test_cannot_select_players_after_championship_started(): void
+    {
+        $owner  = User::factory()->create();
+        $sm     = SportMode::factory()->create();
+        $tsm    = TeamSportMode::factory()->create(['sport_mode_id' => $sm->id]);
+        $tsm->team->update(['owner_id' => $owner->id]);
+        $memberships = PlayerMembership::factory()->count(3)->create(['team_sport_mode_id' => $tsm->id]);
+        $c = Championship::factory()->active()->withSportMode($sm)->create();
+        ChampionshipTeam::factory()->create(['championship_id' => $c->id, 'team_sport_mode_id' => $tsm->id]);
+
+        $this->actingAs($owner)->postJson(
+            "/api/v1/championships/{$c->id}/teams/{$tsm->id}/players",
+            ['player_membership_ids' => $memberships->pluck('id')->toArray()]
+        )->assertUnprocessable();
     }
 }
 ```
