@@ -22,8 +22,8 @@
 | API Controllers (selects autenticados — leitura de catálogo) | ✅ Concluído   |
 | Admin Controllers (CRUD via Inertia)                       | ✅ Concluído   |
 | Rotas API e Admin                                          | ✅ Concluído   |
-| Páginas Vue/Inertia — painel admin                         | ⬜ Pendente    |
-| Types TypeScript                                           | ⬜ Pendente    |
+| Páginas Vue/Inertia — painel admin                         | ✅ Concluído   |
+| Types TypeScript                                           | ✅ Concluído   |
 | Testes Feature (Admin CRUD + API leitura)                  | ⬜ Pendente    |
 
 ---
@@ -364,6 +364,13 @@ Implementado em:
 
 ```
 resources/js/
+├── components/
+│   └── catalog/
+│       ├── CatalogEmptyState.vue
+│       ├── CatalogMetricGrid.vue
+│       ├── CatalogPageHeader.vue
+│       ├── SelectionMatrix.vue
+│       └── TranslationKeyPreview.vue
 ├── pages/
 │   └── admin/
 │       └── catalog/
@@ -388,11 +395,15 @@ resources/js/
 │           ├── formations/
 │           │   ├── Index.vue
 │           │   ├── Create.vue
-│           │   └── Edit.vue
+│           │   ├── Edit.vue
+│           │   └── Partials/
+│           │       └── FormationForm.vue
 │           ├── staff-roles/
 │           │   ├── Index.vue
 │           │   ├── Create.vue
-│           │   └── Edit.vue
+│           │   ├── Edit.vue
+│           │   └── Partials/
+│           │       └── StaffRoleForm.vue
 │           └── badge-types/
 │               ├── Index.vue
 │               ├── Create.vue
@@ -400,64 +411,63 @@ resources/js/
 │               └── Partials/
 │                   └── BadgeTypeForm.vue
 ├── types/
-│   └── catalog/
-│       ├── sport-mode.d.ts
-│       ├── category.d.ts
-│       ├── position.d.ts
-│       ├── formation.d.ts
-│       ├── staff-role.d.ts
-│       └── badge-type.d.ts
-└── components/
-    └── catalog/
-        └── DeleteConfirmModal.vue
+│   └── catalog.ts
 ```
+
+Implementado em:
+- [`resources/js/components/catalog`](/mnt/c/wamp64/www/myclub/myclub-core/resources/js/components/catalog)
+- [`resources/js/pages/admin/catalog`](/mnt/c/wamp64/www/myclub/myclub-core/resources/js/pages/admin/catalog)
+- [`resources/js/types/catalog.ts`](/mnt/c/wamp64/www/myclub/myclub-core/resources/js/types/catalog.ts)
 
 ### 14.2 TypeScript Types
 
-`resources/js/types/catalog/sport-mode.d.ts`:
+Implementado em:
+[`resources/js/types/catalog.ts`](/mnt/c/wamp64/www/myclub/myclub-core/resources/js/types/catalog.ts)
 
 ```ts
-export interface SportMode {
+export type SportMode = {
   id: number
-  name: string
+  key: string
+  label_key: string
+  description_key: string | null
+  icon: string | null
   categories: Category[]
   formations: Formation[]
   positions: Position[]
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 ```
-
-`resources/js/types/catalog/position.d.ts`:
 
 ```ts
-export interface Position {
+export type Position = {
   id: number
-  name: string
+  key: string
+  label_key: string
+  description_key: string | null
+  icon: string | null
   abbreviation: string
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 ```
-
-`resources/js/types/catalog/badge-type.d.ts`:
 
 ```ts
 export type BadgeScope = 'championship' | 'friendly' | 'career' | 'seasonal'
 
-export interface BadgeType {
+export type BadgeType = {
   id: number
   name: string
-  label: string
-  description: string | null
+  label_key: string
+  description_key: string | null
   icon: string | null
   scope: BadgeScope
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 ```
 
-> Os demais types (`Category`, `Formation`, `StaffRole`) têm apenas `id`, `name`, `created_at`, `updated_at`.
+> O arquivo também centraliza `Category`, `Formation`, `StaffRole`, `CatalogMetricItem` e `CatalogSelectionItem`.
 
 ### 14.3 Telas por entidade
 
@@ -638,20 +648,10 @@ A sidebar do painel admin deve incluir uma seção **Catálogo** com links para 
 
 ### Entrada na sidebar
 
-```ts
-// Em resources/js/components/AppSidebar.vue (ou equivalente)
+Implementado em:
+[`AppSidebar.vue`](/mnt/c/wamp64/www/myclub/myclub-core/resources/js/components/AppSidebar.vue)
 
-const catalogLinks = [
-  { label: 'Modalidades',       href: route('admin.catalog.sport-modes.index') },
-  { label: 'Categorias',        href: route('admin.catalog.categories.index') },
-  { label: 'Posições',          href: route('admin.catalog.positions.index') },
-  { label: 'Formações',         href: route('admin.catalog.formations.index') },
-  { label: 'Funções (Comissão)',href: route('admin.catalog.staff-roles.index') },
-  { label: 'Tipos de Badge',    href: route('admin.catalog.badge-types.index') },
-]
-```
-
-> Usar `route()` via Wayfinder, que gera as funções tipadas automaticamente a partir dos controllers.
+> Nesta etapa os links do catálogo foram registrados diretamente na sidebar para liberar navegação interna do módulo.
 
 ---
 
@@ -882,19 +882,19 @@ Marcar ao concluir cada item. A fase só está concluída quando todos estiverem
 - [x] Enum `BadgeScope` criado
 - [x] Models criados (6)
 - [x] Services criados (6) em `app/Services/Catalog/`
-- [ ] Form Requests criados (Store + Update por entidade = 12)
-- [ ] API Resources criados (6)
-- [ ] API Controllers criados (6) em `App\Http\Controllers\Api\Catalog\`
-- [ ] Admin Controllers criados (6) em `App\Http\Controllers\Admin\Catalog\`
-- [ ] Rotas API registradas em `routes/api.php`
-- [ ] Rotas admin registradas em `routes/admin.php`
+- [x] Form Requests criados (Store + Update por entidade = 12)
+- [x] API Resources criados (6)
+- [x] API Controllers criados (6) em `App\Http\Controllers\Api\Catalog\`
+- [x] Admin Controllers criados (6) em `App\Http\Controllers\Admin\Catalog\`
+- [x] Rotas API registradas em `routes/api.php`
+- [x] Rotas admin registradas em `routes/admin.php`
 
 ### Frontend
 
-- [ ] Types TypeScript criados (6 arquivos em `resources/js/types/catalog/`)
-- [ ] Pages `Index.vue`, `Create.vue`, `Edit.vue` para cada entidade (18 arquivos)
-- [ ] Partials de form criados (`SportModeForm.vue`, `PositionForm.vue`, `BadgeTypeForm.vue`, etc.)
-- [ ] Link de catálogo adicionado na sidebar do admin
+- [x] Types TypeScript criados (`resources/js/types/catalog.ts`)
+- [x] Pages `Index.vue`, `Create.vue`, `Edit.vue` para cada entidade (18 arquivos)
+- [x] Partials de form criados (`SportModeForm.vue`, `PositionForm.vue`, `BadgeTypeForm.vue`, etc.)
+- [x] Link de catálogo adicionado na sidebar do admin
 - [ ] Wayfinder regenerado (`npm run build` ou `wayfinder:generate`)
 
 ### Testes

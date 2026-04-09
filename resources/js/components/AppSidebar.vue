@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-vue-next';
+import {
+    Award,
+    BookOpen,
+    FolderGit2,
+    LayoutGrid,
+    Map,
+    Shield,
+    Shapes,
+    Tags,
+    Users,
+} from 'lucide-vue-next';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -22,6 +32,39 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+];
+
+const catalogNavItems: NavItem[] = [
+    {
+        title: 'Sport Modes',
+        href: '/admin/catalog/sport-modes',
+        icon: Map,
+    },
+    {
+        title: 'Categories',
+        href: '/admin/catalog/categories',
+        icon: Tags,
+    },
+    {
+        title: 'Positions',
+        href: '/admin/catalog/positions',
+        icon: Shapes,
+    },
+    {
+        title: 'Formations',
+        href: '/admin/catalog/formations',
+        icon: Shield,
+    },
+    {
+        title: 'Staff Roles',
+        href: '/admin/catalog/staff-roles',
+        icon: Users,
+    },
+    {
+        title: 'Badge Types',
+        href: '/admin/catalog/badge-types',
+        icon: Award,
     },
 ];
 
@@ -55,6 +98,7 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+            <NavMain :items="catalogNavItems" label="Catalog" />
         </SidebarContent>
 
         <SidebarFooter>
