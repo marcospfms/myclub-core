@@ -469,6 +469,7 @@ class TeamService
 {
     public function create(array $data, User $owner): Team
     {
+        // TODO Fase 4: verificar limite de plano Free (máx 1 time ativo)
         return DB::transaction(function () use ($data, $owner) {
             $team = Team::create(array_merge($data, ['owner_id' => $owner->id]));
 
@@ -516,6 +517,15 @@ class TeamService
 class TeamRosterService
 {
     public function removeMember(PlayerMembership $membership): void
+    {
+        $membership->update(['left_at' => now()]);
+    }
+
+    /**
+     * O próprio jogador sai voluntariamente do elenco.
+     * Autorização: verificar que $request->user()->id === $membership->player_id no controller.
+     */
+    public function leaveTeam(PlayerMembership $membership): void
     {
         $membership->update(['left_at' => now()]);
     }
@@ -572,6 +582,34 @@ class TeamInvitationService
         $invitation->update(['status' => InvitationStatus::Rejected]);
     }
 }
+```
+
+---
+
+### 6.6 Job: `ExpireTeamInvitations`
+
+Localização: `app/Jobs/ExpireTeamInvitations.php`
+
+Executado pelo scheduler (horário) para expirar convites vencidos. O campo `expires_at` já existe na migração `team_invitations`.
+
+```php
+class ExpireTeamInvitations implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function handle(): void
+    {
+        TeamInvitation::where('status', InvitationStatus::Pending)
+            ->where('expires_at', '<', now())
+            ->update(['status' => InvitationStatus::Expired]);
+    }
+}
+```
+
+Registrar em `routes/console.php`:
+
+```php
+Schedule::job(new ExpireTeamInvitations)->hourly();
 ```
 
 ---
@@ -662,9 +700,9 @@ class PlayerResource extends JsonResource
             'user_id'        => $this->user_id,
             'name'           => $this->user?->name,
             'avatar'         => $this->user?->avatar,
-            'cpf'            => $this->when($request->user()?->id === $this->user_id, $this->cpf),
+            'cpf'            => $this->when($request->user()?->id === $this->user_id || $request->user()?->isAdmin(), $this->cpf),
             'birth_date'     => $this->birth_date?->toDateString(),
-            'phone'          => $this->when($request->user()?->id === $this->user_id, $this->phone),
+            'phone'          => $this->when($request->user()?->id === $this->user_id || $request->user()?->isAdmin(), $this->phone),
             'is_discoverable' => $this->is_discoverable,
             'history_public' => $this->history_public,
             'city'           => $this->city,
@@ -677,7 +715,7 @@ class PlayerResource extends JsonResource
 }
 ```
 
-> `cpf` e `phone` são expostos apenas ao próprio jogador (verificação por `user_id`).
+> `cpf` e `phone` são expostos apenas ao próprio jogador ou ao `admin` (verificação por `user_id` ou `isAdmin()`).
 
 ### `TeamResource`
 
@@ -887,6 +925,19 @@ class TeamRosterController extends BaseController
         $this->rosterService->removeMember($membership);
         return $this->sendResponse([], 'Jogador removido do elenco.');
     }
+
+    /**
+     * O próprio jogador sai do elenco voluntariamente.
+     * Não usa policy: valida diretamente que a membership pertence ao usuário autenticado.
+     */
+    public function leave(Request $request, Team $team, TeamSportMode $teamSportMode, PlayerMembership $membership): JsonResponse
+    {
+        if ($membership->player_id !== $request->user()->id) {
+            return $this->sendError('Não autorizado.', [], 403);
+        }
+        $this->rosterService->leaveTeam($membership);
+        return $this->sendResponse([], 'Você saiu do elenco.');
+    }
 }
 ```
 
@@ -960,17 +1011,17 @@ class TeamPolicy
 {
     public function update(User $user, Team $team): bool
     {
-        return $user->id === $team->owner_id;
+        return $user->id === $team->owner_id || $user->isAdmin();
     }
 
     public function delete(User $user, Team $team): bool
     {
-        return $user->id === $team->owner_id;
+        return $user->id === $team->owner_id || $user->isAdmin();
     }
 
     public function manageRoster(User $user, Team $team): bool
     {
-        return $user->id === $team->owner_id;
+        return $user->id === $team->owner_id || $user->isAdmin();
     }
 }
 ```
@@ -1003,8 +1054,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{teamSportMode}',              [Api\TeamSportModeController::class, 'destroy'])->name('destroy');
 
         // Elenco por modalidade
-        Route::get('/{teamSportMode}/members',         [Api\TeamRosterController::class, 'index'])->name('members.index');
-        Route::delete('/{teamSportMode}/members/{membership}', [Api\TeamRosterController::class, 'destroy'])->name('members.destroy');
+        Route::get('/{teamSportMode}/members',                            [Api\TeamRosterController::class, 'index'])->name('members.index');
+        Route::delete('/{teamSportMode}/members/{membership}',            [Api\TeamRosterController::class, 'destroy'])->name('members.destroy');
+        Route::delete('/{teamSportMode}/members/{membership}/leave',      [Api\TeamRosterController::class, 'leave'])->name('members.leave');
 
         // Convites
         Route::post('/{teamSportMode}/invitations',    [Api\TeamInvitationController::class, 'store'])->name('invitations.store');
@@ -1357,6 +1409,43 @@ class TeamRosterTest extends TestCase
         ]);
     }
 
+    public function test_player_can_leave_team_themselves(): void
+    {
+        $player     = User::factory()->create();
+        $team       = Team::factory()->create();
+        $tsm        = TeamSportMode::factory()->create(['team_id' => $team->id]);
+        $membership = PlayerMembership::factory()->create([
+            'team_sport_mode_id' => $tsm->id,
+            'player_id'          => $player->id,
+            'left_at'            => null,
+        ]);
+
+        $this->actingAs($player)->deleteJson(
+            "/api/v1/teams/{$team->id}/sport-modes/{$tsm->id}/members/{$membership->id}/leave"
+        )->assertOk();
+
+        $this->assertDatabaseHas('player_memberships', [
+            'id'      => $membership->id,
+            'left_at' => now()->toDateTimeString(),
+        ]);
+    }
+
+    public function test_player_cannot_remove_other_player_via_leave_endpoint(): void
+    {
+        $player     = User::factory()->create();
+        $other      = User::factory()->create();
+        $team       = Team::factory()->create();
+        $tsm        = TeamSportMode::factory()->create(['team_id' => $team->id]);
+        $membership = PlayerMembership::factory()->create([
+            'team_sport_mode_id' => $tsm->id,
+            'player_id'          => $other->id,
+        ]);
+
+        $this->actingAs($player)->deleteJson(
+            "/api/v1/teams/{$team->id}/sport-modes/{$tsm->id}/members/{$membership->id}/leave"
+        )->assertForbidden();
+    }
+
     public function test_non_owner_cannot_remove_player(): void
     {
         $other      = User::factory()->create();
@@ -1459,12 +1548,13 @@ public function definition(): array
 - [ ] `PlayerService`
 - [ ] `StaffMemberService`
 - [ ] `TeamService`
-- [ ] `TeamRosterService`
+- [ ] `TeamRosterService` (métodos: `removeMember`, `leaveTeam`, `acceptInvitation`)
 - [ ] `TeamInvitationService`
+- [ ] Job `ExpireTeamInvitations` (+ schedule horário)
 - [ ] Form Requests (StorePlayer, UpdatePlayer, StoreTeam, UpdateTeam, StoreTeamInvitation, StoreStaffMember)
 - [ ] Resources (Player, Team, TeamSportMode, PlayerMembership, TeamInvitation, UserMinimal)
-- [ ] `TeamPolicy` registrada
-- [ ] Controllers (Player, StaffMember, Team, TeamSportMode, TeamRoster, TeamInvitation)
+- [ ] `TeamPolicy` registrada com bypass `isAdmin()`
+- [ ] Controllers (Player, StaffMember, Team, TeamSportMode, TeamRoster com `leave`, TeamInvitation)
 - [ ] Rotas registradas em `routes/api.php`
 
 ### Frontend (Types)
@@ -1480,7 +1570,7 @@ public function definition(): array
 - [ ] `PlayerTest`
 - [ ] `TeamTest`
 - [ ] `TeamInvitationTest`
-- [ ] `TeamRosterTest`
+- [ ] `TeamRosterTest` (incluindo `test_player_can_leave_team_themselves`)
 - [ ] Todos os testes passando (`php artisan test`)
 
 ---
@@ -1524,6 +1614,9 @@ php artisan make:factory PlayerMembershipFactory --model=PlayerMembership
 # app/Services/Team/TeamService.php
 # app/Services/Team/TeamRosterService.php
 # app/Services/Team/TeamInvitationService.php
+
+# Job
+php artisan make:job ExpireTeamInvitations
 
 # Requests
 php artisan make:request StorePlayerRequest
