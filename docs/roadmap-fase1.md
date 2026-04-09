@@ -13,13 +13,13 @@
 
 | Item                                     | Status      |
 | ---------------------------------------- | ----------- |
-| Migrations — `players`, `staff_members`  | ⬜ Pendente |
-| Migrations — `teams`, `team_sport_modes` | ⬜ Pendente |
-| Migration — `team_staff`                 | ⬜ Pendente |
-| Migration — `player_memberships`         | ⬜ Pendente |
-| Migration — `team_invitations`           | ⬜ Pendente |
+| Migrations — `players`, `staff_members`  | ✅ Concluído |
+| Migrations — `teams`, `team_sport_modes` | ✅ Concluído |
+| Migration — `team_staff`                 | ✅ Concluído |
+| Migration — `player_memberships`         | ✅ Concluído |
+| Migration — `team_invitations`           | ✅ Concluído |
 | Models (7)                               | ⬜ Pendente |
-| Enums — `InvitationStatus`, `UserRole`   | ⬜ Pendente |
+| Enums — `InvitationStatus`, `UserRole`   | ✅ Concluído |
 | Services                                 | ⬜ Pendente |
 | Form Requests                            | ⬜ Pendente |
 | API Resources                            | ⬜ Pendente |
@@ -27,6 +27,22 @@
 | Rotas API (`routes/api.php`)             | ⬜ Pendente |
 | Types TypeScript                         | ⬜ Pendente |
 | Testes Feature                           | ⬜ Pendente |
+
+### Progresso atual
+
+Primeiro bloco da Fase 1 já implementado:
+
+- migrations de identidade esportiva
+- migrations de times e vínculos
+- migration de convites
+- enum `InvitationStatus`
+- enum `UserRole`
+
+Próximo bloco recomendado:
+
+- models
+- services
+- requests/resources/controllers da API
 
 ---
 

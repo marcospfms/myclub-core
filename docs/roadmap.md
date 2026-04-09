@@ -9,7 +9,7 @@
 
 ## Roadmap por fases
 
-### Fase 0 — Fundação _(atual — parcialmente concluída)_
+### Fase 0 — Fundação _(concluída)_
 
 O que implementar:
 
@@ -29,6 +29,10 @@ O que implementar:
 - `team_invitations` — convites de elenco _(resolve G2)_
 - `player_memberships` — vínculos aceitos
 - API: CRUD de times, gestão de elenco, fluxo de convite/aceite
+
+Status atual:
+
+- migrations e enums já iniciados
 
 ---
 
