@@ -1,5 +1,7 @@
 # Roadmap Fase 0 — Fundação
 
+> Status final: **✅ Encerrada**
+
 > Detalhamento completo de implementação da Fase 0. Cobertura: migrations, seeders, models, services, form requests, resources, controllers, rotas, frontend Vue/Inertia, types TypeScript e testes.
 >
 > Referências de schema: `docs/database/schema.md` §2.
@@ -24,7 +26,20 @@
 | Rotas API e Admin                                          | ✅ Concluído   |
 | Páginas Vue/Inertia — painel admin                         | ✅ Concluído   |
 | Types TypeScript                                           | ✅ Concluído   |
-| Testes Feature (Admin CRUD + API leitura)                  | ⬜ Pendente    |
+| Testes Feature (Admin CRUD + API leitura)                  | ✅ Concluído   |
+
+### Fechamento da fase
+
+A Fase 0 está considerada encerrada porque entregou a base completa necessária para iniciar a evolução do domínio:
+
+- fundação Laravel + Fortify + Sanctum + Inertia
+- catálogo administrativo funcional
+- API autenticada de leitura dos catálogos
+- painel admin com CRUD dos catálogos
+- tipagem de frontend
+- factories e testes da fundação de catálogo
+- autenticação administrativa ajustada ao contexto do produto
+- branding base documentada para orientar os próximos módulos
 
 ---
 
