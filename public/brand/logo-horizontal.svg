@@ -23,7 +23,7 @@
       <line x1="7" y1="29" x2="41" y2="29" stroke="#F5F7F3" stroke-width="1.25" opacity="0.45"/>
       <path d="M7 48 L18 20 L24 30 L30 20 L41 48"
         stroke="#F5F7F3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <circle cx="24" cy="30" r="2.5" fill="#D9A441"/>
+      <text x="24" y="44" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-size="9" font-weight="700" fill="#F5F7F3">C</text>
     </g>
   </svg>
 

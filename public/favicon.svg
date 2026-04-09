@@ -16,7 +16,14 @@
     stroke-linejoin="round"
     fill="none"
   />
-  <!-- Gema dourada no vale central -->
-  <circle cx="24" cy="26" r="2.5" fill="#D9A441"/>
+  <!-- C de Club — abaixo do M -->
+  <text
+    x="24" y="37"
+    text-anchor="middle"
+    font-family="Manrope, system-ui, sans-serif"
+    font-size="8"
+    font-weight="700"
+    fill="#F5F7F3"
+  >C</text>
 </svg>
 
