@@ -35,6 +35,7 @@ As duas superfícies compartilham o mesmo domínio e os mesmos **Services**, mas
 - a lógica de negócio fica em **Services**
 - não usar `Actions` nem `Queries` como padrão do projeto
 - controllers devem ser finos: request, autorização, chamada de service e response/resource
+- exceção temporária: as `Actions` nativas do Fortify podem permanecer enquanto ficarem restritas ao fluxo de autenticação do starter
 
 ### 4. Banco e domínio
 
@@ -79,6 +80,7 @@ As duas superfícies compartilham o mesmo domínio e os mesmos **Services**, mas
 - chaves da API em `snake_case`
 - regra de negócio fora do controller
 - sem duplicação de lógica entre API e admin
+- escrita de catálogos administrativos deve ser restrita a `users.role = admin`
 
 ### Web/Admin
 

@@ -258,12 +258,12 @@ Implementado em:
 
 | Classe                    | Regras de validação principais                                                               |
 | ------------------------- | -------------------------------------------------------------------------------------------- |
-| `StoreSportModeRequest`   | `key`: required, alpha_dash, max:60, unique:sport_modes \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| arrays de pivô opcionais |
-| `StoreCategoryRequest`    | `key`: required, alpha_dash, max:60, unique:categories \| `name`: required, string, max:45 |
-| `StorePositionRequest`    | `key`: required, alpha_dash, max:60, unique:positions \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| `abbreviation`: required, string, size:3 |
-| `StoreFormationRequest`   | `key`: required, string, max:30, unique:formations \| `name`: required, string, max:15 |
-| `StoreStaffRoleRequest`   | `name`: required, alpha_dash, max:60, unique:staff_roles _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 |
-| `StoreBadgeTypeRequest`   | `name`: required, alpha_dash, max:60, unique:badge_types _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| `scope`: required, enum `BadgeScope` |
+| `StoreSportModeRequest`   | `authorize`: `admin` apenas \| `key`: required, alpha_dash, max:60, unique:sport_modes \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| arrays de pivô opcionais |
+| `StoreCategoryRequest`    | `authorize`: `admin` apenas \| `key`: required, alpha_dash, max:60, unique:categories \| `name`: required, string, max:45 |
+| `StorePositionRequest`    | `authorize`: `admin` apenas \| `key`: required, alpha_dash, max:60, unique:positions \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| `abbreviation`: required, string, size:3 |
+| `StoreFormationRequest`   | `authorize`: `admin` apenas \| `key`: required, string, max:30, unique:formations \| `name`: required, string, max:15 |
+| `StoreStaffRoleRequest`   | `authorize`: `admin` apenas \| `name`: required, alpha_dash, max:60, unique:staff_roles _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 |
+| `StoreBadgeTypeRequest`   | `authorize`: `admin` apenas \| `name`: required, alpha_dash, max:60, unique:badge_types _(name é o slug)_ \| `label_key`: required, string, max:150 \| `description_key`: nullable, string, max:150 \| `icon`: nullable, string, max:100 \| `scope`: required, enum `BadgeScope` |
 
 ### Update requests
 

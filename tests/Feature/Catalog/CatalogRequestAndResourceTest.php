@@ -27,6 +27,7 @@ use App\Models\Formation;
 use App\Models\Position;
 use App\Models\SportMode;
 use App\Models\StaffRole;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -50,6 +51,11 @@ class CatalogRequestAndResourceTest extends TestCase
                 return $name === $this->parameter ? $this->value : $default;
             }
         };
+    }
+
+    private function setUserResolver(object $request, ?User $user): void
+    {
+        $request->setUserResolver(fn () => $user);
     }
 
     public function test_store_requests_validate_catalog_creation_payloads(): void
@@ -255,5 +261,31 @@ class CatalogRequestAndResourceTest extends TestCase
         $this->assertCount(1, $sportModePayload['positions']);
         $this->assertSame('positions.goleiro.label', $sportModePayload['positions'][0]['label_key']);
         $this->assertSame('championship', $badgeTypePayload['scope']);
+    }
+
+    public function test_catalog_write_requests_allow_only_admin_users(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+
+        $requests = [
+            new StoreSportModeRequest,
+            new StoreCategoryRequest,
+            new StorePositionRequest,
+            new StoreFormationRequest,
+            new StoreStaffRoleRequest,
+            new StoreBadgeTypeRequest,
+        ];
+
+        foreach ($requests as $request) {
+            $this->setUserResolver($request, $admin);
+            $this->assertTrue($request->authorize());
+
+            $this->setUserResolver($request, $user);
+            $this->assertFalse($request->authorize());
+
+            $this->setUserResolver($request, null);
+            $this->assertFalse($request->authorize());
+        }
     }
 }

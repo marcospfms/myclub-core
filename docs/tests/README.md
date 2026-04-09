@@ -9,11 +9,11 @@ Este arquivo registra cada teste criado, seu objetivo e cenarios cobertos.
 | Modulo | Arquivos | Metodos | Cobertura | Status |
 |--------|----------|---------|-----------|--------|
 | Auth | 7 | 25 | 100% | ✅ Completo |
-| Catalog Foundation | 3 | 10 | 100% | ✅ Completo |
+| Catalog Foundation | 3 | 11 | 100% | ✅ Completo |
 | Navigation/Core | 2 | 3 | 100% | ✅ Completo |
 | Settings | 2 | 11 | 100% | ✅ Completo |
 | Unit | 1 | 1 | 100% | ✅ Completo |
-| **Total** | **14** | **47** | **100%** | ✅ |
+| **Total** | **14** | **48** | **100%** | ✅ |
 
 ---
 
@@ -118,6 +118,7 @@ Valida Form Requests e API Resources dos catalogos.
 | `test_store_requests_validate_catalog_creation_payloads` | Requests de criacao validam o contrato atual de catalogo, incluindo pivots e enum de badge |
 | `test_update_requests_ignore_current_unique_values` | Requests de update ignoram o proprio registro nas regras `unique` |
 | `test_catalog_resources_return_expected_payload_shapes` | Resources retornam payloads em `snake_case`, com campos e relacionamentos esperados |
+| `test_catalog_write_requests_allow_only_admin_users` | Escrita de catalogo fica restrita a usuarios com `role = admin` |
 
 ---
 

@@ -9,6 +9,7 @@ Neste projeto:
 - usar `Services` como padrão único
 - não adotar `Actions`
 - não adotar `Queries`
+- tratar `app/Actions/Fortify/*` como exceção de integração do starter, não como padrão para novas features
 
 Mesmo operações bem definidas e pontuais devem ficar dentro do `Service` do contexto apropriado.
 
@@ -110,3 +111,4 @@ class TeamService
 - nomes estão em inglês
 - não houve criação desnecessária de Action/Query
 - transações estão encapsuladas quando necessário
+- exceções do Fortify permanecem isoladas do domínio da aplicação
