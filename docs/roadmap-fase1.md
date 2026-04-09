@@ -26,7 +26,7 @@
 | API Controllers                          | ✅ Concluído |
 | Rotas API (`routes/api.php`)             | ✅ Concluído |
 | Types TypeScript                         | ⬜ Pendente |
-| Testes Feature                           | ⬜ Pendente |
+| Testes Feature                           | ✅ Concluído |
 
 ### Progresso atual
 
@@ -43,11 +43,11 @@ Primeiro bloco da Fase 1 já implementado:
 - resources da API da fase 1
 - controllers da API da fase 1
 - rotas protegidas da API da fase 1
+- testes feature da fase 1
 
 Próximo bloco recomendado:
 
 - types TypeScript
-- testes feature
 
 ---
 

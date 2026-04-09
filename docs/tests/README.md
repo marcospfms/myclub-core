@@ -10,10 +10,11 @@ Este arquivo registra cada teste criado, seu objetivo e cenarios cobertos.
 |--------|----------|---------|-----------|--------|
 | Auth | 7 | 25 | 100% | ✅ Completo |
 | Catalog Foundation | 7 | 29 | 100% | ✅ Completo |
-| Navigation/Core | 2 | 3 | 100% | ✅ Completo |
+| Phase 1 | 3 | 9 | 100% | ✅ Completo |
+| Navigation/Core | 1 | 2 | 100% | ✅ Completo |
 | Settings | 2 | 11 | 100% | ✅ Completo |
 | Unit | 1 | 1 | 100% | ✅ Completo |
-| **Total** | **18** | **66** | **100%** | ✅ |
+| **Total** | **21** | **77** | **100%** | ✅ |
 
 ---
 
@@ -175,15 +176,6 @@ Valida acesso ao dashboard administrativo.
 | `test_guests_are_redirected_to_the_login_page` | Visitante nao autenticado vai para login |
 | `test_authenticated_users_can_visit_the_dashboard` | Usuario autenticado acessa o dashboard |
 
-### `tests/Feature/ExampleTest.php`
-Teste basico de sanidade da home.
-
-| Metodo | Cenario |
-|--------|---------|
-| `test_returns_a_successful_response` | Rota base `home` responde com sucesso |
-
----
-
 ## Settings
 
 ### `tests/Feature/Settings/ProfileUpdateTest.php`
@@ -222,6 +214,37 @@ Teste unitario placeholder da suite.
 
 ---
 
+## Phase 1
+
+### `tests/Feature/Phase1/PlayerApiTest.php`
+Valida a API de perfil esportivo do jogador.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_player_endpoints_require_authentication` | Endpoints de criação, atualização e visualização de player exigem autenticação |
+| `test_authenticated_user_can_create_and_update_own_player_profile` | Usuário autenticado cria e atualiza o próprio perfil esportivo |
+| `test_player_show_hides_sensitive_fields_from_other_authenticated_users` | CPF, RG e telefone não são expostos para outro usuário autenticado |
+
+### `tests/Feature/Phase1/TeamApiTest.php`
+Valida a API de times e modalidades vinculadas ao time.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_authenticated_user_can_create_list_update_and_deactivate_owned_teams` | Dono cria, lista, atualiza e desativa seus próprios times |
+| `test_team_show_is_public_and_team_update_is_restricted_to_owner_or_admin` | Perfil do time é público, mas atualização é restrita a owner ou admin |
+| `test_owner_can_add_and_remove_team_sport_mode_and_conflict_returns_domain_error` | Dono adiciona/remove modalidade e conflitos retornam erro de domínio |
+
+### `tests/Feature/Phase1/TeamInvitationAndRosterApiTest.php`
+Valida os fluxos de convite e elenco.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_owner_can_send_invitation_and_invited_user_can_accept_it` | Dono envia convite e atleta convidado aceita, gerando membership |
+| `test_public_roster_is_visible_and_player_can_leave_team` | Elenco é público e o próprio jogador pode sair do time |
+| `test_owner_can_remove_member_and_conflicts_return_409` | Dono remove membro do elenco e conflitos de convite/modalidade retornam 409 |
+
+---
+
 ## Regras Cobertas Atualmente
 
 As principais regras cobertas hoje pela suite sao:
@@ -242,6 +265,9 @@ As principais regras cobertas hoje pela suite sao:
 - rotas autenticadas de catalogo na API e no admin
 - CRUD administrativo de catálogo via Inertia
 - contrato HTTP da API de catálogo
+- API de perfis de jogador da Fase 1
+- API de times, modalidades e ownership da Fase 1
+- API de convites e elenco da Fase 1
 
 ---
 
@@ -249,4 +275,5 @@ As principais regras cobertas hoje pela suite sao:
 
 - A suite atual esta concentrada em autenticacao, settings e fundacao inicial do dominio.
 - Os proximos blocos do roadmap devem adicionar testes para:
-  - regras de autorizacao do dominio esportivo
+  - aprofundar cenarios de comissão técnica
+  - limites de plano e feature gating no domínio esportivo

@@ -26,7 +26,7 @@ class PlayerController extends BaseController
 
     public function store(StorePlayerRequest $request): JsonResponse
     {
-        if ($request->user()->player) {
+        if ($request->user()->player()->exists()) {
             return $this->sendError('Perfil de jogador já existe.', [], 409);
         }
 
@@ -41,7 +41,7 @@ class PlayerController extends BaseController
 
     public function update(UpdatePlayerRequest $request): JsonResponse
     {
-        $player = $request->user()->player;
+        $player = $request->user()->player()->first();
 
         if (!$player) {
             return $this->sendError('Perfil de jogador não encontrado.', [], 404);
