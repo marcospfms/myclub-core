@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -35,5 +36,15 @@ class PlayerMembership extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
+    }
+
+    public function championshipSelections(): HasMany
+    {
+        return $this->hasMany(ChampionshipTeamPlayer::class, 'player_membership_id');
+    }
+
+    public function championshipHighlights(): HasMany
+    {
+        return $this->hasMany(ChampionshipMatchHighlight::class, 'player_membership_id');
     }
 }

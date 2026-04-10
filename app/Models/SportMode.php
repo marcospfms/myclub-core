@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -27,5 +28,15 @@ class SportMode extends Model
     public function positions(): BelongsToMany
     {
         return $this->belongsToMany(Position::class, 'sport_mode_position')->withTimestamps();
+    }
+
+    public function teamSportModes(): HasMany
+    {
+        return $this->hasMany(TeamSportMode::class);
+    }
+
+    public function championships(): BelongsToMany
+    {
+        return $this->belongsToMany(Championship::class, 'championship_sport_modes')->withTimestamps();
     }
 }

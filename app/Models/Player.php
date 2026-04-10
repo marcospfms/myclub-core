@@ -54,4 +54,14 @@ class Player extends Model
         return $this->hasMany(PlayerMembership::class, 'player_id', 'user_id')
             ->whereNull('left_at');
     }
+
+    public function championshipAwards(): HasMany
+    {
+        return $this->hasMany(ChampionshipAward::class, 'player_id', 'user_id');
+    }
+
+    public function badges(): HasMany
+    {
+        return $this->hasMany(PlayerBadge::class, 'player_id', 'user_id');
+    }
 }

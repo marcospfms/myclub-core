@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TeamInvitation::class, 'invited_by');
     }
+
+    public function createdChampionships(): HasMany
+    {
+        return $this->hasMany(Championship::class, 'created_by');
+    }
 }

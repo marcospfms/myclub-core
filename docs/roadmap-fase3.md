@@ -18,16 +18,16 @@
 
 | Item                                                                             | Status      |
 | -------------------------------------------------------------------------------- | ----------- |
-| Migrations — `championships`, `championship_sport_modes`                         | ⬜ Pendente |
-| Migrations — `championship_phases`, `championship_groups`, `championship_rounds` | ⬜ Pendente |
-| Migrations — `championship_teams`, `championship_group_entries`                  | ⬜ Pendente |
-| Migrations — `championship_team_players`                                         | ⬜ Pendente |
-| Migrations — `championship_matches`, `championship_match_highlights`             | ⬜ Pendente |
-| Migrations — `championship_awards`, `player_badges`                              | ⬜ Pendente |
-| Enums — `ChampionshipStatus`, `ChampionshipFormat`, `PhaseType`, `AwardType`     | ⬜ Pendente |
-| Models (11)                                                                      | ⬜ Pendente |
-| Services — `ChampionshipService`, `ChampionshipEnrollmentService`                | ⬜ Pendente |
-| Services — `ChampionshipMatchService`, `ChampionshipClosingService`              | ⬜ Pendente |
+| Migrations — `championships`, `championship_sport_modes`                         | ✅ Concluído |
+| Migrations — `championship_phases`, `championship_groups`, `championship_rounds` | ✅ Concluído |
+| Migrations — `championship_teams`, `championship_group_entries`                  | ✅ Concluído |
+| Migrations — `championship_team_players`                                         | ✅ Concluído |
+| Migrations — `championship_matches`, `championship_match_highlights`             | ✅ Concluído |
+| Migrations — `championship_awards`, `player_badges`                              | ✅ Concluído |
+| Enums — `ChampionshipStatus`, `ChampionshipFormat`, `PhaseType`, `AwardType`     | ✅ Concluído |
+| Models (11)                                                                      | ✅ Concluído |
+| Services — `ChampionshipService`, `ChampionshipEnrollmentService`                | ✅ Concluído |
+| Services — `ChampionshipMatchService`, `ChampionshipClosingService`              | ✅ Concluído |
 | Job — `ArchiveFinishedChampionships`                                             | ⬜ Pendente |
 | Form Requests (6)                                                                | ⬜ Pendente |
 | API Resources (5)                                                                | ⬜ Pendente |
@@ -37,6 +37,23 @@
 | Types TypeScript                                                                 | ⬜ Pendente |
 | Factories (5)                                                                    | ⬜ Pendente |
 | Testes Feature (5 classes)                                                       | ⬜ Pendente |
+
+### Progresso atual
+
+Bloco base já implementado da Fase 3:
+
+- migrations do contexto completo de campeonatos `league`
+- enums de status, formato, tipo de fase e tipo de premiação
+- models centrais de campeonatos, fases, grupos, rodadas, partidas, premiações e badges
+- relacionamentos de ida e volta nos models já existentes (`User`, `Category`, `SportMode`, `TeamSportMode`, `Player`, `PlayerMembership`)
+- teste inicial de schema e casts do domínio (`ChampionshipSchemaAndModelTest`)
+- services do contexto de campeonatos (`ChampionshipService`, `ChampionshipEnrollmentService`, `ChampionshipMatchService`, `ChampionshipClosingService`)
+- testes iniciais do ciclo de vida principal dos services (`ChampionshipServicesTest`)
+
+Próximo bloco recomendado:
+
+- job de arquivamento automático
+- depois policy, requests, resources, controllers e rotas
 
 ---
 

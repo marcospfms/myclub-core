@@ -40,4 +40,29 @@ class TeamSportMode extends Model
     {
         return $this->hasMany(TeamInvitation::class);
     }
+
+    public function championshipEntries(): HasMany
+    {
+        return $this->hasMany(ChampionshipTeam::class);
+    }
+
+    public function championshipGroupEntries(): HasMany
+    {
+        return $this->hasMany(ChampionshipGroupEntry::class);
+    }
+
+    public function championshipSelections(): HasMany
+    {
+        return $this->hasMany(ChampionshipTeamPlayer::class);
+    }
+
+    public function homeChampionshipMatches(): HasMany
+    {
+        return $this->hasMany(ChampionshipMatch::class, 'home_team_id');
+    }
+
+    public function awayChampionshipMatches(): HasMany
+    {
+        return $this->hasMany(ChampionshipMatch::class, 'away_team_id');
+    }
 }
