@@ -32,7 +32,7 @@
 | Gráficos de evolução de desempenho por temporada | ❌   | ❌         | ❌   | ❌ ¹ |
 | Comparativo percentual por posição e modalidade  | ❌   | ❌         | ❌   | ❌ ¹ |
 
-> ¹ Features de alta complexidade analítica — previstas apenas para o tier Federação (fase 3).
+> ¹ Features de alta complexidade analítica — previstas apenas para o tier Federação em fase futura.
 
 ---
 

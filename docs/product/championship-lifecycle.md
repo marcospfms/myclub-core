@@ -2,7 +2,7 @@
 
 ## Estados de um campeonato
 
-O campo `championships.status` (a adicionar ao schema) define em que fase o campeonato se encontra:
+O campo `championships.status` define em que fase o campeonato se encontra:
 
 | Estado | Descrição |
 | --- | --- |
@@ -64,11 +64,14 @@ A transição `finished` dispara os seguintes eventos na ordem:
 2. Calcular e persistir `championship_awards` (artilheiro, bola de ouro, melhor goleiro, fair play, garçom) com base em `championship_match_highlights`
 3. Conceder `player_badges` vinculados ao campeonato para os vencedores de cada prêmio
    - Badges de escopo `championship` (ex: `top_scorer`, `golden_ball`, `iron_man`) são atribuídos ao **perfil do jogador** e incluem o nome do campeonato no campo `notes`
-   - Badges de conquista coletiva (ex: `unbeaten_champion`) são atribuídos ao **perfil do time** e também registram o nome do campeonato
+   - Na **Fase 3**, apenas badges individuais em `player_badges` são concedidos automaticamente
+   - Badges de conquista coletiva (ex: `unbeaten_champion`) ficam para a fase posterior de campeonatos avançados
 4. Detectar badges de escopo `career` disparados por eventos do campeonato (ex: `hat_trick`, `mvp_streak`, `loyal_player`)
    - Esses badges também exibem o campeonato de origem no campo `notes` quando aplicável
 5. Atualizar `team_stats_cache` para todos os times participantes
 6. Incrementar `championship_titles` no cache do time campeão
+
+> Na implementação atual da **Fase 3**, os passos 5 e 6 permanecem diferidos para a fase de rankings e cache.
 
 > A ordem importa: badges dependem de `championship_awards`, que dependem de `championship_match_highlights` completos.
 
@@ -88,7 +91,7 @@ Ao inscrever o time no campeonato, o dono do time deve:
 
 O organizador do campeonato têm acesso à lista de jogadores definida por cada time no momento da inscrição.
 
-> **Campo a adicionar ao schema:** `championship_teams.max_players` (int) — herdado da configuração do campeonato; e tabela `championship_team_players` para registrar quais jogadores cada time levou para a disputa.
+> O limite é armazenado em `championships.max_players`. A tabela `championship_team_players` registra quais jogadores cada time levou para a disputa.
 
 ---
 
@@ -115,6 +118,8 @@ A transição `enrollment → active` é bloqueada se o número de times inscrit
 | `max_players` | `championships` | int | Número máximo de jogadores que cada time pode levar para a disputa |
 | `championship_team_players` | nova tabela | pivot | Jogadores selecionados por cada time para o campeonato |
 
+> Esses campos e tabelas-base já fazem parte do schema atual da Fase 3.
+
 ---
 
 ## Decisões resolvidas
@@ -124,4 +129,4 @@ A transição `enrollment → active` é bloqueada se o número de times inscrit
 - **Cancelamento de campeonato:** ao cancelar, todos os dados do campeonato são descartados — resultados não impactam ranking nem geram badges
 - **Edição retroativa:** após `finished`, nenhuma edição é permitida mesmo por `admin`
 - **Notificações de estado do campeonato:** não implementadas
-- **Prazo para arquivamento:** 7 dias após `finished` o campeonato passa para `archived`; permanece visível nos perfis de times e jogadores e se for público continua acessível como histórico
+- **Prazo para arquivamento:** 7 dias após `finished` o campeonato passa para `archived`; permanece visível como histórico somente leitura

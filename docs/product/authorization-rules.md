@@ -66,10 +66,10 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 | Remover time inscrito | `championships.created_by` ou `admin` |
 | Registrar resultado de partida | `championships.created_by` ou `admin` |
 | Encerrar campeonato e distribuir prêmios | `championships.created_by` ou `admin` |
-| Ver campeonato público | Qualquer visitante |
-| Ver campeonato privado | Times participantes e `championships.created_by` |
+| Ver campeonato na Fase 3 | `championships.created_by`, `admin` e donos de times participantes |
+| Ver campeonato público | Fase posterior — depende de campo de visibilidade pública |
 
-> **Campo a adicionar ao schema:** `championships.created_by` (FK → `users`). O schema atual não registra o criador do campeonato, o que impossibilita a autorização de operações de gestão. Ver `docs/database/schema.md` — observações de modelagem.
+> `championships.created_by` já faz parte do schema atual e é a base da autorização de gestão do campeonato.
 
 ---
 
@@ -109,7 +109,7 @@ Não existe um sistema de permissões granular por papel além do `admin/user`. 
 
 ## Campos a adicionar ao schema
 
-> Resolvidos — `created_by` e `is_public` já adicionados ao schema. Ver `docs/database/schema.md`.
+> Resolvido para a Fase 3: `created_by` já está no schema. A visibilidade pública de campeonatos permanece para fase posterior.
 
 ---
 

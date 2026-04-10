@@ -134,8 +134,8 @@ Usuário (com plano Club ou Liga) que criou e gerencia um campeonato. Pode ser o
 **O que vê na plataforma:**
 
 - Painel do campeonato
-- Tabela de classificação em tempo real
-- Chaveamento de mata-mata
+- Tabela de classificação e lista de partidas
+- Chaveamento de mata-mata em formatos futuros (`knockout` / `cup`)
 - Ferramenta de distribuição de prêmios e badges
 
 ---
