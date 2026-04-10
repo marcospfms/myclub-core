@@ -6,18 +6,23 @@ use App\Http\Controllers\Api\Catalog\FormationController;
 use App\Http\Controllers\Api\Catalog\PositionController;
 use App\Http\Controllers\Api\Catalog\SportModeController;
 use App\Http\Controllers\Api\Catalog\StaffRoleController;
-use App\Http\Controllers\Api\V1\Team\TeamController;
-use App\Http\Controllers\Api\V1\Team\TeamRosterController;
+use App\Http\Controllers\Api\V1\FriendlyMatch\FriendlyMatchController;
+use App\Http\Controllers\Api\V1\FriendlyMatch\MatchResultController;
+use App\Http\Controllers\Api\V1\FriendlyMatch\PerformanceHighlightController;
 use App\Http\Controllers\Api\V1\Player\PlayerController;
-use App\Http\Controllers\Api\V1\Team\TeamSportModeController;
-use App\Http\Controllers\Api\V1\Team\TeamInvitationController;
 use App\Http\Controllers\Api\V1\System\HealthCheckController;
+use App\Http\Controllers\Api\V1\Team\TeamController;
+use App\Http\Controllers\Api\V1\Team\TeamInvitationController;
+use App\Http\Controllers\Api\V1\Team\TeamRosterController;
+use App\Http\Controllers\Api\V1\Team\TeamSportModeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('health', HealthCheckController::class)->name('health');
     Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
     Route::get('teams/{team}/sport-modes/{teamSportMode}/members', [TeamRosterController::class, 'index'])->name('teams.sport-modes.members.index');
+    Route::get('friendly-matches/{match}', [FriendlyMatchController::class, 'show'])->name('friendly-matches.show');
+    Route::get('friendly-matches/{match}/highlights', [PerformanceHighlightController::class, 'index'])->name('friendly-matches.highlights.index');
 
     Route::middleware('auth:sanctum')->prefix('catalog')->name('catalog.')->group(function () {
         Route::get('sport-modes', [SportModeController::class, 'index'])->name('sport-modes.index');
@@ -50,5 +55,21 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('invitations', [TeamInvitationController::class, 'index'])->name('invitations.index');
         Route::post('invitations/{invitation}/accept', [TeamInvitationController::class, 'accept'])->name('invitations.accept');
         Route::post('invitations/{invitation}/reject', [TeamInvitationController::class, 'reject'])->name('invitations.reject');
+
+        Route::prefix('friendly-matches')->name('friendly-matches.')->group(function () {
+            Route::get('/', [FriendlyMatchController::class, 'index'])->name('index');
+            Route::post('/', [FriendlyMatchController::class, 'store'])->name('store');
+            Route::delete('/{match}', [FriendlyMatchController::class, 'destroy'])->name('destroy');
+            Route::post('/{match}/confirm', [FriendlyMatchController::class, 'confirm'])->name('confirm');
+            Route::post('/{match}/reject', [FriendlyMatchController::class, 'reject'])->name('reject');
+            Route::post('/{match}/cancel', [FriendlyMatchController::class, 'cancel'])->name('cancel');
+            Route::post('/{match}/postpone', [FriendlyMatchController::class, 'postpone'])->name('postpone');
+
+            Route::post('/{match}/result', [MatchResultController::class, 'store'])->name('result.store');
+            Route::post('/{match}/result/confirm', [MatchResultController::class, 'confirm'])->name('result.confirm');
+            Route::post('/{match}/result/dispute', [MatchResultController::class, 'dispute'])->name('result.dispute');
+
+            Route::post('/{match}/highlights', [PerformanceHighlightController::class, 'store'])->name('highlights.store');
+        });
     });
 });

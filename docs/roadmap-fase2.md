@@ -22,17 +22,17 @@
 | Job — `ExpireFriendlyMatchInvitations`                     | ✅ Concluído |
 | Notifications (5)                                          | ✅ Concluído |
 | Form Requests (4)                                          | ✅ Concluído |
-| API Resources (2)                                          | ⬜ Pendente |
-| Policy — `FriendlyMatchPolicy`                             | ⬜ Pendente |
-| Controllers (3)                                            | ⬜ Pendente |
-| Rotas API (`routes/api.php`)                               | ⬜ Pendente |
+| API Resources (2)                                          | ✅ Concluído |
+| Policy — `FriendlyMatchPolicy`                             | ✅ Concluído |
+| Controllers (3)                                            | ✅ Concluído |
+| Rotas API (`routes/api.php`)                               | ✅ Concluído |
 | Types TypeScript                                           | ⬜ Pendente |
-| Factories (2)                                              | ⬜ Pendente |
-| Testes Feature (4 classes)                                 | ⬜ Pendente |
+| Factories (6)                                              | ✅ Concluído |
+| Testes Feature (4 classes)                                 | ✅ Concluído |
 
 ### Progresso atual
 
-Primeiro bloco da Fase 2 já implementado:
+Blocos já implementados da Fase 2:
 
 - migrations de amistosos
 - migration de estatísticas individuais do amistoso
@@ -42,11 +42,16 @@ Primeiro bloco da Fase 2 já implementado:
 - job de expiração de convites de amistoso
 - notifications in-app via canal `database`
 - form requests de criação, adiamento, resultado e highlights
+- api resources de amistosos e destaques individuais
+- policy de autorização para leitura, resposta, gestão e resultados
+- controllers de amistosos, resultado e destaques individuais
+- rotas públicas de leitura e rotas protegidas de gestão em `routes/api.php`
+- factories de apoio para times, modalidades, jogadores, vínculos e amistosos
+- testes feature da fase 2 validados com PHP 8.4 do WAMP (`17 passed`)
 
 Próximo bloco recomendado:
 
-- resources
-- policy
+- types TypeScript (quando a superfície consumidora precisar)
 
 ---
 
@@ -587,69 +592,17 @@ public function rules(): array
 
 ## 10. API Resources
 
-Localização: `app/Http/Resources/`
+Localização:
 
-### `FriendlyMatchResource`
+- `app/Http/Resources/FriendlyMatch/FriendlyMatchResource.php`
+- `app/Http/Resources/FriendlyMatch/PerformanceHighlightResource.php`
 
-```php
-class FriendlyMatchResource extends JsonResource
-{
-    public function toArray(Request $request): array
-    {
-        return [
-            'id'                => $this->id,
-            'home_team'         => TeamSportModeResource::make($this->whenLoaded('homeTeam')),
-            'away_team'         => TeamSportModeResource::make($this->whenLoaded('awayTeam')),
-            'scheduled_at'      => $this->scheduled_at,
-            'location'          => $this->location,
-            'confirmation'      => $this->confirmation,
-            'invite_expires_at' => $this->invite_expires_at,
-            'match_status'      => $this->match_status,
-            'home_goals'        => $this->home_goals,
-            'away_goals'        => $this->away_goals,
-            'home_notes'        => $this->when($this->isParticipant($request->user()), $this->home_notes),
-            'away_notes'        => $this->when($this->isParticipant($request->user()), $this->away_notes),
-            'is_public'         => $this->is_public,
-            'result_status'     => $this->result_status,
-            'created_at'        => $this->created_at,
-            'updated_at'        => $this->updated_at,
-        ];
-    }
+Regras aplicadas neste bloco:
 
-    private function isParticipant(?User $user): bool
-    {
-        if (!$user) {
-            return false;
-        }
-
-        return in_array($user->id, [
-            $this->homeTeam?->team?->owner_id,
-            $this->awayTeam?->team?->owner_id,
-        ]);
-    }
-}
-```
-
-> `home_notes` e `away_notes` são visíveis apenas para os donos dos dois times envolvidos.
-
-### `PerformanceHighlightResource`
-
-```php
-class PerformanceHighlightResource extends JsonResource
-{
-    public function toArray(Request $request): array
-    {
-        return [
-            'id'                => $this->id,
-            'player_membership' => PlayerMembershipResource::make($this->whenLoaded('playerMembership')),
-            'goals'             => $this->goals,
-            'assists'           => $this->assists,
-            'yellow_cards'      => $this->yellow_cards,
-            'red_cards'         => $this->red_cards,
-        ];
-    }
-}
-```
+- chaves em `snake_case`
+- relacionamentos expostos apenas via `whenLoaded()`
+- `home_notes` e `away_notes` visíveis somente para o dono do respectivo time ou `admin`
+- `confirmation`, `match_status` e `result_status` serializados via `enum->value`
 
 ---
 
@@ -657,303 +610,69 @@ class PerformanceHighlightResource extends JsonResource
 
 Localização: `app/Policies/FriendlyMatchPolicy.php`
 
-```php
-class FriendlyMatchPolicy
-{
-    /** Dono do time desafiante pode remover convite pendente */
-    public function delete(User $user, FriendlyMatch $match): bool
-    {
-        return $user->id === $match->homeTeam->team->owner_id
-            && $match->isPending();
-    }
+Arquivos implementados:
 
-    /** Apenas o dono do time desafiado confirma ou recusa */
-    public function respond(User $user, FriendlyMatch $match): bool
-    {
-        return $user->id === $match->awayTeam->team->owner_id;
-    }
+- `app/Policies/FriendlyMatchPolicy.php`
+- `app/Providers/AppServiceProvider.php`
 
-    /** Qualquer dos dois donos pode cancelar ou adiar */
-    public function manage(User $user, FriendlyMatch $match): bool
-    {
-        return in_array($user->id, [
-            $match->homeTeam->team->owner_id,
-            $match->awayTeam->team->owner_id,
-        ]);
-    }
+Regras aplicadas neste bloco:
 
-    /** Qualquer dos dois donos pode registrar ou interagir com o resultado */
-    public function manageResult(User $user, FriendlyMatch $match): bool
-    {
-        return $this->manage($user, $match);
-    }
-
-    /** Cada dono registra highlights apenas dos seus próprios jogadores */
-    public function manageHighlights(User $user, FriendlyMatch $match): bool
-    {
-        return $this->manage($user, $match);
-    }
-}
-```
-
-> Registrar em `app/Providers/AppServiceProvider.php` via `Gate::policy(FriendlyMatch::class, FriendlyMatchPolicy::class)`.
+- `admin` pode visualizar e gerenciar qualquer amistoso
+- amistoso privado só pode ser visualizado pelos donos dos times envolvidos ou `admin`
+- somente o dono do time desafiante remove convite pendente
+- somente o dono do time desafiado responde convite
+- gestão de cancelamento, adiamento, resultado e highlights fica com os donos dos times participantes
 
 ---
 
 ## 12. API Controllers
 
-Localização: `app/Http/Controllers/Api/`
+Localização:
 
-Todos estendem `BaseController` e requerem `auth:sanctum`.
+- `app/Http/Controllers/Api/V1/FriendlyMatch/FriendlyMatchController.php`
+- `app/Http/Controllers/Api/V1/FriendlyMatch/MatchResultController.php`
+- `app/Http/Controllers/Api/V1/FriendlyMatch/PerformanceHighlightController.php`
 
-### 12.1 `FriendlyMatchController`
+Todos estendem `BaseController`, usam `Resource` e assumem `auth:sanctum`.
 
-```
-GET    /api/v1/friendly-matches                  → index
-POST   /api/v1/friendly-matches                  → store  (desafiante cria)
-GET    /api/v1/friendly-matches/{match}           → show
-DELETE /api/v1/friendly-matches/{match}           → destroy (remove convite pendente)
-POST   /api/v1/friendly-matches/{match}/confirm  → confirm (desafiado confirma)
-POST   /api/v1/friendly-matches/{match}/reject   → reject  (desafiado recusa)
-POST   /api/v1/friendly-matches/{match}/cancel   → cancel  (qualquer dono)
-POST   /api/v1/friendly-matches/{match}/postpone → postpone (qualquer dono)
-```
+Endpoints cobertos neste bloco:
 
-```php
-class FriendlyMatchController extends BaseController
-{
-    public function __construct(private FriendlyMatchService $matchService) {}
+- `GET /api/v1/friendly-matches`
+- `POST /api/v1/friendly-matches`
+- `GET /api/v1/friendly-matches/{match}`
+- `DELETE /api/v1/friendly-matches/{match}`
+- `POST /api/v1/friendly-matches/{match}/confirm`
+- `POST /api/v1/friendly-matches/{match}/reject`
+- `POST /api/v1/friendly-matches/{match}/cancel`
+- `POST /api/v1/friendly-matches/{match}/postpone`
+- `POST /api/v1/friendly-matches/{match}/result`
+- `POST /api/v1/friendly-matches/{match}/result/confirm`
+- `POST /api/v1/friendly-matches/{match}/result/dispute`
+- `GET /api/v1/friendly-matches/{match}/highlights`
+- `POST /api/v1/friendly-matches/{match}/highlights`
 
-    public function index(Request $request): JsonResponse
-    {
-        $userId = $request->user()->id;
+Regras aplicadas neste bloco:
 
-        $matches = FriendlyMatch::where(function ($q) use ($userId) {
-            $q->whereHas('homeTeam.team', fn ($q) => $q->where('owner_id', $userId))
-              ->orWhereHas('awayTeam.team', fn ($q) => $q->where('owner_id', $userId));
-        })
-        ->with(['homeTeam.team', 'homeTeam.sportMode', 'awayTeam.team', 'awayTeam.sportMode'])
-        ->latest()
-        ->get();
-
-        return $this->sendResponse(FriendlyMatchResource::collection($matches), 'Matches retrieved.');
-    }
-
-    public function store(StoreFriendlyMatchRequest $request): JsonResponse
-    {
-        // Garante que home_team_id pertence ao usuário autenticado
-        $homeTeam = TeamSportMode::where('id', $request->integer('home_team_id'))
-            ->whereHas('team', fn ($q) => $q->where('owner_id', $request->user()->id))
-            ->firstOrFail();
-
-        $match = $this->matchService->create(
-            array_merge($request->validated(), ['home_team_id' => $homeTeam->id]),
-            $request->user(),
-        );
-
-        $match->awayTeam->team->owner->notify(new FriendlyMatchInvitedNotification($match));
-
-        return $this->sendResponse(new FriendlyMatchResource($match), 'Amistoso criado.', 201);
-    }
-
-    public function show(FriendlyMatch $match): JsonResponse
-    {
-        $match->load(['homeTeam.team', 'homeTeam.sportMode', 'awayTeam.team', 'awayTeam.sportMode']);
-
-        return $this->sendResponse(new FriendlyMatchResource($match), 'Match retrieved.');
-    }
-
-    public function destroy(Request $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('delete', $match);
-        $this->matchService->removePendingInvite($match);
-
-        return $this->sendResponse([], 'Convite removido.');
-    }
-
-    public function confirm(Request $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('respond', $match);
-        $updated = $this->matchService->confirm($match);
-
-        $match->homeTeam->team->owner->notify(new FriendlyMatchConfirmedNotification($updated));
-
-        return $this->sendResponse(new FriendlyMatchResource($updated), 'Amistoso confirmado.');
-    }
-
-    public function reject(Request $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('respond', $match);
-        $updated = $this->matchService->reject($match);
-
-        $match->homeTeam->team->owner->notify(new FriendlyMatchRejectedNotification($updated));
-
-        return $this->sendResponse(new FriendlyMatchResource($updated), 'Amistoso recusado.');
-    }
-
-    public function cancel(Request $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('manage', $match);
-        $updated = $this->matchService->cancel($match);
-
-        return $this->sendResponse(new FriendlyMatchResource($updated), 'Amistoso cancelado.');
-    }
-
-    public function postpone(PostponeFriendlyMatchRequest $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('manage', $match);
-        $updated = $this->matchService->postpone($match, $request->validated());
-
-        return $this->sendResponse(new FriendlyMatchResource($updated), 'Amistoso adiado.');
-    }
-}
-```
-
-### 12.2 `MatchResultController`
-
-```
-POST   /api/v1/friendly-matches/{match}/result         → store   (qualquer dono registra placar)
-POST   /api/v1/friendly-matches/{match}/result/confirm → confirm (o outro time confirma)
-POST   /api/v1/friendly-matches/{match}/result/dispute → dispute (o outro time contesta)
-```
-
-```php
-class MatchResultController extends BaseController
-{
-    public function __construct(private MatchResultService $resultService) {}
-
-    public function store(RegisterMatchResultRequest $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('manageResult', $match);
-
-        if ($match->result_status === ResultStatus::Pending) {
-            return $this->sendError('Resultado já registrado e aguardando confirmação.', [], 409);
-        }
-
-        $updated = $this->resultService->register($match, $request->validated(), $request->user());
-
-        $this->resolveOtherOwner($match, $request->user())
-             ->notify(new MatchResultRegisteredNotification($updated));
-
-        return $this->sendResponse(new FriendlyMatchResource($updated), 'Resultado registrado.');
-    }
-
-    public function confirm(Request $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('manageResult', $match);
-
-        if ($match->result_registered_by === $request->user()->id) {
-            return $this->sendError('O registrador não pode confirmar o próprio resultado.', [], 403);
-        }
-
-        $updated = $this->resultService->confirmResult($match);
-
-        $match->resultRegisteredBy->notify(new MatchResultConfirmedNotification($updated));
-
-        return $this->sendResponse(new FriendlyMatchResource($updated), 'Resultado confirmado. Amistoso encerrado.');
-    }
-
-    public function dispute(Request $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('manageResult', $match);
-
-        if ($match->result_registered_by === $request->user()->id) {
-            return $this->sendError('O registrador não pode contestar o próprio resultado.', [], 403);
-        }
-
-        $updated = $this->resultService->disputeResult($match);
-
-        return $this->sendResponse(new FriendlyMatchResource($updated), 'Resultado contestado. Registre novamente.');
-    }
-
-    private function resolveOtherOwner(FriendlyMatch $match, User $current): User
-    {
-        return $current->id === $match->homeTeam->team->owner_id
-            ? $match->awayTeam->team->owner
-            : $match->homeTeam->team->owner;
-    }
-}
-```
-
-### 12.3 `PerformanceHighlightController`
-
-```
-GET    /api/v1/friendly-matches/{match}/highlights → index
-POST   /api/v1/friendly-matches/{match}/highlights → store (bulk — cada dono registra os seus)
-```
-
-```php
-class PerformanceHighlightController extends BaseController
-{
-    public function __construct(private MatchResultService $resultService) {}
-
-    public function index(FriendlyMatch $match): JsonResponse
-    {
-        $highlights = $match->highlights()->with('playerMembership.player.user')->get();
-
-        return $this->sendResponse(PerformanceHighlightResource::collection($highlights), 'Highlights retrieved.');
-    }
-
-    public function store(StorePerformanceHighlightRequest $request, FriendlyMatch $match): JsonResponse
-    {
-        $this->authorize('manageHighlights', $match);
-
-        $userId = $request->user()->id;
-
-        // Coleta IDs de player_memberships do time do usuário autenticado neste amistoso
-        $allowedIds = PlayerMembership::whereIn('team_sport_mode_id', [$match->home_team_id, $match->away_team_id])
-            ->whereHas('teamSportMode.team', fn ($q) => $q->where('owner_id', $userId))
-            ->pluck('id')
-            ->toArray();
-
-        $results = [];
-        foreach ($request->validated()['highlights'] as $item) {
-            if (!in_array($item['player_membership_id'], $allowedIds)) {
-                return $this->sendError(
-                    "player_membership_id {$item['player_membership_id']} não pertence ao seu time.",
-                    [],
-                    403,
-                );
-            }
-            $results[] = $this->resultService->registerHighlight($match, $item);
-        }
-
-        return $this->sendResponse(
-            PerformanceHighlightResource::collection(collect($results)),
-            'Estatísticas registradas.',
-        );
-    }
-}
-```
+- conflitos de domínio retornam `409` via `sendError()`
+- autorização usa `FriendlyMatchPolicy`
+- serialização usa `FriendlyMatchResource` e `PerformanceHighlightResource`
+- listagem e carregamento principal do amistoso foram empurrados para `FriendlyMatchService`
+- registro de resultado agora respeita `home_notes` e `away_notes` conforme o lado do usuário que registrou
 
 ---
 
 ## 13. Rotas
 
-`routes/api.php` — adicionado ao grupo `auth:sanctum` existente:
+Arquivo implementado:
 
-```php
-// Amistosos
-Route::prefix('v1/friendly-matches')->name('api.friendly-matches.')->group(function () {
-    Route::get('/',                        [Api\FriendlyMatchController::class, 'index'])->name('index');
-    Route::post('/',                       [Api\FriendlyMatchController::class, 'store'])->name('store');
-    Route::get('/{match}',                 [Api\FriendlyMatchController::class, 'show'])->name('show');
-    Route::delete('/{match}',              [Api\FriendlyMatchController::class, 'destroy'])->name('destroy');
-    Route::post('/{match}/confirm',        [Api\FriendlyMatchController::class, 'confirm'])->name('confirm');
-    Route::post('/{match}/reject',         [Api\FriendlyMatchController::class, 'reject'])->name('reject');
-    Route::post('/{match}/cancel',         [Api\FriendlyMatchController::class, 'cancel'])->name('cancel');
-    Route::post('/{match}/postpone',       [Api\FriendlyMatchController::class, 'postpone'])->name('postpone');
+- `routes/api.php`
 
-    // Resultado (confirmação bilateral)
-    Route::post('/{match}/result',         [Api\MatchResultController::class, 'store'])->name('result.store');
-    Route::post('/{match}/result/confirm', [Api\MatchResultController::class, 'confirm'])->name('result.confirm');
-    Route::post('/{match}/result/dispute', [Api\MatchResultController::class, 'dispute'])->name('result.dispute');
+Estratégia aplicada:
 
-    // Estatísticas individuais
-    Route::get('/{match}/highlights',      [Api\PerformanceHighlightController::class, 'index'])->name('highlights.index');
-    Route::post('/{match}/highlights',     [Api\PerformanceHighlightController::class, 'store'])->name('highlights.store');
-});
-```
+- `GET /api/v1/friendly-matches/{match}` é público, mas depende de `FriendlyMatchPolicy::view`
+- `GET /api/v1/friendly-matches/{match}/highlights` é público, mas depende de `FriendlyMatchPolicy::view`
+- listagem, criação, resposta ao convite, gestão do amistoso, resultado e gravação de highlights exigem `auth:sanctum`
+- as rotas foram registradas dentro do prefixo já existente `api.v1`
 
 ---
 
@@ -1294,85 +1013,21 @@ class ExpireFriendlyMatchInvitationsTest extends TestCase
 
 ## 16. Factories
 
-```
-database/factories/
-├── FriendlyMatchFactory.php
-└── PerformanceHighlightFactory.php
-```
+Arquivos implementados:
 
-### `FriendlyMatchFactory`
+- `database/factories/TeamFactory.php`
+- `database/factories/TeamSportModeFactory.php`
+- `database/factories/PlayerFactory.php`
+- `database/factories/PlayerMembershipFactory.php`
+- `database/factories/FriendlyMatchFactory.php`
+- `database/factories/PerformanceHighlightFactory.php`
 
-```php
-public function definition(): array
-{
-    return [
-        'home_team_id'         => TeamSportMode::factory(),
-        'away_team_id'         => TeamSportMode::factory(),
-        'scheduled_at'         => now()->addDays(7),
-        'location'             => fake()->address(),
-        'confirmation'         => MatchConfirmation::Pending,
-        'invite_expires_at'    => now()->addDays(2),
-        'match_status'         => null,
-        'home_goals'           => null,
-        'away_goals'           => null,
-        'is_public'            => false,
-        'result_status'        => ResultStatus::None,
-        'result_registered_by' => null,
-    ];
-}
+Cobertura entregue neste bloco:
 
-public function pending(): static
-{
-    return $this->state(['confirmation' => MatchConfirmation::Pending, 'match_status' => null]);
-}
-
-public function scheduled(): static
-{
-    return $this->state([
-        'confirmation' => MatchConfirmation::Confirmed,
-        'match_status' => MatchStatus::Scheduled,
-    ]);
-}
-
-public function completed(): static
-{
-    return $this->state([
-        'confirmation'  => MatchConfirmation::Confirmed,
-        'match_status'  => MatchStatus::Completed,
-        'result_status' => ResultStatus::Confirmed,
-        'home_goals'    => fake()->numberBetween(0, 5),
-        'away_goals'    => fake()->numberBetween(0, 5),
-    ]);
-}
-
-public function withPendingResult(User $registeredBy): static
-{
-    return $this->state([
-        'confirmation'         => MatchConfirmation::Confirmed,
-        'match_status'         => MatchStatus::Scheduled,
-        'result_status'        => ResultStatus::Pending,
-        'home_goals'           => 2,
-        'away_goals'           => 1,
-        'result_registered_by' => $registeredBy->id,
-    ]);
-}
-```
-
-### `PerformanceHighlightFactory`
-
-```php
-public function definition(): array
-{
-    return [
-        'friendly_match_id'    => FriendlyMatch::factory()->completed(),
-        'player_membership_id' => PlayerMembership::factory(),
-        'goals'                => fake()->numberBetween(0, 3),
-        'assists'              => fake()->numberBetween(0, 3),
-        'yellow_cards'         => fake()->numberBetween(0, 1),
-        'red_cards'            => 0,
-    ];
-}
-```
+- base reutilizável para os testes de times e amistosos
+- `FriendlyMatchFactory` com estados `pending()`, `scheduled()`, `completed()` e `withPendingResult()`
+- garantia de que o `away_team_id` do amistoso nasce em modalidade compatível com o `home_team_id`
+- `PlayerMembershipFactory` com estados `starter()` e `inactive()`
 
 ---
 
@@ -1409,12 +1064,12 @@ public function definition(): array
 
 ### Testes
 
-- [ ] Factories: `FriendlyMatchFactory`, `PerformanceHighlightFactory`
-- [ ] `FriendlyMatchTest`
-- [ ] `MatchResultTest`
-- [ ] `PerformanceHighlightTest`
-- [ ] `ExpireFriendlyMatchInvitationsTest`
-- [ ] Todos os testes passando (`php artisan test`)
+- [x] Factories: `TeamFactory`, `TeamSportModeFactory`, `PlayerFactory`, `PlayerMembershipFactory`, `FriendlyMatchFactory`, `PerformanceHighlightFactory`
+- [x] `FriendlyMatchApiTest`
+- [x] `MatchResultApiTest`
+- [x] `PerformanceHighlightApiTest`
+- [x] `ExpireFriendlyMatchInvitationsTest`
+- [x] Testes da fase 2 passando (`17 passed`, `51 assertions`)
 
 ---
 

@@ -2,19 +2,36 @@
 
 namespace App\Services\FriendlyMatch;
 
-use App\Models\User;
-use DomainException;
-use App\Models\FriendlyMatch;
-use App\Models\TeamSportMode;
+use App\Enums\MatchConfirmation;
 use App\Enums\MatchStatus;
 use App\Enums\ResultStatus;
-use App\Enums\MatchConfirmation;
+use App\Models\FriendlyMatch;
+use App\Models\TeamSportMode;
+use App\Models\User;
+use App\Notifications\FriendlyMatch\FriendlyMatchConfirmedNotification;
 use App\Notifications\FriendlyMatch\FriendlyMatchInvitedNotification;
 use App\Notifications\FriendlyMatch\FriendlyMatchRejectedNotification;
-use App\Notifications\FriendlyMatch\FriendlyMatchConfirmedNotification;
+use DomainException;
+use Illuminate\Database\Eloquent\Collection;
 
 class FriendlyMatchService
 {
+    public function listForUser(User $user): Collection
+    {
+        $query = FriendlyMatch::query()
+            ->with($this->relationsForIndex())
+            ->latest();
+
+        if (! $user->isAdmin()) {
+            $query->where(function ($builder) use ($user): void {
+                $builder->whereHas('homeTeam.team', fn ($teamQuery) => $teamQuery->where('owner_id', $user->id))
+                    ->orWhereHas('awayTeam.team', fn ($teamQuery) => $teamQuery->where('owner_id', $user->id));
+            });
+        }
+
+        return $query->get();
+    }
+
     public function create(array $data, User $challenger): FriendlyMatch
     {
         $homeTeam = TeamSportMode::query()->with('team')->findOrFail($data['home_team_id']);
@@ -42,7 +59,7 @@ class FriendlyMatchService
         $match->loadMissing(['awayTeam.team.owner']);
         $match->awayTeam->team->owner->notify(new FriendlyMatchInvitedNotification($match));
 
-        return $match;
+        return $this->loadForApi($match);
     }
 
     public function confirm(FriendlyMatch $match): FriendlyMatch
@@ -60,7 +77,7 @@ class FriendlyMatchService
 
         $updated->homeTeam->team->owner->notify(new FriendlyMatchConfirmedNotification($updated));
 
-        return $updated;
+        return $this->loadForApi($updated);
     }
 
     public function reject(FriendlyMatch $match): FriendlyMatch
@@ -78,7 +95,7 @@ class FriendlyMatchService
 
         $updated->homeTeam->team->owner->notify(new FriendlyMatchRejectedNotification($updated));
 
-        return $updated;
+        return $this->loadForApi($updated);
     }
 
     public function cancel(FriendlyMatch $match): FriendlyMatch
@@ -95,7 +112,7 @@ class FriendlyMatchService
             'match_status' => MatchStatus::Cancelled,
         ]);
 
-        return $match->fresh();
+        return $this->loadForApi($match->fresh());
     }
 
     public function postpone(FriendlyMatch $match, array $data): FriendlyMatch
@@ -114,7 +131,7 @@ class FriendlyMatchService
             'location' => $data['location'] ?? $match->location,
         ]);
 
-        return $match->fresh();
+        return $this->loadForApi($match->fresh());
     }
 
     public function removePendingInvite(FriendlyMatch $match): void
@@ -124,5 +141,31 @@ class FriendlyMatchService
         }
 
         $match->delete();
+    }
+
+    public function loadForApi(FriendlyMatch $match): FriendlyMatch
+    {
+        return $match->loadMissing($this->relationsForShow());
+    }
+
+    private function relationsForIndex(): array
+    {
+        return [
+            'homeTeam.team',
+            'homeTeam.sportMode',
+            'awayTeam.team',
+            'awayTeam.sportMode',
+            'resultRegisteredBy',
+        ];
+    }
+
+    private function relationsForShow(): array
+    {
+        return array_merge($this->relationsForIndex(), [
+            'homeTeam.team.owner',
+            'awayTeam.team.owner',
+            'highlights.playerMembership.player.user',
+            'highlights.playerMembership.position',
+        ]);
     }
 }

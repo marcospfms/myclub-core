@@ -2,15 +2,15 @@
 
 namespace App\Services\FriendlyMatch;
 
-use App\Models\User;
-use DomainException;
-use App\Models\FriendlyMatch;
 use App\Enums\MatchStatus;
 use App\Enums\ResultStatus;
-use App\Models\PlayerMembership;
+use App\Models\FriendlyMatch;
 use App\Models\PerformanceHighlight;
-use App\Notifications\FriendlyMatch\MatchResultRegisteredNotification;
+use App\Models\PlayerMembership;
+use App\Models\User;
 use App\Notifications\FriendlyMatch\MatchResultConfirmedNotification;
+use App\Notifications\FriendlyMatch\MatchResultRegisteredNotification;
+use DomainException;
 
 class MatchResultService
 {
@@ -24,19 +24,30 @@ class MatchResultService
             throw new DomainException('Resultado já confirmado. Edição não permitida.');
         }
 
-        $match->update([
+        $payload = [
             'home_goals' => $data['home_goals'],
             'away_goals' => $data['away_goals'],
             'result_status' => ResultStatus::Pending,
             'result_registered_by' => $registeredBy->id,
-        ]);
+        ];
+
+        if ($registeredBy->isAdmin()) {
+            $payload['home_notes'] = $data['home_notes'] ?? $match->home_notes;
+            $payload['away_notes'] = $data['away_notes'] ?? $match->away_notes;
+        } elseif ($registeredBy->id === $match->homeTeam->team->owner_id) {
+            $payload['home_notes'] = $data['home_notes'] ?? $match->home_notes;
+        } elseif ($registeredBy->id === $match->awayTeam->team->owner_id) {
+            $payload['away_notes'] = $data['away_notes'] ?? $match->away_notes;
+        }
+
+        $match->update($payload);
 
         $updated = $match->fresh(['homeTeam.team.owner', 'awayTeam.team.owner']);
 
         $this->resolveOtherOwner($updated, $registeredBy)
             ->notify(new MatchResultRegisteredNotification($updated));
 
-        return $updated;
+        return app(FriendlyMatchService::class)->loadForApi($updated);
     }
 
     public function confirmResult(FriendlyMatch $match): FriendlyMatch
@@ -56,7 +67,7 @@ class MatchResultService
             $updated->resultRegisteredBy->notify(new MatchResultConfirmedNotification($updated));
         }
 
-        return $updated;
+        return app(FriendlyMatchService::class)->loadForApi($updated);
     }
 
     public function disputeResult(FriendlyMatch $match): FriendlyMatch
@@ -72,7 +83,7 @@ class MatchResultService
             'result_registered_by' => null,
         ]);
 
-        return $match->fresh();
+        return app(FriendlyMatchService::class)->loadForApi($match->fresh());
     }
 
     public function registerHighlight(FriendlyMatch $match, array $item): PerformanceHighlight
@@ -98,7 +109,10 @@ class MatchResultService
                 'yellow_cards' => $item['yellow_cards'] ?? 0,
                 'red_cards' => $item['red_cards'] ?? 0,
             ],
-        );
+        )->loadMissing([
+            'playerMembership.player.user',
+            'playerMembership.position',
+        ]);
     }
 
     private function resolveOtherOwner(FriendlyMatch $match, User $current): User

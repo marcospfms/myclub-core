@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
-use Carbon\CarbonImmutable;
+use App\Models\FriendlyMatch;
 use App\Models\Team;
+use App\Policies\FriendlyMatchPolicy;
 use App\Policies\TeamPolicy;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
     protected function configureDefaults(): void
     {
         Gate::policy(Team::class, TeamPolicy::class);
+        Gate::policy(FriendlyMatch::class, FriendlyMatchPolicy::class);
 
         Schema::defaultStringLength(191);
 
