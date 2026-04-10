@@ -11,10 +11,11 @@ Este arquivo registra cada teste criado, seu objetivo e cenarios cobertos.
 | Auth | 7 | 25 | 100% | ✅ Completo |
 | Catalog Foundation | 7 | 29 | 100% | ✅ Completo |
 | Phase 1 | 3 | 9 | 100% | ✅ Completo |
+| Phase 2 | 4 | 17 | 100% | ✅ Completo |
 | Navigation/Core | 1 | 2 | 100% | ✅ Completo |
 | Settings | 2 | 11 | 100% | ✅ Completo |
 | Unit | 1 | 1 | 100% | ✅ Completo |
-| **Total** | **21** | **77** | **100%** | ✅ |
+| **Total** | **25** | **94** | **100%** | ✅ |
 
 ---
 
@@ -245,6 +246,51 @@ Valida os fluxos de convite e elenco.
 
 ---
 
+## Phase 2
+
+### `tests/Feature/Phase2/FriendlyMatchApiTest.php`
+Valida os endpoints principais do ciclo de amistosos.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_authenticated_owner_can_create_and_list_owned_friendly_matches` | Dono cria amistoso e lista apenas os seus registros |
+| `test_cannot_create_friendly_match_with_different_sport_modes` | Times de modalidades diferentes retornam conflito de domínio |
+| `test_public_match_can_be_viewed_without_authentication_and_private_match_cannot` | Amistoso público é visível sem auth; amistoso privado é bloqueado |
+| `test_away_owner_can_confirm_match_but_home_owner_cannot_confirm_own_invite` | Só o dono do time desafiado confirma o convite |
+| `test_home_owner_can_remove_pending_invite` | Dono do time desafiante remove convite pendente |
+| `test_either_owner_can_cancel_confirmed_match` | Qualquer dono participante pode cancelar amistoso confirmado |
+| `test_friendly_match_management_routes_require_authentication` | Rotas protegidas de gestão exigem Sanctum |
+
+### `tests/Feature/Phase2/MatchResultApiTest.php`
+Valida o handshake bilateral de resultado do amistoso.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_owner_can_register_result` | Dono registra placar e nota do seu lado |
+| `test_other_owner_can_confirm_result` | Outro dono confirma o placar e encerra a partida |
+| `test_registrar_cannot_confirm_own_result` | Quem registrou não pode confirmar o próprio resultado |
+| `test_other_owner_can_dispute_result` | Outro dono pode contestar o placar pendente |
+| `test_cannot_register_result_when_pending_confirmation_or_already_pending_result` | Resultado não pode ser lançado em convite pendente nem sobrescrever pendência existente |
+
+### `tests/Feature/Phase2/PerformanceHighlightApiTest.php`
+Valida estatísticas individuais do amistoso.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_owner_can_register_highlights_for_own_players` | Dono registra destaques apenas dos jogadores do próprio time |
+| `test_owner_cannot_register_highlights_for_opponent_players` | Tentativa sobre jogador adversário retorna 403 |
+| `test_cannot_register_highlights_before_match_is_completed` | Destaques só podem ser enviados após a conclusão da partida |
+| `test_public_match_highlights_can_be_listed_without_authentication` | Highlights de amistoso público podem ser consultados sem autenticação |
+
+### `tests/Feature/Phase2/ExpireFriendlyMatchInvitationsTest.php`
+Valida a expiração automática de convites pendentes.
+
+| Metodo | Cenario |
+|--------|---------|
+| `test_expired_invites_are_marked_as_expired` | Convites vencidos viram `expired` sem afetar convites ativos ou partidas já confirmadas |
+
+---
+
 ## Regras Cobertas Atualmente
 
 As principais regras cobertas hoje pela suite sao:
@@ -258,6 +304,10 @@ As principais regras cobertas hoje pela suite sao:
 - protecao de dashboard para usuarios autenticados
 - exibicao e alteracao de perfil
 - exclusao de conta com confirmacao de senha
+- ciclo de amistosos: criação, confirmação, cancelamento e visibilidade
+- handshake bilateral de resultado de amistoso
+- highlights individuais por ownership do time
+- expiração automática de convites de amistoso
 - pagina de seguranca com comportamento dependente da configuracao do Fortify
 - fundacao da Fase 0: migrations e seeders de catalogo
 - form requests de catalogo
