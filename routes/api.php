@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Catalog\FormationController;
 use App\Http\Controllers\Api\Catalog\PositionController;
 use App\Http\Controllers\Api\Catalog\SportModeController;
 use App\Http\Controllers\Api\Catalog\StaffRoleController;
+use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Championship\ChampionshipController;
 use App\Http\Controllers\Api\V1\Championship\ChampionshipEnrollmentController;
 use App\Http\Controllers\Api\V1\Championship\ChampionshipMatchController;
@@ -27,6 +28,12 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('teams/{team}/sport-modes/{teamSportMode}/members', [TeamRosterController::class, 'index'])->name('teams.sport-modes.members.index');
     Route::get('friendly-matches/{match}', [FriendlyMatchController::class, 'show'])->name('friendly-matches.show');
     Route::get('friendly-matches/{match}/highlights', [PerformanceHighlightController::class, 'index'])->name('friendly-matches.highlights.index');
+
+    Route::middleware('web')->prefix('auth')->name('auth.')->group(function () {
+        Route::post('login', [AuthController::class, 'login'])->middleware('guest')->name('login');
+        Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('logout');
+        Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum')->name('me');
+    });
 
     Route::middleware('auth:sanctum')->prefix('catalog')->name('catalog.')->group(function () {
         Route::get('sport-modes', [SportModeController::class, 'index'])->name('sport-modes.index');
