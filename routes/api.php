@@ -6,6 +6,10 @@ use App\Http\Controllers\Api\Catalog\FormationController;
 use App\Http\Controllers\Api\Catalog\PositionController;
 use App\Http\Controllers\Api\Catalog\SportModeController;
 use App\Http\Controllers\Api\Catalog\StaffRoleController;
+use App\Http\Controllers\Api\V1\Championship\ChampionshipController;
+use App\Http\Controllers\Api\V1\Championship\ChampionshipEnrollmentController;
+use App\Http\Controllers\Api\V1\Championship\ChampionshipMatchController;
+use App\Http\Controllers\Api\V1\Championship\ChampionshipMatchHighlightController;
 use App\Http\Controllers\Api\V1\FriendlyMatch\FriendlyMatchController;
 use App\Http\Controllers\Api\V1\FriendlyMatch\MatchResultController;
 use App\Http\Controllers\Api\V1\FriendlyMatch\PerformanceHighlightController;
@@ -70,6 +74,32 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::post('/{match}/result/dispute', [MatchResultController::class, 'dispute'])->name('result.dispute');
 
             Route::post('/{match}/highlights', [PerformanceHighlightController::class, 'store'])->name('highlights.store');
+        });
+
+        Route::prefix('championships')->name('championships.')->group(function () {
+            Route::get('/', [ChampionshipController::class, 'index'])->name('index');
+            Route::post('/', [ChampionshipController::class, 'store'])->name('store');
+            Route::get('/{championship}', [ChampionshipController::class, 'show'])->name('show');
+            Route::put('/{championship}', [ChampionshipController::class, 'update'])->name('update');
+            Route::delete('/{championship}', [ChampionshipController::class, 'destroy'])->name('destroy');
+            Route::post('/{championship}/open-enrollment', [ChampionshipController::class, 'openEnrollment'])->name('open-enrollment');
+            Route::post('/{championship}/activate', [ChampionshipController::class, 'activate'])->name('activate');
+            Route::post('/{championship}/cancel', [ChampionshipController::class, 'cancel'])->name('cancel');
+            Route::get('/{championship}/awards', [ChampionshipController::class, 'awards'])->name('awards');
+
+            Route::get('/{championship}/teams', [ChampionshipEnrollmentController::class, 'index'])->name('teams.index');
+            Route::post('/{championship}/teams', [ChampionshipEnrollmentController::class, 'enroll'])->name('teams.enroll');
+            Route::delete('/{championship}/teams/{teamSportMode}', [ChampionshipEnrollmentController::class, 'removeTeam'])->name('teams.destroy');
+            Route::get('/{championship}/teams/{teamSportMode}/players', [ChampionshipEnrollmentController::class, 'players'])->name('teams.players.index');
+            Route::post('/{championship}/teams/{teamSportMode}/players', [ChampionshipEnrollmentController::class, 'selectPlayers'])->name('teams.players.store');
+
+            Route::get('/{championship}/matches', [ChampionshipMatchController::class, 'index'])->name('matches.index');
+            Route::get('/{championship}/matches/{match}', [ChampionshipMatchController::class, 'show'])->name('matches.show');
+            Route::put('/{championship}/matches/{match}', [ChampionshipMatchController::class, 'update'])->name('matches.update');
+            Route::post('/{championship}/matches/{match}/cancel', [ChampionshipMatchController::class, 'cancel'])->name('matches.cancel');
+
+            Route::get('/{championship}/matches/{match}/highlights', [ChampionshipMatchHighlightController::class, 'index'])->name('matches.highlights.index');
+            Route::post('/{championship}/matches/{match}/highlights', [ChampionshipMatchHighlightController::class, 'store'])->name('matches.highlights.store');
         });
     });
 });

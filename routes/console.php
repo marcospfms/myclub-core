@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\ArchiveFinishedChampionships;
 use App\Jobs\ExpireFriendlyMatchInvitations;
 use App\Jobs\ExpireTeamInvitations;
 use Illuminate\Foundation\Inspiring;
@@ -12,3 +13,4 @@ Artisan::command('inspire', function () {
 
 Schedule::job(new ExpireTeamInvitations())->hourly();
 Schedule::job(new ExpireFriendlyMatchInvitations())->hourly();
+Schedule::job(new ArchiveFinishedChampionships())->daily();

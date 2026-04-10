@@ -29,14 +29,14 @@
 | Services — `ChampionshipService`, `ChampionshipEnrollmentService`                | ✅ Concluído |
 | Services — `ChampionshipMatchService`, `ChampionshipClosingService`              | ✅ Concluído |
 | Job — `ArchiveFinishedChampionships`                                             | ⬜ Pendente |
-| Form Requests (6)                                                                | ⬜ Pendente |
-| API Resources (5)                                                                | ⬜ Pendente |
-| Policy — `ChampionshipPolicy`                                                    | ⬜ Pendente |
-| Controllers (5)                                                                  | ⬜ Pendente |
-| Rotas API (`routes/api.php`)                                                     | ⬜ Pendente |
+| Form Requests (6)                                                                | ✅ Concluído |
+| API Resources (5)                                                                | ✅ Concluído |
+| Policy — `ChampionshipPolicy`                                                    | ✅ Concluído |
+| Controllers (5)                                                                  | ✅ Concluído |
+| Rotas API (`routes/api.php`)                                                     | ✅ Concluído |
 | Types TypeScript                                                                 | ⬜ Pendente |
 | Factories (5)                                                                    | ⬜ Pendente |
-| Testes Feature (5 classes)                                                       | ⬜ Pendente |
+| Testes Feature (5 classes)                                                       | ✅ Concluído |
 
 ### Progresso atual
 
@@ -49,11 +49,19 @@ Bloco base já implementado da Fase 3:
 - teste inicial de schema e casts do domínio (`ChampionshipSchemaAndModelTest`)
 - services do contexto de campeonatos (`ChampionshipService`, `ChampionshipEnrollmentService`, `ChampionshipMatchService`, `ChampionshipClosingService`)
 - testes iniciais do ciclo de vida principal dos services (`ChampionshipServicesTest`)
+- policy de ownership/lifecycle de campeonatos (`ChampionshipPolicy`) registrada no `AppServiceProvider`
+- testes iniciais da policy (`ChampionshipPolicyTest`)
+- form requests do contexto de campeonatos
+- resources JSON do contexto de campeonatos
+- controllers API da Fase 3 e rotas versionadas em `routes/api.php`
+- job `ArchiveFinishedChampionships` registrado no scheduler
+- factories base do contexto de campeonatos
+- testes feature HTTP e job da Fase 3
 
 Próximo bloco recomendado:
 
-- job de arquivamento automático
-- depois policy, requests, resources, controllers e rotas
+- types TypeScript da Fase 3
+- refinamento de documentação de produto ainda desalinhada com o schema atual
 
 ---
 

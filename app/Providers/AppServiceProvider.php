@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\FriendlyMatch;
+use App\Models\Championship;
 use App\Models\Team;
+use App\Policies\ChampionshipPolicy;
 use App\Policies\FriendlyMatchPolicy;
 use App\Policies\TeamPolicy;
 use Carbon\CarbonImmutable;
@@ -39,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Team::class, TeamPolicy::class);
         Gate::policy(FriendlyMatch::class, FriendlyMatchPolicy::class);
+        Gate::policy(Championship::class, ChampionshipPolicy::class);
 
         Schema::defaultStringLength(191);
 
