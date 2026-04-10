@@ -155,6 +155,11 @@ class ChampionshipServicesTest extends TestCase
 
         $firstMatch = $matches->firstWhere('home_team_id', $homeTeam->id) ?? $matches->first();
         $otherMatches = $matches->where('id', '!=', $firstMatch->id)->values();
+        $awayMembershipForFirstMatch = match ($firstMatch->away_team_id) {
+            $awayTeam->id => $awayMembership,
+            $thirdTeam->id => $thirdMembership,
+            default => throw new \RuntimeException('Partida selecionada não possui adversário esperado para o teste.'),
+        };
 
         $matchService->registerResult($firstMatch, [
             'home_goals' => 3,
@@ -172,7 +177,7 @@ class ChampionshipServicesTest extends TestCase
                 'is_mvp' => true,
             ],
             [
-                'player_membership_id' => $awayMembership->id,
+                'player_membership_id' => $awayMembershipForFirstMatch->id,
                 'goals' => 1,
                 'assists' => 0,
                 'yellow_cards' => 0,
