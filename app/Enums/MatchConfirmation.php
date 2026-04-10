@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-enum InvitationStatus: string
+enum MatchConfirmation: string
 {
     case Pending = 'pending'; // pendente
-    case Accepted = 'accepted'; // aceito
+    case Confirmed = 'confirmed'; // confirmado
     case Rejected = 'rejected'; // recusado
     case Expired = 'expired'; // expirado
 }

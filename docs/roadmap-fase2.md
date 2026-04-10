@@ -14,9 +14,9 @@
 
 | Item                                                       | Status      |
 | ---------------------------------------------------------- | ----------- |
-| Migration — `friendly_matches`                             | ⬜ Pendente |
-| Migration — `performance_highlights`                       | ⬜ Pendente |
-| Enums — `MatchConfirmation`, `MatchStatus`, `ResultStatus` | ⬜ Pendente |
+| Migration — `friendly_matches`                             | ✅ Concluído |
+| Migration — `performance_highlights`                       | ✅ Concluído |
+| Enums — `MatchConfirmation`, `MatchStatus`, `ResultStatus` | ✅ Concluído |
 | Models — `FriendlyMatch`, `PerformanceHighlight`           | ⬜ Pendente |
 | Services — `FriendlyMatchService`, `MatchResultService`    | ⬜ Pendente |
 | Job — `ExpireFriendlyMatchInvitations`                     | ⬜ Pendente |
@@ -29,6 +29,19 @@
 | Types TypeScript                                           | ⬜ Pendente |
 | Factories (2)                                              | ⬜ Pendente |
 | Testes Feature (4 classes)                                 | ⬜ Pendente |
+
+### Progresso atual
+
+Primeiro bloco da Fase 2 já implementado:
+
+- migrations de amistosos
+- migration de estatísticas individuais do amistoso
+- enums de confirmação, estado da partida e confirmação de resultado
+
+Próximo bloco recomendado:
+
+- models
+- services
 
 ---
 
