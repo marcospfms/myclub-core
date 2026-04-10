@@ -23,5 +23,11 @@ class DatabaseSeeder extends Seeder
             SportModePositionSeeder::class,
             AdminUserSeeder::class,
         ]);
+
+        if (app()->environment('local') && ! app()->runningUnitTests()) {
+            $this->call([
+                FrontendDemoSeeder::class,
+            ]);
+        }
     }
 }
