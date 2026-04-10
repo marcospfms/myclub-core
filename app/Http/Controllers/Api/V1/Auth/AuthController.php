@@ -11,6 +11,17 @@ use App\Http\Resources\Auth\AuthUserResource;
 
 class AuthController extends BaseController
 {
+    private function loadAuthUser(Request $request)
+    {
+        return $request->user()?->load([
+            'player.user',
+            'staffMember.user',
+            'staffMember.role',
+            'ownedTeams.owner',
+            'ownedTeams.sportModes.sportMode',
+        ]);
+    }
+
     public function login(ApiLoginRequest $request): JsonResponse
     {
         $credentials = $request->safe()->only(['email', 'password']);
@@ -27,7 +38,7 @@ class AuthController extends BaseController
         $request->session()->regenerate();
 
         return $this->sendResponse(
-            new AuthUserResource($request->user()),
+            new AuthUserResource($this->loadAuthUser($request)),
             'Sessão autenticada.'
         );
     }
@@ -35,7 +46,7 @@ class AuthController extends BaseController
     public function me(Request $request): JsonResponse
     {
         return $this->sendResponse(
-            new AuthUserResource($request->user()),
+            new AuthUserResource($this->loadAuthUser($request)),
             'Sessão autenticada.'
         );
     }
