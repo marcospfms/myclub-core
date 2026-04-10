@@ -34,8 +34,8 @@ Status atual:
 
 - concluída no backend e testes
 - `Types TypeScript` adiados para quando existirem os clientes:
-  - React Native (mobile)
-  - Nuxt (web)
+    - React Native (mobile)
+    - Nuxt (web)
 
 ---
 
@@ -82,18 +82,22 @@ O que implementar:
 
 ### Fase 5 — Player Pro e Descoberta de Jogadores
 
+> Roadmap detalhado: `docs/roadmap-fase5.md`
+
 O que implementar:
 
 - `player_sport_preferences` — preferências de modalidade para busca
 - URL amigável (`@slug` em `users`)
 - Cartão digital exportável
-- Ranking com destaque Player Pro
-- API: busca de jogadores por posição/modalidade/localização
-- Definir acesso à busca (resolve decisão aberta de user-personas.md §7)
+- Destaque Player Pro em resultados de busca
+- API: busca de jogadores por posição/modalidade/localização (Club+)
+- Acesso à busca restrito ao plano Club+ _(resolve decisão aberta de user-personas.md §3.1)_
 
 ---
 
 ### Fase 6 — Rankings e Cache
+
+> Roadmap detalhado: `docs/roadmap-fase6.md`
 
 O que implementar:
 
@@ -105,6 +109,8 @@ O que implementar:
 ---
 
 ### Fase 7 — Campeonatos avançados (Club: knockout, cup)
+
+> Roadmap detalhado: `docs/roadmap-fase7.md`
 
 O que implementar:
 
