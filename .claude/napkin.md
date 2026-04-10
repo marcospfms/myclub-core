@@ -9,6 +9,8 @@
 ## Execution & Validation (Highest Priority)
 1. **[2026-04-08] Laravel CLI must use WAMP PHP 8.4**
    Do instead: run Artisan and test commands with `/mnt/c/wamp64/bin/php/php8.4.19/php.exe` instead of the WSL `php` binary.
+2. **[2026-04-10] Revisar docs de produto e padrões antes de cada bloco novo**
+   Do instead: before implementing a new phase or domain block, reread the relevant files in `docs/product` and `docs/patterns`, then code against those rules.
 
 ## Shell & Command Reliability
 1. **[2026-04-08] Keep commits in pt-BR with fixed prefixes**

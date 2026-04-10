@@ -17,11 +17,11 @@
 | Migration — `friendly_matches`                             | ✅ Concluído |
 | Migration — `performance_highlights`                       | ✅ Concluído |
 | Enums — `MatchConfirmation`, `MatchStatus`, `ResultStatus` | ✅ Concluído |
-| Models — `FriendlyMatch`, `PerformanceHighlight`           | ⬜ Pendente |
-| Services — `FriendlyMatchService`, `MatchResultService`    | ⬜ Pendente |
-| Job — `ExpireFriendlyMatchInvitations`                     | ⬜ Pendente |
-| Notifications (5)                                          | ⬜ Pendente |
-| Form Requests (4)                                          | ⬜ Pendente |
+| Models — `FriendlyMatch`, `PerformanceHighlight`           | ✅ Concluído |
+| Services — `FriendlyMatchService`, `MatchResultService`    | ✅ Concluído |
+| Job — `ExpireFriendlyMatchInvitations`                     | ✅ Concluído |
+| Notifications (5)                                          | ✅ Concluído |
+| Form Requests (4)                                          | ✅ Concluído |
 | API Resources (2)                                          | ⬜ Pendente |
 | Policy — `FriendlyMatchPolicy`                             | ⬜ Pendente |
 | Controllers (3)                                            | ⬜ Pendente |
@@ -37,11 +37,16 @@ Primeiro bloco da Fase 2 já implementado:
 - migrations de amistosos
 - migration de estatísticas individuais do amistoso
 - enums de confirmação, estado da partida e confirmação de resultado
+- models de amistosos e estatísticas individuais
+- services de criação, confirmação e resultado de amistosos
+- job de expiração de convites de amistoso
+- notifications in-app via canal `database`
+- form requests de criação, adiamento, resultado e highlights
 
 Próximo bloco recomendado:
 
-- models
-- services
+- resources
+- policy
 
 ---
 
