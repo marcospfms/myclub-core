@@ -11,6 +11,25 @@ use App\Http\Resources\Auth\AuthUserResource;
 
 class AuthController extends BaseController
 {
+    private function isProductUserRequest(Request $request): bool
+    {
+        return $request->user()?->isAdmin() !== true;
+    }
+
+    private function rejectInvalidAuthentication(Request $request, int $code = 422): JsonResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return $this->sendError(
+            'As credenciais informadas são inválidas.',
+            [],
+            $code
+        );
+    }
+
     private function loadAuthUser(Request $request)
     {
         return $request->user()?->load([
@@ -37,6 +56,10 @@ class AuthController extends BaseController
 
         $request->session()->regenerate();
 
+        if (! $this->isProductUserRequest($request)) {
+            return $this->rejectInvalidAuthentication($request);
+        }
+
         return $this->sendResponse(
             new AuthUserResource($this->loadAuthUser($request)),
             'Sessão autenticada.'
@@ -45,6 +68,10 @@ class AuthController extends BaseController
 
     public function me(Request $request): JsonResponse
     {
+        if (! $this->isProductUserRequest($request)) {
+            return $this->rejectInvalidAuthentication($request, 401);
+        }
+
         return $this->sendResponse(
             new AuthUserResource($this->loadAuthUser($request)),
             'Sessão autenticada.'

@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Enums\UserRole;
+use App\Models\User;
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -40,6 +43,23 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
+        Fortify::authenticateUsing(function (Request $request): ?User {
+            $user = User::query()->where('email', $request->string('email'))->first();
+
+            if (! $user instanceof User) {
+                return null;
+            }
+
+            if ($user->role !== UserRole::Admin) {
+                return null;
+            }
+
+            if (! Hash::check($request->string('password'), $user->password)) {
+                return null;
+            }
+
+            return $user;
+        });
     }
 
     /**
