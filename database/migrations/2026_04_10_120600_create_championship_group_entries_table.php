@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('championship_group_id')->constrained()->cascadeOnDelete();
             $table->foreignId('team_sport_mode_id')->constrained()->restrictOnDelete();
             $table->integer('final_position')->nullable();
-            $table->unique(['championship_group_id', 'team_sport_mode_id']);
+            $table->unique(['championship_group_id', 'team_sport_mode_id'], 'cge_group_team_mode_unique');
             $table->timestamps();
         });
     }

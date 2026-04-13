@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('assists')->default(0);
             $table->integer('yellow_cards')->default(0);
             $table->integer('red_cards')->default(0);
-            $table->unique(['friendly_match_id', 'player_membership_id']);
+            $table->unique(['friendly_match_id', 'player_membership_id'], 'perf_highlights_match_membership_unique');
             $table->timestamps();
         });
     }
