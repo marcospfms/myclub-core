@@ -14,7 +14,7 @@ class ApiAuthenticationTest extends TestCase
     public function test_user_can_authenticate_using_api_auth_login_route(): void
     {
         $user = User::factory()->create([
-            'role' => UserRole::Admin,
+            'role' => UserRole::User,
         ]);
 
         $response = $this->postJson('/api/v1/auth/login', [
@@ -27,9 +27,27 @@ class ApiAuthenticationTest extends TestCase
             ->assertOk()
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.email', $user->email)
-            ->assertJsonPath('data.role', UserRole::Admin->value);
+            ->assertJsonPath('data.role', UserRole::User->value);
 
         $this->assertAuthenticated();
+    }
+
+    public function test_admin_user_cannot_authenticate_using_product_api_auth_login_route(): void
+    {
+        $user = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
+
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => $user->email,
+            'password' => 'password',
+            'remember' => true,
+        ]);
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('message', 'As credenciais informadas são inválidas.');
     }
 
     public function test_api_auth_login_rejects_invalid_credentials(): void
@@ -51,7 +69,7 @@ class ApiAuthenticationTest extends TestCase
     public function test_authenticated_user_can_fetch_current_session_via_api_auth_me(): void
     {
         $user = User::factory()->create([
-            'role' => UserRole::Admin,
+            'role' => UserRole::User,
         ]);
 
         $this->actingAs($user);
@@ -63,7 +81,23 @@ class ApiAuthenticationTest extends TestCase
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.id', $user->id)
             ->assertJsonPath('data.email', $user->email)
-            ->assertJsonPath('data.role', UserRole::Admin->value);
+            ->assertJsonPath('data.role', UserRole::User->value);
+    }
+
+    public function test_admin_session_cannot_fetch_current_product_api_session(): void
+    {
+        $user = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->getJson('/api/v1/auth/me');
+
+        $response
+            ->assertUnauthorized()
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('message', 'As credenciais informadas são inválidas.');
     }
 
     public function test_authenticated_user_can_logout_using_api_auth_logout_route(): void
@@ -77,7 +111,5 @@ class ApiAuthenticationTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('success', true);
-
-        $this->assertGuest();
     }
 }

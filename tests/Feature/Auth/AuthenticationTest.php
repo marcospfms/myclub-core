@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
@@ -21,7 +22,9 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
 
         $response = $this->post(route('login.store'), [
             'email' => $user->email,
@@ -30,6 +33,20 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_non_admin_users_cannot_authenticate_using_the_admin_login_screen()
+    {
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertGuest();
     }
 
     public function test_users_with_two_factor_enabled_are_redirected_to_two_factor_challenge()
@@ -41,7 +58,9 @@ class AuthenticationTest extends TestCase
             'confirmPassword' => true,
         ]);
 
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
 
         $user->forceFill([
             'two_factor_secret' => encrypt('test-secret'),
@@ -61,7 +80,9 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_not_authenticate_with_invalid_password()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
 
         $this->post(route('login.store'), [
             'email' => $user->email,
@@ -73,7 +94,9 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_logout()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
 
         $response = $this->actingAs($user)->post(route('logout'));
 
